@@ -16,6 +16,11 @@
 			path = WONNIT;
 			sourceTree = "<group>";
 		};
+		9CE59C902E3CF8300095C833 /* Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Tests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				9CE59C792E3CBBB60095C833 /* WONNIT */,
+				9CE59C902E3CF8300095C833 /* Tests */,
 				9CE59C782E3CBBB60095C833 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,6 +68,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				9CE59C792E3CBBB60095C833 /* WONNIT */,
+				9CE59C902E3CF8300095C833 /* Tests */,
 			);
 			name = WONNIT;
 			packageProductDependencies = (

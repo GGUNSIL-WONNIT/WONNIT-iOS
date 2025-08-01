@@ -11,7 +11,7 @@ import SwiftUI
 struct WONNITApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
         }
     }
 }
