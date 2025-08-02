@@ -9,7 +9,11 @@ import SwiftUI
 
 struct SpaceCategoriesView: View {
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            HomeSectionHeaderView(homeSection: .spaceCategories)
+            
+            
+        }
     }
 }
 
