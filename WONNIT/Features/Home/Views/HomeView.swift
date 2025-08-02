@@ -9,7 +9,15 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        Text("프리텐다드 Regular 16px")
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 0) {
+//                    LogoView()
+                    HeroView()
+                    HomeMainContentsView()
+                }
+            }
+        }
     }
 }
 

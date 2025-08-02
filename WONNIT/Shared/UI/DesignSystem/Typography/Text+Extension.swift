@@ -17,6 +17,11 @@ extension Text {
             .lineSpacing(9.6)
     }
     
+    func title_01_text() -> Text {
+        self.font(.custom("Pretendard-SemiBold", size: 24))
+            .kerning(-0.12)
+    }
+    
     // title-02: 24pt, medium, lineHeight 140%, letterSpacing -0.5%
     // kerning: 24 * (-0.5 / 100) = -0.12
     // lineSpacing: 24 * 1.4 - 24 = 9.6
