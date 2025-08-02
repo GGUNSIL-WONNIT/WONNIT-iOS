@@ -9,19 +9,20 @@ import SwiftUI
 
 @main
 struct WONNITApp: App {
-    @State var selectedTab: Int = 0
+    @State private var tabManager = TabManager()
     
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .bottom) {
-                TabView(selection: $selectedTab) {
-                    HomeView().tag(0)
-                    ExploreView().tag(1)
-                    DashboardView().tag(2)
+                TabView(selection: $tabManager.selectedTab) {
+                    HomeView().tag(TabManager.TabBarItems.home)
+                    ExploreView().tag(TabManager.TabBarItems.explore)
+                    DashboardView().tag(TabManager.TabBarItems.dashboard)
                 }
                 
-                TabBarView(selectedTab: $selectedTab)
+                TabBarView(selectedTab: $tabManager.selectedTab)
             }
+            .environment(tabManager)
             .ignoresSafeArea(.all, edges: .bottom)
         }
     }

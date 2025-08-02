@@ -15,7 +15,7 @@ struct HeroView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 12) {
                     heroTitleSection
-                    ctaButton
+                    HeroCTAButtonView()
                 }
                 Spacer()
             }
@@ -40,22 +40,6 @@ struct HeroView: View {
             Text("워닛에서 찾아보세요")
                 .title_01()
         }
-    }
-
-    private var ctaButton: some View {
-        Button(action: {
-            // TODO: Impl. Navigation
-        }) {
-            HStack(spacing: 2) {
-                Text("내 주변 공간 보러가기")
-                    .caption_02()
-                    .foregroundStyle(Color.grey900)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 10))
-                    .foregroundStyle(Color.grey900)
-            }
-        }
-        .buttonStyle(.plain)
     }
 }
 

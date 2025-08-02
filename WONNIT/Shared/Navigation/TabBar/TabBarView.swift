@@ -9,13 +9,12 @@ import SwiftUI
 
 struct TabBarView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets
-    @Binding var selectedTab: Int
+    @Binding var selectedTab: TabManager.TabBarItems
     
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(TabBarItems.allCases, id: \.self) { tab in
+            ForEach(TabManager.TabBarItems.allCases, id: \.self) { tab in
                 tabButton(for: tab)
-                    .frame(maxWidth: .infinity)
             }
         }
         .padding(.bottom, safeAreaInsets.bottom - 18)
@@ -26,12 +25,12 @@ struct TabBarView: View {
     }
     
     @ViewBuilder
-    private func tabButton(for tab: TabBarItems) -> some View {
-        let isSelected = selectedTab == tab.rawValue
+    private func tabButton(for tab: TabManager.TabBarItems) -> some View {
+        let isSelected = selectedTab == tab
         
         Button {
             withAnimation {
-                selectedTab = tab.rawValue
+                selectedTab = tab
             }
         } label: {
             VStack(spacing: 4) {

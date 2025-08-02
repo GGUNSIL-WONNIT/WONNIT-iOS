@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State var homeNavigationManager = NavigationManager()
+    
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $homeNavigationManager.path) {
             ScrollView {
                 VStack(spacing: 0) {
 //                    LogoView()
                     HeroView()
-                    HomeMainContentsView()
+                    VStack(spacing: 48) {
+                        SpaceCategoriesView()
+                        RecentlyAddedSpacesView()
+                    }
                 }
             }
+            .environment(\.navigationManager, homeNavigationManager)
         }
     }
 }
