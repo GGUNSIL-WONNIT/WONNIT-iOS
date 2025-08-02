@@ -20,9 +20,18 @@ struct HomeView: View {
                         SpaceCategoriesView()
                         RecentlyAddedSpacesView()
                     }
+                    .padding(.horizontal, 16)
                 }
             }
             .environment(\.navigationManager, homeNavigationManager)
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .spaceListByCategory(let category):
+                    SpaceListView(category: category)
+                case .spaceListByRecent:
+                    SpaceListView(category: nil)
+                }
+            }
         }
     }
 }

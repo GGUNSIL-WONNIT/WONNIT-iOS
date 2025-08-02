@@ -9,7 +9,13 @@ import SwiftUI
 
 struct RecentlyAddedSpacesView: View {
     var body: some View {
-        Text("Hello, World!")
+        VStack(spacing: 16) {
+            HomeSectionHeaderView(homeSection: .recentlyAddedSpaces)
+            
+            HStack {
+                
+            }
+        }
     }
 }
 

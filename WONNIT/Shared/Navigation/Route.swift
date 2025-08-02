@@ -8,8 +8,8 @@
 import Foundation
 
 enum Route: Hashable {
-    case spaceListByCategory(category: SpaceCategory)
-    case exploreTag(String)
+    case spaceListByCategory(_ category: SpaceCategory)
+    case spaceListByRecent
     case fullScreenModal(ModalRoute)
     
     enum ModalRoute: Hashable {

@@ -25,7 +25,7 @@ struct SpaceCategoriesView: View {
     @ViewBuilder
     private func categoryButton(category: SpaceCategory) -> some View {
         Button {
-            nav.push("a")
+            nav.push(Route.spaceListByCategory(category))
         } label: {
             VStack(spacing: 8) {
                 Image(category.iconName)

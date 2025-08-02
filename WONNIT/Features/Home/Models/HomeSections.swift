@@ -23,12 +23,12 @@ enum HomeSections: String, CaseIterable {
         }
     }
     
-    var hasViewAllSubview: Bool {
+    var subViewHashable: Route? {
         switch self {
-        case .recentlyAddedSpaces, .columns:
-            return true
+        case .recentlyAddedSpaces:
+            return .spaceListByRecent
         default:
-            return false
+            return nil
         }
     }
 }

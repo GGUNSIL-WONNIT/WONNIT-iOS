@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeSectionHeaderView: View {
+    @Environment(\.navigationManager) var nav
     let homeSection: HomeSections
     
     var body: some View {
@@ -26,9 +27,9 @@ struct HomeSectionHeaderView: View {
             
             Spacer()
             
-            if homeSection.hasViewAllSubview {
+            if let subViewHashable = homeSection.subViewHashable {
                 Button {
-                    
+                    nav.push(subViewHashable)
                 } label: {
                     Text("전체 보기")
                         .body_06()
