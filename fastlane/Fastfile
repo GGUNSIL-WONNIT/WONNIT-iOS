@@ -14,25 +14,18 @@ platform :ios do
   lane :beta do
     sh("pod install")
 
-    match(type: "appstore", api_key: get_api_key)
+    match(type: "appstore", api_key: get_api_key, readonly: true)
 
     build_app(
       workspace: "WONNIT.xcworkspace",
       scheme: "WONNIT",
       export_method: "app-store",
       include_bitcode: true,
-      export_options: {
-        signingStyle: "manual",
-        provisioningProfiles: {
-          "com.dohyeoplim.WONNIT" => "match AppStore com.dohyeoplim.WONNIT"
-        }
-      }
     )
 
     upload_to_testflight(
       api_key: get_api_key,
       distribute_external: false,
-      skip_waiting_for_build_processing: true
     )
   end
 end
