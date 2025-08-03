@@ -88,3 +88,4 @@ playground.xcworkspace
 *.log
 
 .env
+.env.*

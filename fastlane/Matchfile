@@ -4,5 +4,7 @@ storage_mode("git")
 
 type("appstore")
 
-app_identifier("com.dohyeoplim.WONNIT")
+app_identifier([
+  "com.dohyeoplim.WONNIT"
+])
 
