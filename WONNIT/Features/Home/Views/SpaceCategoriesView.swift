@@ -19,6 +19,7 @@ struct SpaceCategoriesView: View {
                     categoryButton(category: category)
                 }
             }
+            .padding(.horizontal, 16)
         }
     }
     
