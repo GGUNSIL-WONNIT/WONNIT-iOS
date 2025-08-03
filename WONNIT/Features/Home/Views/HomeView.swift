@@ -14,7 +14,6 @@ struct HomeView: View {
         NavigationStack(path: $homeNavigationManager.path) {
             ScrollView {
                 VStack(spacing: 0) {
-//                    LogoView()
                     HeroView()
                     VStack(spacing: 48) {
                         SpaceCategoriesView()
@@ -34,8 +33,4 @@ struct HomeView: View {
             }
         }
     }
-}
-
-#Preview {
-    HomeView()
 }
