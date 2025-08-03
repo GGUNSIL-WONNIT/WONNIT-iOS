@@ -14,11 +14,19 @@ platform :ios do
   lane :beta do
     sh("pod install")
 
-    match(type: "appstore", api_key: get_api_key, readonly: true)
+    keychain_name = "fastlane_tmp_keychain"
+    keychain_password = ENV["MATCH_PASSWORD"]
+
+    match(
+      type: "appstore",
+      api_key: get_api_key,
+      keychain_name: keychain_name,
+      keychain_password: keychain_password
+    )
 
     unlock_keychain(
-      path: lane_context[SharedValues::MATCH_KEYCHAIN_PATH],
-      password: lane_context[SharedValues::MATCH_KEYCHAIN_PASSWORD]
+      name: keychain_name,
+      password: keychain_password
     )
 
     build_app(
@@ -26,12 +34,15 @@ platform :ios do
       scheme: "WONNIT",
       export_method: "app-store",
       include_bitcode: true,
+      export_options: {
+        signingStyle: "manual",
+        provisioningProfiles: {
+          "com.dohyeoplim.WONNIT" => "match AppStore com.dohyeoplim.WONNIT"
+        }
+      }
     )
 
-    upload_to_testflight(
-      api_key: get_api_key,
-      distribute_external: false,
-    )
+   upload_to_testflight(api_key: get_api_key)
   end
 end
 
