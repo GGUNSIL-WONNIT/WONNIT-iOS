@@ -1,3 +1,6 @@
+require 'dotenv'
+Dotenv.load
+
 default_platform(:ios)
 
 def get_api_key
