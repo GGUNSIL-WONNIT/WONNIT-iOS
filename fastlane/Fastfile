@@ -14,19 +14,9 @@ platform :ios do
   lane :beta do
     sh("pod install")
 
-    keychain_name = "fastlane_tmp_keychain"
-    keychain_password = ENV["MATCH_PASSWORD"]
-
     match(
       type: "appstore",
       api_key: get_api_key,
-      keychain_name: keychain_name,
-      keychain_password: keychain_password
-    )
-
-    unlock_keychain(
-      name: keychain_name,
-      password: keychain_password
     )
 
     build_app(
