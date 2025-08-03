@@ -21,6 +21,7 @@ struct HomeView: View {
                         ColumnsView()
                     }
                 }
+                .paddedForTabBar()
             }
             .environment(\.navigationManager, homeNavigationManager)
             .navigationDestination(for: Route.self) { route in
