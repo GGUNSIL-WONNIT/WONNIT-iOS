@@ -53,20 +53,20 @@ struct RecentlyAddedSpaceCardView: View {
     
     @ViewBuilder
     private var spaceInfo: some View {
-        if let name = space.name,
-           let category = space.category,
-           let address = space.address?.address1 {
-            VStack(alignment: .leading, spacing: 4) {
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(name)
-                        .body_04(.grey900)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                    
-                    Text(category.label)
-                        .body_06(.grey800)
-                }
-                
+        VStack(alignment: .leading, spacing: 4) {
+            if let name = space.name {
+                Text(name)
+                    .body_04(.grey900)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            }
+            
+            if let category = space.category {
+                Text(category.label)
+                    .body_06(.grey800)
+            }
+            
+            if let address = space.address?.address1 {
                 HStack(spacing: 0) {
                     Image("icon/locationOutline")
                     Text(address)
@@ -75,8 +75,8 @@ struct RecentlyAddedSpaceCardView: View {
                         .truncationMode(.tail)
                 }
             }
-            .padding(.horizontal, 4)
         }
+        .padding(.horizontal, 4)
     }
 }
 

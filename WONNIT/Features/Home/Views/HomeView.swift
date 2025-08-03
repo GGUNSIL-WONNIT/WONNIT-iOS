@@ -18,6 +18,7 @@ struct HomeView: View {
                     VStack(spacing: 48) {
                         SpaceCategoriesView()
                         RecentlyAddedSpacesView()
+                        ColumnsView()
                     }
                 }
             }

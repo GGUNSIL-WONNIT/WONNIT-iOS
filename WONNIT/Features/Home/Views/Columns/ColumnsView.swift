@@ -9,7 +9,11 @@ import SwiftUI
 
 struct ColumnsView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HomeSectionHeaderView(homeSection: .columns)
+        
+        CarouselView(itemSpacing: 16, leadingPadding: 16) {
+            
+        }
     }
 }
 
