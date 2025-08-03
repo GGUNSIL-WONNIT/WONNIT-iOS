@@ -12,8 +12,10 @@ struct RecentlyAddedSpacesView: View {
         VStack(spacing: 16) {
             HomeSectionHeaderView(homeSection: .recentlyAddedSpaces)
             
-            HStack {
-                
+            CarouselView(itemSpacing: 16, leadingPadding: 16) {
+                ForEach (0..<5) { _ in
+                    RecentlyAddedSpaceCardView(space: .placeholder)
+                }
             }
         }
     }

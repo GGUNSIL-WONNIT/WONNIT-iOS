@@ -11,13 +11,13 @@ struct Space: Identifiable, Codable, Equatable {
     let id: UUID
     var name: String?
     var address: AddressInfo?
-    var mainImageURL: URL?
-    var subImageURLs: [URL]?
+    var mainImageURL: String?
+    var subImageURLs: [String]?
     var category: SpaceCategory?
     var size: Double?
     var operationInfo: OperationalInfo?
     var amountInfo: AmountInfo?
-    var spaceModelURL: URL?
+    var spaceModelURL: String?
     var phoneNumber: PhoneNumber?
     var precautions: String?
     
@@ -38,9 +38,9 @@ struct Space: Identifiable, Codable, Equatable {
     
     static let placeholder: Space = .init(
         id: UUID(),
-        name: "",
+        name: "상상관 2층",
         address: .init(address1: "서울 노원구 공릉로 232", address2: "서울과학기술대학교 상상관", lat: 37.630969, lon: 127.080339),
-        mainImageURL: nil,
+        mainImageURL: "https://images.unsplash.com/photo-1595847568639-99fbd1b8fd81?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         subImageURLs: nil,
         category: .makerSpace,
         size: 100.0,

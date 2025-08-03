@@ -15,6 +15,7 @@ extension Color {
     static let grey300 = Color(hex: 0xC6C8D1)
     static let grey500 = Color(hex: 0x9EA4B4)
     static let grey700 = Color(hex: 0x767984)
+    static let grey800 = Color(hex: 0x50525C)
     static let grey900 = Color(hex: 0x24252A)
 }
 

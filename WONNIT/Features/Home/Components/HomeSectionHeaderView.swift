@@ -37,6 +37,7 @@ struct HomeSectionHeaderView: View {
                 }
             }
         }
+        .padding(.horizontal, 16)
     }
 }
 
@@ -45,6 +46,6 @@ struct HomeSectionHeaderView: View {
         ForEach(HomeSections.allCases, id: \.self) {section in
             HomeSectionHeaderView(homeSection: section)
         }
-        .padding()
+//        .padding()
     }
 }

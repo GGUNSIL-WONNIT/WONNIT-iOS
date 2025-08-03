@@ -19,7 +19,6 @@ struct HomeView: View {
                         SpaceCategoriesView()
                         RecentlyAddedSpacesView()
                     }
-                    .padding(.horizontal, 16)
                 }
             }
             .environment(\.navigationManager, homeNavigationManager)
