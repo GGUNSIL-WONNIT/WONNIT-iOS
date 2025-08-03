@@ -21,8 +21,8 @@ platform :ios do
       scheme: "WONNIT",
       export_method: "app-store",
       include_bitcode: true,
-      xcargs: "-allowProvisioningUpdates",
       export_options: {
+        signingStyle: "manual",
         provisioningProfiles: {
           "com.dohyeoplim.WONNIT" => "match AppStore com.dohyeoplim.WONNIT"
         }
