@@ -14,9 +14,12 @@ platform :ios do
   lane :beta do
     sh("pod install")
 
+    setup_ci(force: true)
+
     match(
       type: "appstore",
       api_key: get_api_key,
+      readonly: true
     )
 
     build_app(
