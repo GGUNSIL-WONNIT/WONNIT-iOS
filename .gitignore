@@ -14,7 +14,6 @@ DerivedData/
 *.mode1v3
 *.mode2v3
 *.perspectivev3
-*.xcworkspace
 xcuserdata/
 *.xcuserdatad
 *.xcuserstate
@@ -36,15 +35,7 @@ xcuserdata/
 # CocoaPods
 # ========================
 Pods/
-Podfile.lock
-podfile.lock
 .project.xcworkspace/
-
-# ========================
-# Carthage
-# ========================
-Carthage/
-Carthage.build/
 
 # ========================
 # Fastlane
