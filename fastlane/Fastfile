@@ -16,6 +16,11 @@ platform :ios do
 
     match(type: "appstore", api_key: get_api_key, readonly: true)
 
+    unlock_keychain(
+      path: lane_context[SharedValues::MATCH_KEYCHAIN_PATH],
+      password: lane_context[SharedValues::MATCH_KEYCHAIN_PASSWORD]
+    )
+
     build_app(
       workspace: "WONNIT.xcworkspace",
       scheme: "WONNIT",
