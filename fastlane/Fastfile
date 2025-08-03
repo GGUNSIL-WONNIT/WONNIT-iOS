@@ -19,6 +19,8 @@ platform :ios do
       readonly: true
     )
 
+    increment_build_number
+
     build_app(
       workspace: "WONNIT.xcworkspace",
       scheme: "WONNIT",
