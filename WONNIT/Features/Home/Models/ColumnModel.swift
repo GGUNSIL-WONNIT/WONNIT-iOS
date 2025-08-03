@@ -14,11 +14,21 @@ struct Column: Identifiable, Codable, Equatable {
     var url: String?
     var thumbnailUrl: String?
     
+    var resolvedUrl: URL? {
+        guard let url = url else { return nil }
+        return URL(string: url)
+    }
+    
+    var resolvedThumbnailUrl: URL? {
+        guard let url = thumbnailUrl else { return nil }
+        return URL(string: url)
+    }
+    
     static let empty: Column = .init(id: UUID(), title: nil, url: nil, thumbnailUrl: nil)
     
     static let placeholder: Column = .init(
         id: UUID(),
-        title: "노원구, 빈교실을 문화예술 힐링공간으로 '뚝딱'",
+        title: "노원구, 빈교실을 문화예술\n힐링공간으로 '뚝딱'",
         url: "https://www.sijung.co.kr/news/articleView.html?idxno=260248",
         thumbnailUrl: "https://cdn.sijung.co.kr/news/photo/202102/260248_85120_5921.jpg"
     )

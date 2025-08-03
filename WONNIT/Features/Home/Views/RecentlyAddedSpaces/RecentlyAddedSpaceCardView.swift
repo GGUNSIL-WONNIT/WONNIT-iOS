@@ -25,30 +25,15 @@ struct RecentlyAddedSpaceCardView: View {
            let url = URL(string: urlString) {
             KFImage(url)
                 .resizable()
-                .placeholder { placeholderImage }
+                .placeholder {
+                    ImagePlaceholder(width: 158, height: 119)
+                }
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 158, height: 119)
                 .clipped()
         } else {
-            Color.gray.opacity(0.1)
-                .frame(width: 158, height: 119)
-                .overlay(
-                    Image(systemName: "photo")
-                        .font(.system(size: 24))
-                        .foregroundColor(.gray)
-                )
-                .cornerRadius(8)
+            ImagePlaceholder(width: 158, height: 119)
         }
-    }
-    
-    private var placeholderImage: some View {
-        Color.gray.opacity(0.05)
-            .frame(width: 158, height: 119)
-            .overlay(
-                Image(systemName: "photo")
-                    .font(.system(size: 24))
-                    .foregroundColor(.gray.opacity(0.5))
-            )
     }
     
     @ViewBuilder

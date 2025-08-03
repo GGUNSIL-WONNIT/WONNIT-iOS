@@ -9,10 +9,14 @@ import SwiftUI
 
 struct ColumnsView: View {
     var body: some View {
-        HomeSectionHeaderView(homeSection: .columns)
-        
-        CarouselView(itemSpacing: 16, leadingPadding: 16) {
+        VStack(spacing: 16) {
+            HomeSectionHeaderView(homeSection: .columns)
             
+            CarouselView(itemSpacing: 16, leadingPadding: 16) {
+                ForEach(1..<5) { _ in
+                    ColumnCardView(column: .placeholder)
+                }
+            }
         }
     }
 }
