@@ -1,4 +1,4 @@
-git_url("https://github.com/dohyeoplim/apple-certificates")
+git_url("git@github.com:dohyeoplim/apple-certificates.git")
 
 storage_mode("git")
 
