@@ -6,13 +6,27 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct MapView: View {
+    @Bindable var mapViewModel: MapViewModel
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Map(position: $mapViewModel.mapCameraPosition, selection: $mapViewModel.selection) {
+            ForEach(mapViewModel.spaces) { space in
+                Marker(space.name ?? "N/A", coordinate: space.coordinate)
+                    .tint(mapViewModel.selection == space.id ? Color.blue : Color.red)
+                .tag(space.id)
+            }
+        }
+        .onChange(of: mapViewModel.selection) {
+            if mapViewModel.selection != nil {
+                mapViewModel.panToSelectedSpace()
+            }
+        }
     }
 }
 
 #Preview {
-    MapView()
+    ExploreView()
 }
