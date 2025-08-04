@@ -16,43 +16,13 @@ struct SpaceDetailViewWithTransitions: View {
     var body: some View {
         VStack {
             if detent == .medium {
-                peakLayout
+                SpacePreviewCardView(space: space, layout: .horizontal(height: 98), additionalTextTopRight: "500m", namespace: namespace)
             } else {
-                fullLayout
+                SpaceDetailView()
             }
         }
         .padding()
         .frame(maxWidth: .infinity)
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: detent)
     }
-    
-    private var peakLayout: some View {
-        HStack(spacing: 16) {
-            SpaceImageView(space: space, detent: detent)
-                .matchedGeometryEffect(id: "image", in: namespace)
-            
-            SpaceTextView(space: space, detent: detent)
-                .matchedGeometryEffect(id: "text", in: namespace)
-            
-            Spacer()
-        }
-    }
-    
-    private var fullLayout: some View {
-        VStack(spacing: 16) {
-            SpaceImageView(space: space, detent: detent)
-                .matchedGeometryEffect(id: "image", in: namespace)
-            
-            SpaceTextView(space: space, detent: detent)
-                .matchedGeometryEffect(id: "text", in: namespace)
-                .padding(.bottom, 4)
-            
-            Text("상세페이지")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            
-            Spacer()
-        }
-    }
-    
 }

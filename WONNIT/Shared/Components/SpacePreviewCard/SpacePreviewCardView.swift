@@ -29,12 +29,14 @@ struct SpacePreviewCardView: View {
     let layout: SpacePreviewCardLayout
     let pricePosition: SpacePreviewCardPricePosition
     let additionalTextTopRight: String?
+    let namespace: Namespace.ID?
     
-    init(space: Space, layout: SpacePreviewCardLayout, includePrice: Bool = false, pricePosition: SpacePreviewCardPricePosition = .none, additionalTextTopRight: String? = nil) {
+    init(space: Space, layout: SpacePreviewCardLayout, pricePosition: SpacePreviewCardPricePosition = .none, additionalTextTopRight: String? = nil, namespace: Namespace.ID? = nil) {
         self.space = space
         self.layout = layout
         self.pricePosition = pricePosition
         self.additionalTextTopRight = additionalTextTopRight
+        self.namespace = namespace
     }
     
     var body: some View {
@@ -79,6 +81,7 @@ struct SpacePreviewCardView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: width, height: height)
                 .clipped()
+                .matchedGeometry(id: "spaceImage-\(space.id)", in: namespace)
         } else {
             ImagePlaceholder(width: width, height: height)
         }
@@ -104,6 +107,7 @@ struct SpacePreviewCardView: View {
                     .body_01(.grey900)
                     .lineLimit(layout.isHorizontal ? 2 : 1)
                     .truncationMode(.tail)
+                    .matchedGeometry(id: "spaceName-\(space.id)", in: namespace)
             }
 
             if let address = space.address?.address1 {
@@ -113,6 +117,7 @@ struct SpacePreviewCardView: View {
                         .body_06(.grey700)
                         .lineLimit(1)
                         .truncationMode(.tail)
+                        .matchedGeometry(id: "spaceAddress-\(space.id)", in: namespace)
                 }
             }
             
@@ -121,17 +126,20 @@ struct SpacePreviewCardView: View {
             }
 
             if pricePosition != .none, let price = space.amountInfo?.amount {
-                HStack(alignment: .bottom, spacing: 4) {
+                HStack {
                     if pricePosition == .trailing {
                         Spacer()
                     }
-                    Text("\(price)원")
-                        .body_01(.grey900)
-                    if let unit = space.amountInfo?.timeUnit {
-                        Text(unit.displayText)
-                            .caption_03(.grey700)
-                            .padding(.bottom, 2)
+                    HStack(alignment: .bottom, spacing: 4) {
+                        Text("\(price)원")
+                            .body_01(.grey900)
+                        if let unit = space.amountInfo?.timeUnit {
+                            Text(unit.displayText)
+                                .caption_03(.grey700)
+                                .padding(.bottom, 2)
+                        }
                     }
+                    .matchedGeometryEffect(id: "spacePrice-\(space.id)", in: namespace ?? Namespace().wrappedValue)
                     if pricePosition == .leading {
                         Spacer()
                     }
