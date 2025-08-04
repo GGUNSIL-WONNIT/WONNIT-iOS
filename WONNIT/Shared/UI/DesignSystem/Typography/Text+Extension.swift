@@ -62,7 +62,7 @@ extension Text {
     }
     
     func caption_03(_ color: Color? = nil) -> some View {
-        styled("Pretendard-Regular", 10, -0.05, 1.0, color)
+        styled("Pretendard-Regular", 12, -0.05, 1.0, color)
     }
     
     @ViewBuilder
