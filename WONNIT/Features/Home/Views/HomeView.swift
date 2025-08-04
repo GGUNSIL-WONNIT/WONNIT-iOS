@@ -68,6 +68,12 @@ struct HomeView: View {
     private func handleScroll(offset: CGFloat) {
         let delta = offset - lastScrollOffset
         lastScrollOffset = offset
+        
+        if offset > 0 && headerOffset >= 0 {
+               headerOffset = 0
+               return
+           }
+        
         isScrolling = true
         
         let adjustedDelta = abs(delta) > 10 ? delta * 0.3 : delta
