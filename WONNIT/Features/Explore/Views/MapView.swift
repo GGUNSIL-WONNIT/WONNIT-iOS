@@ -14,9 +14,11 @@ struct MapView: View {
     var body: some View {
         Map(position: $mapViewModel.mapCameraPosition, selection: $mapViewModel.selection) {
             ForEach(mapViewModel.spaces) { space in
-                Marker(space.name ?? "N/A", coordinate: space.coordinate)
-                    .tint(mapViewModel.selection == space.id ? Color.blue : Color.red)
-                .tag(space.id)
+                if let coordinate = space.coordinate {
+                    Marker(space.name ?? "N/A", coordinate: coordinate)
+                        .tint(mapViewModel.selection == space.id ? Color.blue : Color.red)
+                        .tag(space.id)
+                }
             }
         }
         .onChange(of: mapViewModel.selection) {

@@ -26,7 +26,7 @@ extension Text {
     }
     
     func head_02(_ color: Color? = nil) -> some View {
-        styled("Pretendard-Regular", 20, -0.10, 8.0, color)
+        styled("Pretendard-Medium", 20, -0.10, 8.0, color)
     }
     
     func body_01(_ color: Color? = nil) -> some View {
@@ -42,7 +42,7 @@ extension Text {
     }
     
     func body_04(_ color: Color? = nil) -> some View {
-        styled("Pretendard-Medium", 16, -0.08, 8.0, color)
+        styled("Pretendard-Regular", 16, -0.08, 8.0, color)
     }
     
     func body_05(_ color: Color? = nil) -> some View {
@@ -62,7 +62,7 @@ extension Text {
     }
     
     func caption_03(_ color: Color? = nil) -> some View {
-        styled("Pretendard-Regular", 10, -0.05, 1.0, color)
+        styled("Pretendard-Regular", 12, -0.05, 1.0, color)
     }
     
     @ViewBuilder

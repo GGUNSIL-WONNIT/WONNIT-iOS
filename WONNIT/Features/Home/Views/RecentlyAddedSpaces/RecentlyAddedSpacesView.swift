@@ -14,9 +14,11 @@ struct RecentlyAddedSpacesView: View {
             
             CarouselView(itemSpacing: 16, leadingPadding: 16) {
                 ForEach (0..<5) { _ in
-                    RecentlyAddedSpaceCardView(space: .placeholder)
+                    SpacePreviewCardView(space: .placeholder, layout: .vertical)
                 }
             }
+            
+//            NotFoundView()
         }
     }
 }
