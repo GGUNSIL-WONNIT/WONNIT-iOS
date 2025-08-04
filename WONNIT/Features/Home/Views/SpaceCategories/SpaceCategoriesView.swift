@@ -32,7 +32,7 @@ struct SpaceCategoriesView: View {
                 Image(category.iconName)
                 
                 Text(category.label)
-                    .caption_02(.grey900)
+                    .body_05(.grey900)
             }
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())

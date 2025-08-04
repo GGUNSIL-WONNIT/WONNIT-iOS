@@ -12,11 +12,12 @@ struct RecentlyAddedSpaceCardView: View {
     let space: Space
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             spaceImage
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             spaceInfo
         }
-        .frame(width: 158)
+        .frame(width: 168)
     }
     
     @ViewBuilder
@@ -26,36 +27,35 @@ struct RecentlyAddedSpaceCardView: View {
             KFImage(url)
                 .resizable()
                 .placeholder {
-                    ImagePlaceholder(width: 158, height: 119)
+                    ImagePlaceholder(width: 168, height: 125)
                 }
                 .aspectRatio(contentMode: .fill)
-                .frame(width: 158, height: 119)
+                .frame(width: 168, height: 125)
                 .clipped()
         } else {
-            ImagePlaceholder(width: 158, height: 119)
+            ImagePlaceholder(width: 168, height: 125)
         }
     }
     
     @ViewBuilder
     private var spaceInfo: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if let name = space.name {
-                Text(name)
-                    .body_04(.grey900)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+            if let category = space.category {
+                ColoredTagView(label: category.label)
             }
             
-            if let category = space.category {
-                Text(category.label)
-                    .body_06(.grey800)
+            if let name = space.name {
+                Text(name)
+                    .body_01(.grey900)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             
             if let address = space.address?.address1 {
                 HStack(spacing: 0) {
                     Image("icon/locationOutline")
                     Text(address)
-                        .caption_03(.grey700)
+                        .body_06(.grey700)
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }

@@ -16,10 +16,10 @@ struct HeroCTAButtonView: View {
         }) {
             HStack(spacing: 2) {
                 Text("내 주변 공간 보러가기")
-                    .caption_02()
+                    .body_06()
                     .foregroundStyle(Color.grey900)
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 10))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color.grey900)
             }
         }
