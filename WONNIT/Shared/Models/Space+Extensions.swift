@@ -74,16 +74,10 @@ extension Space {
 
 extension Space {
     var allImageURLs: [URL] {
-        var urls: [URL] = []
-        
-        if let main = mainImageURL, let url = URL(string: main) {
-            urls.append(url)
+        if resolvedSubImageURLs.isEmpty {
+            return resolvedMainImageURL.map { [$0] } ?? []
+        } else {
+            return (resolvedMainImageURL.map { [$0] } ?? []) + resolvedSubImageURLs
         }
-        
-        if let subs = subImageURLs {
-            urls += subs.compactMap { URL(string: $0) }
-        }
-        
-        return urls
     }
 }
