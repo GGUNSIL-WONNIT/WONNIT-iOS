@@ -10,6 +10,7 @@ import SwiftUI
 extension Color {
     static let primaryPurple = Color(hex: 0x8245F4)
     static let primaryPurple300 = Color(hex: 0xCFC3FF)
+    static let primaryPurple100 = Color(hex: 0xE9E3FF)
     static let grey100 = Color(hex: 0xECEDEF)
     static let grey200 = Color(hex: 0xECEDEF)
     static let grey300 = Color(hex: 0xC6C8D1)

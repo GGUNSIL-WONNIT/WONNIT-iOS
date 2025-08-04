@@ -40,16 +40,15 @@ struct RecentlyAddedSpaceCardView: View {
     @ViewBuilder
     private var spaceInfo: some View {
         VStack(alignment: .leading, spacing: 4) {
+            if let category = space.category {
+                ColoredTagView(label: category.label)
+            }
+            
             if let name = space.name {
                 Text(name)
                     .body_01(.grey900)
                     .lineLimit(1)
                     .truncationMode(.tail)
-            }
-            
-            if let category = space.category {
-                Text(category.label)
-                    .body_04(.grey800)
             }
             
             if let address = space.address?.address1 {
