@@ -1,5 +1,13 @@
 default_platform(:ios)
 
+lane :set_build_number_from_git do
+  build_number = `git rev-list --count HEAD`.strip
+  UI.message("Setting build number to #{build_number}")
+  increment_build_number(
+    build_number: build_number
+  )
+end
+
 platform :ios do
   desc "Deploy to TestFlight Internal"
   lane :beta do
@@ -16,10 +24,9 @@ platform :ios do
 
     match(
       type: "appstore",
-      readonly: true
+      readonly: true,
+      api_key: lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
     )
-
-    increment_build_number
 
     build_app(
       workspace: "WONNIT.xcworkspace",

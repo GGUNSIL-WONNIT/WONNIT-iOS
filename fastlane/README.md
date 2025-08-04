@@ -13,6 +13,17 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
+### set_build_number_from_git
+
+```sh
+[bundle exec] fastlane set_build_number_from_git
+```
+
+
+
+----
+
+
 ## iOS
 
 ### ios beta

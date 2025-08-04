@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -38,6 +40,18 @@ jobs:
           known_hosts: ${{ secrets.CERT_SSH_KNOWN_HOSTS }}
           if_key_exists: replace
 
+      - name: Update build number
+        run: |
+          bundle exec fastlane set_build_number_from_git
+
+      - name: Commit build number changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -u
+          git commit -m "chore: set build number to $(git rev-list --count HEAD) [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:${{ github.ref }}
+
       - name: Run Fastlane
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
@@ -50,3 +64,4 @@ jobs:
           MATCH_READONLY: "true"
         run: |
           bundle exec fastlane beta
+
