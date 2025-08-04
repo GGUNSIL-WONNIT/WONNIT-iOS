@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
@@ -50,7 +53,7 @@ jobs:
           git config user.email "github-actions@github.com"
           git add -u
           git commit -m "chore: set build number to $(git rev-list --count HEAD) [skip ci]" || echo "No changes to commit"
-          git push origin HEAD:${{ github.ref }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
 
       - name: Run Fastlane
         env:
