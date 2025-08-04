@@ -60,15 +60,26 @@ extension Space {
     }
 }
 
+enum SpaceValidationError: String, Error {
+    case emptyName, nameTooLong, invalidSize, invalidHours, missingDays, invalidPhone, tooLongPrecautions
+}
+
 extension Space {
-    var isValid: Bool {
-        (name?.isEmpty == false) &&
-        (name?.count ?? 0) <= 100 &&
-        (size ?? -1) > 0 &&
-        (operationInfo?.dayOfWeeks.count ?? 0) >= 1 &&
-        (operationInfo?.startAt ?? .init()) < (operationInfo?.endAt ?? .init()) &&
-        (phoneNumber?.isValid ?? false) &&
-        (precautions?.count ?? 0) <= 500
+    var validationErrors: [SpaceValidationError] {
+        var errors: [SpaceValidationError] = []
+        if name?.isEmpty ?? true { errors.append(.emptyName) }
+        if (name?.count ?? 0) > 100 { errors.append(.nameTooLong) }
+        if (size ?? -1) <= 0 { errors.append(.invalidSize) }
+        if operationInfo?.dayOfWeeks.isEmpty ?? true { errors.append(.missingDays) }
+        if let op = operationInfo,
+           let start = op.startAt.dateValue,
+           let end = op.endAt.dateValue,
+           start >= end {
+            errors.append(.invalidHours)
+        }
+        if phoneNumber?.isValid != true { errors.append(.invalidPhone) }
+        if (precautions?.count ?? 0) > 500 { errors.append(.tooLongPrecautions) }
+        return errors
     }
 }
 
