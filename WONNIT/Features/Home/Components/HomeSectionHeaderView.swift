@@ -15,13 +15,13 @@ struct HomeSectionHeaderView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(homeSection.rawValue)
-                    .head_01()
-                    .foregroundStyle(Color.grey900)
+                    .head_01(.grey900)
+                    .lineLimit(1)
                 
                 if let subtitle = homeSection.subtitle {
                     Text(subtitle)
-                        .body_06()
-                        .foregroundStyle(Color.grey700)
+                        .body_05(.grey700)
+                        .lineLimit(1)
                 }
             }
             
@@ -32,8 +32,7 @@ struct HomeSectionHeaderView: View {
                     nav.push(subViewHashable)
                 } label: {
                     Text("전체 보기")
-                        .body_06()
-                        .foregroundStyle(Color.grey900)
+                        .body_06(.grey900)
                 }
             }
         }
