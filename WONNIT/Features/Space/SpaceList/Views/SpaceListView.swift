@@ -19,7 +19,7 @@ struct SpaceListView: View {
                     .body_04(.grey700)
                 
                 ForEach(0..<15) { _ in
-                    SpacePreviewCardView(space: .placeholder, layout: .horizontal)
+                    SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 123), pricePosition: .trailing)
                 }
                 
 //                NotFoundView()

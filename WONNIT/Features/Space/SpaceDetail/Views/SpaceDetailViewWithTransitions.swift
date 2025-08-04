@@ -39,13 +39,13 @@ struct SpaceDetailViewWithTransitions: View {
     }
     
     private var fullLayout: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 16) {
+            SpaceImageView(space: space, detent: detent)
+                .matchedGeometryEffect(id: "image", in: namespace)
+            
             SpaceTextView(space: space, detent: detent)
                 .matchedGeometryEffect(id: "text", in: namespace)
                 .padding(.bottom, 4)
-            
-            SpaceImageView(space: space, detent: detent)
-                .matchedGeometryEffect(id: "image", in: namespace)
             
             Text("상세페이지")
                 .font(.caption)

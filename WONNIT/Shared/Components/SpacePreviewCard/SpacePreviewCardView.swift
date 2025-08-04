@@ -10,19 +10,39 @@ import Kingfisher
 
 enum SpacePreviewCardLayout {
     case vertical
-    case horizontal
+    case horizontal(height: CGFloat)
+}
+
+extension SpacePreviewCardLayout {
+    var isHorizontal: Bool {
+        if case .horizontal = self { return true }
+        return false
+    }
+}
+
+enum SpacePreviewCardPricePosition {
+    case leading, trailing, none
 }
 
 struct SpacePreviewCardView: View {
     let space: Space
     let layout: SpacePreviewCardLayout
+    let pricePosition: SpacePreviewCardPricePosition
+    let additionalTextTopRight: String?
+    
+    init(space: Space, layout: SpacePreviewCardLayout, includePrice: Bool = false, pricePosition: SpacePreviewCardPricePosition = .none, additionalTextTopRight: String? = nil) {
+        self.space = space
+        self.layout = layout
+        self.pricePosition = pricePosition
+        self.additionalTextTopRight = additionalTextTopRight
+    }
     
     var body: some View {
         switch layout {
         case .vertical:
             verticalLayout
-        case .horizontal:
-            horizontalLayout
+        case .horizontal(let height):
+            horizontalLayout(for: height)
         }
     }
     
@@ -37,11 +57,11 @@ struct SpacePreviewCardView: View {
     }
     
     // MARK: - Horizontal Layout
-    private var horizontalLayout: some View {
+    private func horizontalLayout(for size: CGFloat) -> some View {
         HStack(spacing: 12) {
-            spaceImage(width: 123, height: 123)
+            spaceImage(width: size, height: size)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
-            spaceInfo(layout: .horizontal)
+            spaceInfo(layout: .horizontal(height: size))
             Spacer()
         }
     }
@@ -68,14 +88,21 @@ struct SpacePreviewCardView: View {
     @ViewBuilder
     private func spaceInfo(layout: SpacePreviewCardLayout) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            if let category = space.category {
-                ColoredTagView(label: category.label)
+            HStack() {
+                if let category = space.category {
+                    ColoredTagView(label: category.label)
+                }
+                Spacer()
+                if let additionalTextTopRight {
+                    Text(additionalTextTopRight)
+                        .body_06(.grey700)
+                }
             }
 
             if let name = space.name {
                 Text(name)
                     .body_01(.grey900)
-                    .lineLimit(1)
+                    .lineLimit(layout.isHorizontal ? 2 : 1)
                     .truncationMode(.tail)
             }
 
@@ -88,11 +115,16 @@ struct SpacePreviewCardView: View {
                         .truncationMode(.tail)
                 }
             }
-
-            if layout == .horizontal, let price = space.amountInfo?.amount {
+            
+            if layout.isHorizontal {
                 Spacer()
+            }
+
+            if pricePosition != .none, let price = space.amountInfo?.amount {
                 HStack(alignment: .bottom, spacing: 4) {
-                    Spacer()
+                    if pricePosition == .trailing {
+                        Spacer()
+                    }
                     Text("\(price)원")
                         .body_01(.grey900)
                     if let unit = space.amountInfo?.timeUnit {
@@ -100,16 +132,33 @@ struct SpacePreviewCardView: View {
                             .caption_03(.grey700)
                             .padding(.bottom, 2)
                     }
+                    if pricePosition == .leading {
+                        Spacer()
+                    }
                 }
             }
         }
-        .frame(height: layout == .horizontal ? 123 : nil)
+        .frame(height: {
+            if case let .horizontal(height) = layout {
+                return height
+            } else {
+                return nil
+            }
+        }())
     }
 }
 
 #Preview {
-    VStack(spacing: 32) {
-        SpacePreviewCardView(space: .placeholder, layout: .vertical)
-        SpacePreviewCardView(space: .placeholder, layout: .horizontal)
+    NavigationStack {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 32) {
+                SpacePreviewCardView(space: .placeholder, layout: .vertical)
+                SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 123), pricePosition: .trailing)
+                SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 98), pricePosition: .none, additionalTextTopRight: "500m")
+                SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 123), pricePosition: .leading, additionalTextTopRight: "500m")
+            }
+            .padding()
+        }
+        .navigationTitle("노동")
     }
 }
