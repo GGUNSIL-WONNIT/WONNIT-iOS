@@ -60,6 +60,8 @@ struct HomeView: View {
                 }
                 
                 headerView()
+                
+                fadeOverlay()
             }
             .ignoresSafeArea(.all, edges: .top)
         }
@@ -118,6 +120,20 @@ struct HomeView: View {
         .opacity(opacity)
         .clipped()
         .animation(isScrolling ? nil : .spring(response: 0.35, dampingFraction: 0.85), value: headerOffset)
+    }
+    
+    @ViewBuilder
+    private func fadeOverlay() -> some View {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color.white.opacity(1),
+                Color.white.opacity(0)
+            ]),
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .frame(height: totalHeaderHeight)
+        .allowsHitTesting(false)
     }
 }
 
