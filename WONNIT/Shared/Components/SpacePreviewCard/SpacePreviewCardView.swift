@@ -94,6 +94,7 @@ struct SpacePreviewCardView: View {
             HStack() {
                 if let category = space.category {
                     ColoredTagView(label: category.label)
+                        .matchedGeometry(id: "spaceCategory-\(space.id)", in: namespace)
                 }
                 Spacer()
                 if let additionalTextTopRight {
@@ -139,7 +140,7 @@ struct SpacePreviewCardView: View {
                                 .padding(.bottom, 2)
                         }
                     }
-                    .matchedGeometryEffect(id: "spacePrice-\(space.id)", in: namespace ?? Namespace().wrappedValue)
+                    .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
                     if pricePosition == .leading {
                         Spacer()
                     }

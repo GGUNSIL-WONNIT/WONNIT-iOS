@@ -13,12 +13,6 @@ struct OperationalInfo: Equatable, Codable {
     var endAt: DateComponents
 }
 
-enum DayOfWeek: Codable, Equatable, CaseIterable { // java.time.DayOfWeek
-    case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-}
-
-extension DateComponents {
-    var dateValue: Date? {
-        Calendar.current.date(from: self)
-    }
+enum DayOfWeek: Int, Codable, Equatable, CaseIterable {
+    case MONDAY = 0, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 }

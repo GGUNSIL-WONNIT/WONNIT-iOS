@@ -15,6 +15,7 @@ extension Space {
         mainImageURL: nil,
         subImageURLs: nil,
         category: nil,
+        spaceTags: nil,
         size: nil,
         operationInfo: nil,
         amountInfo: nil,
@@ -34,6 +35,7 @@ extension Space {
             "https://images.unsplash.com/photo-1686100511314-7d4a52987f2f?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         ],
         category: .makerSpace,
+        spaceTags: ["책상", "의자", "조명"],
         size: 100.0,
         operationInfo: .init(dayOfWeeks: [.MONDAY, .TUESDAY, .WEDNESDAY, .THURSDAY, .FRIDAY], startAt: DateComponents(hour: 5, minute: 0), endAt: DateComponents(hour: 23, minute: 0)),
         amountInfo: .init(timeUnit: .perDay, amount: 1000),

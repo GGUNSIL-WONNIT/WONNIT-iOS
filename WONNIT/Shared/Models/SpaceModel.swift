@@ -17,6 +17,7 @@ struct Space: Identifiable, Codable, Equatable {
     let mainImageURL: String?
     let subImageURLs: [String]?
     let category: SpaceCategory?
+    let spaceTags: [String]?
     let size: Double?
     let operationInfo: OperationalInfo?
     let amountInfo: AmountInfo?
@@ -24,7 +25,7 @@ struct Space: Identifiable, Codable, Equatable {
     let phoneNumber: PhoneNumber?
     let precautions: String?
     
-    var coordinate: CLLocationCoordinate2D {
-        address?.coordinate ?? .defaultCoordinate
+    var coordinate: CLLocationCoordinate2D? {
+        address?.coordinate
     }
 }

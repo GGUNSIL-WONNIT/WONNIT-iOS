@@ -26,7 +26,7 @@ extension Text {
     }
     
     func head_02(_ color: Color? = nil) -> some View {
-        styled("Pretendard-Regular", 20, -0.10, 8.0, color)
+        styled("Pretendard-Medium", 20, -0.10, 8.0, color)
     }
     
     func body_01(_ color: Color? = nil) -> some View {

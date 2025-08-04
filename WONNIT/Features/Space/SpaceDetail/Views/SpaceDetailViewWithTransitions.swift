@@ -18,7 +18,7 @@ struct SpaceDetailViewWithTransitions: View {
             if detent == .medium {
                 SpacePreviewCardView(space: space, layout: .horizontal(height: 98), additionalTextTopRight: "500m", namespace: namespace)
             } else {
-                SpaceDetailView()
+                SpaceDetailView(space: space, namespace: namespace)
             }
         }
         .padding()
