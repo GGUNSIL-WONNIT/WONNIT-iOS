@@ -66,23 +66,40 @@ struct HomeView: View {
             .ignoresSafeArea(.all, edges: .top)
         }
     }
-
+    
     private func handleScroll(offset: CGFloat) {
         let delta = offset - lastScrollOffset
         lastScrollOffset = offset
         
-        if offset > 0 && headerOffset >= 0 {
-               headerOffset = 0
-               return
-           }
-        
-        isScrolling = true
-        
+        let isScrollingUp = delta > 0
+        let isScrollingDown = delta < 0
         let adjustedDelta = abs(delta) > 10 ? delta * 0.3 : delta
+        
+        let isNearTop = offset > -15
+        let isSlowScroll = abs(delta) < 12
+
+        if isNearTop && (isSlowScroll || offset > -5) {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                headerOffset = 0
+            }
+            scrollDebounceTask?.cancel()
+            return
+        }
+        
+        if isScrollingDown && headerOffset <= -totalHeaderHeight {
+            return
+        }
+        
+        if isScrollingUp && headerOffset >= 0 {
+            return
+        }
+        
         headerOffset += adjustedDelta
         headerOffset = max(-totalHeaderHeight, min(0, headerOffset))
         
+        isScrolling = true
         scrollDebounceTask?.cancel()
+        
         let task = DispatchWorkItem { [offset = headerOffset] in
             isScrolling = false
             autoCorrectHeader(from: offset)
@@ -90,7 +107,7 @@ struct HomeView: View {
         scrollDebounceTask = task
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: task)
     }
-
+    
     private func autoCorrectHeader(from offset: CGFloat) {
         let midpoint = -totalHeaderHeight / 2
         let shouldReveal = offset > midpoint
