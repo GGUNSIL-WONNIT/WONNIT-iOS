@@ -61,7 +61,6 @@ struct RecentlyAddedSpaceCardView: View {
                 }
             }
         }
-        .padding(.horizontal, 4)
     }
 }
 

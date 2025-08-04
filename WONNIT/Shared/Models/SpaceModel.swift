@@ -6,20 +6,42 @@
 //
 
 import Foundation
+import SwiftUI
+import MapKit
+import CoreLocation
 
 struct Space: Identifiable, Codable, Equatable {
     let id: UUID
-    var name: String?
-    var address: AddressInfo?
-    var mainImageURL: String?
-    var subImageURLs: [String]?
-    var category: SpaceCategory?
-    var size: Double?
-    var operationInfo: OperationalInfo?
-    var amountInfo: AmountInfo?
-    var spaceModelURL: String?
-    var phoneNumber: PhoneNumber?
-    var precautions: String?
+    let name: String?
+    let address: AddressInfo?
+    let mainImageURL: String?
+    let subImageURLs: [String]?
+    let category: SpaceCategory?
+    let size: Double?
+    let operationInfo: OperationalInfo?
+    let amountInfo: AmountInfo?
+    let spaceModelURL: String?
+    let phoneNumber: PhoneNumber?
+    let precautions: String?
+    
+    var coordinate: CLLocationCoordinate2D {
+        address?.coordinate ?? .defaultCoordinate
+    }
+    
+    var resolvedMainImageURL: URL? {
+        guard let mainImageURL else { return nil }
+        return URL(string: mainImageURL)
+    }
+    
+    var resolvedSubImageURLs: [URL] {
+        (subImageURLs ?? []).compactMap {
+            guard let url = URL(string: $0) else {
+                print("Invalid URL string: \($0)")
+                return nil
+            }
+            return url
+        }
+    }
     
     static let empty: Space = .init(
         id: UUID(),
@@ -98,4 +120,3 @@ struct Space: Identifiable, Codable, Equatable {
 //        //
 //    }
 }
-
