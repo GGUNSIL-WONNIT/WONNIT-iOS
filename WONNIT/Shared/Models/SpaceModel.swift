@@ -28,6 +28,21 @@ struct Space: Identifiable, Codable, Equatable {
         address?.coordinate ?? .defaultCoordinate
     }
     
+    var resolvedMainImageURL: URL? {
+        guard let mainImageURL else { return nil }
+        return URL(string: mainImageURL)
+    }
+    
+    var resolvedSubImageURLs: [URL] {
+        (subImageURLs ?? []).compactMap {
+            guard let url = URL(string: $0) else {
+                print("Invalid URL string: \($0)")
+                return nil
+            }
+            return url
+        }
+    }
+    
     static let empty: Space = .init(
         id: UUID(),
         name: nil,

@@ -38,11 +38,7 @@ struct ExploreView: View {
             selectedDetent: $sheetDetent
         ) {
             if let space = mapViewModel.selectedSpace {
-                if let name = space.name {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text(name)
-                    }
-                }
+                SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
             }
         }
 
