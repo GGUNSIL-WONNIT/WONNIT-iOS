@@ -73,11 +73,12 @@ extension Space {
 }
 
 extension Space {
-    var allImageURLs: [URL] {
+    var allImageURLs: [URL]? {
         if resolvedSubImageURLs.isEmpty {
-            return resolvedMainImageURL.map { [$0] } ?? []
+            return resolvedMainImageURL.map { [$0] }
         } else {
-            return (resolvedMainImageURL.map { [$0] } ?? []) + resolvedSubImageURLs
+            let combined = (resolvedMainImageURL.map { [$0] } ?? []) + resolvedSubImageURLs
+            return combined.isEmpty ? nil : combined
         }
     }
 }
