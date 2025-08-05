@@ -16,6 +16,8 @@ struct TooltipView<Content: View>: View {
     let content: () -> Content
     let backgroundColor: Color
     
+    @State private var bounce = false
+    
     init(
         pointerPlacement: PointerPlacement,
         backgroundColor: Color = .grey900,
@@ -28,6 +30,14 @@ struct TooltipView<Content: View>: View {
     
     var body: some View {
         tooltipLayout
+            .offset(bounceOffset)
+            .animation(
+                .easeInOut(duration: 0.6).repeatForever(autoreverses: true),
+                value: bounce
+            )
+            .onAppear {
+                bounce = true
+            }
     }
 
     @ViewBuilder
@@ -97,6 +107,16 @@ struct TooltipView<Content: View>: View {
         case .bottom: return .degrees(180)
         case .leading: return .degrees(-90)
         case .trailing: return .degrees(90)
+        }
+    }
+    
+    // MARK: - Bounce
+    private var bounceOffset: CGSize {
+        switch pointerPlacement {
+        case .top: return CGSize(width: 0, height: bounce ? 0 : -2)
+        case .bottom: return CGSize(width: 0, height: bounce ? 0 : 2)
+        case .leading: return CGSize(width: bounce ? 0 : 2, height: 0)
+        case .trailing: return CGSize(width: bounce ? 0 : -2, height: 0)
         }
     }
 }
