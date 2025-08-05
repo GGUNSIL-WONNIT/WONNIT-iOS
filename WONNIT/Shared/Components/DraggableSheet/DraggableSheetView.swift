@@ -85,7 +85,6 @@ struct SheetInternalView<Content: View>: View {
     private var sheetScroll: some View {
         ScrollView {
             VStack(spacing: 0) { content() }
-                .padding(.bottom, 400)
                 .background(
                     ScrollViewIntrospect { scrollView in
                         gestureCoordinator.attachToScrollView(scrollView)

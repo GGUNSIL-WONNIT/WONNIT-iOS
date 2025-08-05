@@ -62,6 +62,14 @@ struct HomeView: View {
                             SpaceListView(category: category)
                         case .spaceListByRecent:
                             SpaceListView(category: nil)
+                        case .spaceDetailById(let spaceId):
+                            Text("Space Detail (\(spaceId))")
+                        case .spaceDetailByModel(space: let space):
+                            SpaceDetailView(space: space)
+                                .padding(.horizontal)
+                                .padding(.bottom, -40)
+                                .frame(maxWidth: .infinity)
+                                .withBackButtonToolbar()
                         }
                     }
                     .ignoresSafeArea(.all, edges: .top)

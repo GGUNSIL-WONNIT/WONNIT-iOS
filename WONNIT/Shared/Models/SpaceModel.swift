@@ -10,7 +10,7 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-struct Space: Identifiable, Codable, Equatable {
+struct Space: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
     let name: String?
     let address: AddressInfo?

@@ -34,6 +34,8 @@ struct SpaceDetailView: View {
                 
                 spaceScannerSection
             }
+            .padding(.top)
+            .padding(.bottom, 120)
         }
     }
     

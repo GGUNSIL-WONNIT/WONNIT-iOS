@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AmountInfo: Equatable, Codable {
+struct AmountInfo: Equatable, Codable, Hashable {
     enum TimeUnit: String, Codable {
         case perHour = "PER_HOUR"
         case perDay = "PER_DAY"

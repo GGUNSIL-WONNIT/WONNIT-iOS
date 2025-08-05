@@ -11,37 +11,49 @@ struct SpaceListView: View {
     @Environment(\.dismiss) private var dismiss
     
     let category: SpaceCategory?
+    let spacesToShow: [Space] = Space.mockList
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("검색 결과 15개")
+                Text("검색 결과 \(spacesToShow.count)개")
                     .body_04(.grey700)
                 
-                ForEach(0..<15) { _ in
-                    SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 123), pricePosition: .trailing)
+                if spacesToShow.isEmpty {
+                    NotFoundView()
+                        .padding(.top, 64)
+                        .frame(maxWidth: .infinity)
+                } else {
+                    ForEach(spacesToShow) { space in
+                        NavigationLink(value: Route.spaceDetailByModel(space: space)) {
+                            SpacePreviewCardView(
+                                space: space,
+                                layout: .horizontal(height: 123),
+                                pricePosition: .trailing
+                            )
+                        }
+                    }
                 }
-                
-//                NotFoundView()
-//                    .frame(maxWidth: .infinity)
             }
             .padding(.horizontal)
+            .paddedForTabBar()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .navigationTitle(category?.label ?? "최근 등록 장소")
-            .navigationBarBackButtonHidden()
+            .navigationTitle(category?.label ?? "최근 추가된 공간")
             .navigationBarTitleDisplayMode(.large)
-            .toolbarBackground(Color.white)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
-                    .foregroundStyle(Color.grey900)
-                    .font(.system(size: 18))
-                }
-            }
+            .withBackButtonToolbar()
+//            .navigationDestination(for: UUID.self) { id in
+//                if let space = spacesToShow.first(where: { $0.id == id }) {
+//                    SpaceDetailView(space: space)
+//                        .padding(.horizontal)
+//                        .padding(.bottom, -24)
+//                        .frame(maxWidth: .infinity)
+//                        .withBackButtonToolbar()
+//                } else {
+//                    ZStack {
+//                        NotFoundView(label: "해당 공간을 찾을 수 없습니다.")
+//                    }
+//                }
+//            }
         }
     }
 }

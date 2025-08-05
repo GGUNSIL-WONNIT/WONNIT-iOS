@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PhoneNumber: Equatable, Codable {
+struct PhoneNumber: Equatable, Codable, Hashable {
     var value: String
 
     var isValid: Bool {

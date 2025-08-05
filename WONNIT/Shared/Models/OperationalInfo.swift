@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct OperationalInfo: Equatable, Codable {
+struct OperationalInfo: Equatable, Codable, Hashable {
     var dayOfWeeks: [DayOfWeek]
     var startAt: DateComponents
     var endAt: DateComponents
