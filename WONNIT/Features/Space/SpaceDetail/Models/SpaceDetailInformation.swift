@@ -49,7 +49,7 @@ extension Space {
         }
         
         if let tags = spaceTags {
-            items.append(.init(id: .tags, iconName: "icon/tag", content: tags.map { "#\($0)" }.joined(separator: " ")))
+            items.append(.init(id: .tags, iconName: "icon/tag", content: tags.joined(separator: ", ")))
         }
         
         return items

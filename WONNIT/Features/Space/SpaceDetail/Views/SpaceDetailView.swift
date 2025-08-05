@@ -94,19 +94,40 @@ struct SpaceDetailView: View {
             
             if let coordinate = space.coordinate {
                 SpaceDetailMiniMapView(spaceCoordinates: coordinate)
+                    .padding(.bottom, 4)
             }
             
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(space.detailInformation, id: \.self) { info in
-                    HStack(spacing: 12) {
-                        Image(info.iconName)
-                        Text(info.content)
-                            .body_04(.grey900)
+                    if info.id == .tags {
+                        HStack(spacing: 12) {
+                            Image(info.iconName)
+                            tagView(from: info.content)
+                        }
+                    } else {
+                        HStack(spacing: 12) {
+                            Image(info.iconName)
+                            Text(info.content)
+                                .body_04(.grey900)
+                        }
                     }
                 }
             }
             
             // MARK: - 룸스캔
+        }
+    }
+    
+    @ViewBuilder
+    private func tagView(from raw: String) -> some View {
+        let tags = raw.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        if !tags.isEmpty {
+            HStack(spacing: 4) {
+                ForEach(tags, id: \.self) { tag in
+                    ColoredTagView(label: tag, paddings: .init(top: 4, leading: 5, bottom: 4, trailing: 5))
+                }
+            }
         }
     }
 }
