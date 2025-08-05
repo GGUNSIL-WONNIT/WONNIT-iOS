@@ -66,13 +66,13 @@ struct SpaceDetailView: View {
                 if let category = space.category?.label {
                     Text(category)
                         .body_04(.grey700)
-                        .matchedGeometry(id: "spaceCategory-\(space.id)", in: namespace)
+//                        .matchedGeometry(id: "spaceCategory-\(space.id)", in: namespace)
                 }
                 
                 if let name = space.name {
                     Text(name)
                         .head_01(.grey900)
-                        .matchedGeometry(id: "spaceName-\(space.id)", in: namespace)
+//                        .matchedGeometry(id: "spaceName-\(space.id)", in: namespace)
                 }
             }
             
@@ -86,7 +86,7 @@ struct SpaceDetailView: View {
                             .padding(.bottom, 2)
                     }
                 }
-                .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
+//                .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
             }
         }
     }
