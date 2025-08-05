@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ExploreView: View {
+    @Environment(TabShouldResetManager.self) private var tabShouldResetManager
     @State var mapViewModel: MapViewModel
     @State private var sheetDetent: DraggableSheetDetent = .medium
-    @Binding var shouldReset: Bool
     
     private var isSheetPresented: Binding<Bool> {
         Binding(
@@ -25,9 +25,8 @@ struct ExploreView: View {
         )
     }
     
-    init(mapViewModel: MapViewModel = .init(), shouldReset: Binding<Bool>) {
+    init(mapViewModel: MapViewModel = .init()) {
         self.mapViewModel = mapViewModel
-        self._shouldReset = shouldReset
     }
     
     var body: some View {
@@ -42,7 +41,7 @@ struct ExploreView: View {
                 SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
             }
         }
-        .onChange(of: shouldReset) {
+        .onChange(of: tabShouldResetManager.resetTriggers[.explore]) {
             handleTabReselect()
         }
     }

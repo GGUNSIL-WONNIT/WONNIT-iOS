@@ -10,33 +10,28 @@ import SwiftUI
 @main
 struct WONNITApp: App {
     @State private var tabManager = TabManager()
-    @State private var shouldResetExplore = false
+    @State private var tabShouldResetManager = TabShouldResetManager()
     
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .bottom) {
                 TabView(selection: $tabManager.selectedTab) {
                     HomeView().tag(TabManager.TabBarItems.home)
-                    ExploreView(
-                        shouldReset: $shouldResetExplore
-                    )
-                    .tag(TabManager.TabBarItems.explore)
+                    ExploreView().tag(TabManager.TabBarItems.explore)
                     DashboardView().tag(TabManager.TabBarItems.dashboard)
                 }
                 
                 TabBarView(
                     selectedTab: $tabManager.selectedTab,
                     onTabChanged: { tappedTab in
-                        if tappedTab == tabManager.selectedTab {
-                            if tappedTab == .explore {
-                                shouldResetExplore.toggle()
-                            }
-                        } else {
-                            tabManager.selectedTab = tappedTab
+                        if tabManager.selectedTab == tappedTab {
+                            tabShouldResetManager.triggerReset(for: tappedTab)
                         }
+                        tabManager.selectedTab = tappedTab
                     })
             }
             .environment(tabManager)
+            .environment(tabShouldResetManager)
             .ignoresSafeArea(.all, edges: .bottom)
         }
     }
