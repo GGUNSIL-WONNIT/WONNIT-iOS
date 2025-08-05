@@ -45,6 +45,18 @@ struct SheetInternalView<Content: View>: View {
             sheetScroll
         }
         .padding(.top, topPadding)
+        .background(
+            SheetGestureIntrospect { view in
+                gestureCoordinator.attachToSheetView(view)
+            }
+        )
+        .onAppear {
+            gestureCoordinator.configure(
+                dragOffset: $dragOffset,
+                selectedDetent: $selectedDetent,
+                isPresented: $isPresented
+            )
+        }
         .onDisappear { gestureCoordinator.cleanup() }
     }
 
@@ -71,12 +83,7 @@ struct SheetInternalView<Content: View>: View {
                 .padding(.bottom, 400)
                 .background(
                     ScrollViewIntrospect { scrollView in
-                        gestureCoordinator.configure(
-                            scrollView: scrollView,
-                            dragOffset: $dragOffset,
-                            selectedDetent: $selectedDetent,
-                            isPresented: $isPresented
-                        )
+                        gestureCoordinator.attachToScrollView(scrollView)
                     }
                 )
         }

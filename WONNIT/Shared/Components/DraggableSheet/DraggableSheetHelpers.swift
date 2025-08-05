@@ -11,23 +11,33 @@ import SwiftUI
 struct ScrollViewIntrospect: UIViewRepresentable {
     let onFind: (UIScrollView) -> Void
 
-    func makeUIView(context: Context) -> UIView { UIView() }
-
-    func updateUIView(_ uiView: UIView, context: Context) {
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
         DispatchQueue.main.async {
-            guard let scrollView = findScrollView(in: uiView) else { return }
-            onFind(scrollView)
+            if let scrollView = view.findSuperview(of: UIScrollView.self) {
+                onFind(scrollView)
+            }
         }
+        return view
     }
 
-    private func findScrollView(in view: UIView?) -> UIScrollView? {
-        var current = view
-        while let v = current {
-            if let scroll = v as? UIScrollView { return scroll }
-            current = v.superview
+    func updateUIView(_ uiView: UIView, context: Context) {}
+}
+
+struct SheetGestureIntrospect: UIViewRepresentable {
+    let onViewReady: (UIView) -> Void
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        DispatchQueue.main.async {
+            if let hostView = view.superview {
+                onViewReady(hostView)
+            }
         }
-        return nil
+        return view
     }
+
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }
 
 extension DraggableSheetDetent {
@@ -42,5 +52,18 @@ extension DraggableSheetDetent {
         UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .first?.windows.first { $0.isKeyWindow }?.safeAreaInsets.top ?? 0
+    }
+}
+
+extension UIView {
+    func findSuperview<T: UIView>(of type: T.Type) -> T? {
+        var current: UIView? = self
+        while let view = current {
+            if let match = view as? T {
+                return match
+            }
+            current = view.superview
+        }
+        return nil
     }
 }
