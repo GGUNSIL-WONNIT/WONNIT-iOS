@@ -25,9 +25,14 @@ struct SpaceDetailView: View {
                 spaceInfoFromPreview
                 
                 Divider()
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 24)
                 
                 spaceInfoSection
+                
+                Divider()
+                    .padding(.vertical, 24)
+                
+                spaceScannerSection
             }
         }
     }
@@ -113,8 +118,40 @@ struct SpaceDetailView: View {
                     }
                 }
             }
+        }
+    }
+    
+    private var spaceScannerSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("3D 스캔 정보")
+                .head_01(.grey900)
             
-            // MARK: - 룸스캔
+            ZStack(alignment: .bottomTrailing) {
+                Image("demoScan")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 280)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                
+                HStack(spacing: 2) {
+                    TooltipView(pointerPlacement: .trailing) {
+                        Text("버튼을 눌러 확대해보세요")
+                            .body_05(.grey100)
+                    }
+                    
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "viewfinder")
+                            .foregroundStyle(Color.grey700)
+                            .bold()
+                            .padding(9)
+                            .background(Color.grey200)
+                            .clipShape(Circle())
+                    }
+                }
+                .padding(10)
+            }
         }
     }
     
