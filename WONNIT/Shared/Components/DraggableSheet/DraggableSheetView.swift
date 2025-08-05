@@ -28,6 +28,11 @@ struct SheetView<Content: View>: View {
         .cornerRadius(selectedDetent == .large ? 0 : 20)
         .offset(y: dragOffset)
         .ignoresSafeArea(edges: selectedDetent == .large ? .all : [])
+        .onChange(of: selectedDetent) { _, newDetent in
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                dragOffset = newDetent.offset
+            }
+        }
     }
 }
 

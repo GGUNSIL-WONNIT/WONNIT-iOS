@@ -10,6 +10,7 @@ import SwiftUI
 struct ExploreView: View {
     @State var mapViewModel: MapViewModel
     @State private var sheetDetent: DraggableSheetDetent = .medium
+    @Binding var shouldReset: Bool
     
     private var isSheetPresented: Binding<Bool> {
         Binding(
@@ -23,10 +24,10 @@ struct ExploreView: View {
             }
         )
     }
-
     
-    init(mapViewModel: MapViewModel = .init()) {
+    init(mapViewModel: MapViewModel = .init(), shouldReset: Binding<Bool>) {
         self.mapViewModel = mapViewModel
+        self._shouldReset = shouldReset
     }
     
     var body: some View {
@@ -41,10 +42,26 @@ struct ExploreView: View {
                 SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
             }
         }
-
+        .onChange(of: shouldReset) {
+            handleTabReselect()
+        }
     }
-}
+    
+    private func handleTabReselect() {
+        guard let _ = mapViewModel.selection else { return }
+        
+        switch sheetDetent {
+        case .large:
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                sheetDetent = .medium
+            }
 
-#Preview {
-    ExploreView()
+        case .medium:
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                mapViewModel.selection = nil
+            }
+//        default:
+//            break
+        }
+    }
 }

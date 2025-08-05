@@ -28,7 +28,3 @@ struct MapView: View {
         }
     }
 }
-
-#Preview {
-    ExploreView()
-}
