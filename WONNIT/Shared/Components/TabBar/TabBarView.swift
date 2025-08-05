@@ -11,6 +11,8 @@ struct TabBarView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets
     @Binding var selectedTab: TabManager.TabBarItems
     
+    let onTabChanged: (TabManager.TabBarItems) -> Void
+    
     var body: some View {
         HStack(spacing: 0) {
             ForEach(TabManager.TabBarItems.allCases, id: \.self) { tab in
@@ -30,7 +32,7 @@ struct TabBarView: View {
         
         Button {
             withAnimation {
-                selectedTab = tab
+                onTabChanged(tab)
             }
         } label: {
             VStack(spacing: 4) {

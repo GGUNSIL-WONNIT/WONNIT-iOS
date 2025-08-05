@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct WONNITApp: App {
     @State private var tabManager = TabManager()
+    @State private var tabShouldResetManager = TabShouldResetManager()
     
     var body: some Scene {
         WindowGroup {
@@ -20,9 +21,17 @@ struct WONNITApp: App {
                     DashboardView().tag(TabManager.TabBarItems.dashboard)
                 }
                 
-                TabBarView(selectedTab: $tabManager.selectedTab)
+                TabBarView(
+                    selectedTab: $tabManager.selectedTab,
+                    onTabChanged: { tappedTab in
+                        if tabManager.selectedTab == tappedTab {
+                            tabShouldResetManager.triggerReset(for: tappedTab)
+                        }
+                        tabManager.selectedTab = tappedTab
+                    })
             }
             .environment(tabManager)
+            .environment(tabShouldResetManager)
             .ignoresSafeArea(.all, edges: .bottom)
         }
     }

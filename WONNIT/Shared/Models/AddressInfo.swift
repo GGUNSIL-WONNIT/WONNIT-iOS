@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-struct AddressInfo: Equatable, Codable {
+struct AddressInfo: Equatable, Codable, Hashable {
     var address1: String
     var address2: String?
     var lat: Double?

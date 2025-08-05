@@ -64,7 +64,6 @@ struct SpacePreviewCardView: View {
             spaceImage(width: size, height: size)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             spaceInfo(layout: .horizontal(height: size))
-            Spacer()
         }
     }
     

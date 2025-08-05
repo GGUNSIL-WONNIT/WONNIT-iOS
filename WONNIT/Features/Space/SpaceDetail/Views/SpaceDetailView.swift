@@ -25,10 +25,17 @@ struct SpaceDetailView: View {
                 spaceInfoFromPreview
                 
                 Divider()
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 24)
                 
                 spaceInfoSection
+                
+                Divider()
+                    .padding(.vertical, 24)
+                
+                spaceScannerSection
             }
+            .padding(.top)
+            .padding(.bottom, 120)
         }
     }
     
@@ -61,13 +68,13 @@ struct SpaceDetailView: View {
                 if let category = space.category?.label {
                     Text(category)
                         .body_04(.grey700)
-                        .matchedGeometry(id: "spaceCategory-\(space.id)", in: namespace)
+//                        .matchedGeometry(id: "spaceCategory-\(space.id)", in: namespace)
                 }
                 
                 if let name = space.name {
                     Text(name)
                         .head_01(.grey900)
-                        .matchedGeometry(id: "spaceName-\(space.id)", in: namespace)
+//                        .matchedGeometry(id: "spaceName-\(space.id)", in: namespace)
                 }
             }
             
@@ -81,7 +88,7 @@ struct SpaceDetailView: View {
                             .padding(.bottom, 2)
                     }
                 }
-                .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
+//                .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
             }
         }
     }
@@ -94,19 +101,72 @@ struct SpaceDetailView: View {
             
             if let coordinate = space.coordinate {
                 SpaceDetailMiniMapView(spaceCoordinates: coordinate)
+                    .padding(.bottom, 4)
             }
             
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(space.detailInformation, id: \.self) { info in
-                    HStack(spacing: 12) {
-                        Image(info.iconName)
-                        Text(info.content)
-                            .body_04(.grey900)
+                    if info.id == .tags {
+                        HStack(spacing: 12) {
+                            Image(info.iconName)
+                            tagView(from: info.content)
+                        }
+                    } else {
+                        HStack(spacing: 12) {
+                            Image(info.iconName)
+                            Text(info.content)
+                                .body_04(.grey900)
+                        }
                     }
                 }
             }
+        }
+    }
+    
+    private var spaceScannerSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("3D 스캔 정보")
+                .head_01(.grey900)
             
-            // MARK: - 룸스캔
+            ZStack(alignment: .bottomTrailing) {
+                Image("demoScan")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 280)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                
+                HStack(spacing: 2) {
+                    TooltipView(pointerPlacement: .trailing) {
+                        Text("버튼을 눌러 확대해보세요")
+                            .body_05(.grey100)
+                    }
+                    
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "viewfinder")
+                            .foregroundStyle(Color.grey700)
+                            .bold()
+                            .padding(9)
+                            .background(Color.grey200)
+                            .clipShape(Circle())
+                    }
+                }
+                .padding(10)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func tagView(from raw: String) -> some View {
+        let tags = raw.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        if !tags.isEmpty {
+            HStack(spacing: 4) {
+                ForEach(tags, id: \.self) { tag in
+                    ColoredTagView(label: tag, paddings: .init(top: 4, leading: 5, bottom: 4, trailing: 5))
+                }
+            }
         }
     }
 }

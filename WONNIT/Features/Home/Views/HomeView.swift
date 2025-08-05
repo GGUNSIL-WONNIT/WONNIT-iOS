@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @State var homeNavigationManager = NavigationManager()
+    @Environment(TabShouldResetManager.self) private var tabShouldResetManager
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     
     @State private var headerOffset: CGFloat = 0
@@ -25,45 +26,63 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack(path: $homeNavigationManager.path) {
-            ZStack(alignment: .top) {
-                ScrollView {
-                    GeometryReader { geo in
+            ScrollViewReader { proxy in
+                ZStack(alignment: .top) {
+                    ScrollView {
                         Color.clear
-                            .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .named("scroll")).minY)
+                            .frame(height: 0)
+                            .id("topAnchor")
+                        
+                        GeometryReader { geo in
+                            Color.clear
+                                .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .named("scroll")).minY)
+                        }
+                        .frame(height: 0)
+                        .zIndex(1)
+                        
+                        VStack(spacing: 0) {
+                            Spacer().frame(height: totalHeaderHeight)
+                            HeroView()
+                            VStack(spacing: 48) {
+                                SpaceCategoriesView()
+                                RecentlyAddedSpacesView()
+                                ColumnsView()
+                            }
+                        }
+                        .paddedForTabBar()
                     }
-                    .frame(height: 0)
-                    .zIndex(1)
-                    
-                    VStack(spacing: 0) {
-                        Spacer().frame(height: totalHeaderHeight)
-                        HeroView()
-                        VStack(spacing: 48) {
-                            SpaceCategoriesView()
-                            RecentlyAddedSpacesView()
-                            ColumnsView()
+                    .coordinateSpace(name: "scroll")
+                    .onPreferenceChange(ScrollOffsetKey.self) { offset in
+                        handleScroll(offset: offset)
+                    }
+                    .environment(\.navigationManager, homeNavigationManager)
+                    .navigationDestination(for: Route.self) { route in
+                        switch route {
+                        case .spaceListByCategory(let category):
+                            SpaceListView(category: category)
+                        case .spaceListByRecent:
+                            SpaceListView(category: nil)
+                        case .spaceDetailById(let spaceId):
+                            Text("Space Detail (\(spaceId))")
+                        case .spaceDetailByModel(space: let space):
+                            SpaceDetailView(space: space)
+                                .padding(.horizontal)
+                                .padding(.bottom, -40)
+                                .frame(maxWidth: .infinity)
+                                .withBackButtonToolbar()
                         }
                     }
-                    .paddedForTabBar()
+                    .ignoresSafeArea(.all, edges: .top)
+                    
+                    headerView()
+                    
+                    fadeOverlay()
                 }
-                .coordinateSpace(name: "scroll")
-                .onPreferenceChange(ScrollOffsetKey.self) { offset in
-                    handleScroll(offset: offset)
+                .onChange(of: tabShouldResetManager.resetTriggers[.home]) {
+                    handleTabReselect(proxy: proxy)
                 }
-                .environment(\.navigationManager, homeNavigationManager)
-                .navigationDestination(for: Route.self) { route in
-                    switch route {
-                    case .spaceListByCategory(let category):
-                        SpaceListView(category: category)
-                    case .spaceListByRecent:
-                        SpaceListView(category: nil)
-                    }
-                }
-                
-                headerView()
-                
-                fadeOverlay()
+                .ignoresSafeArea(.all, edges: .top)
             }
-            .ignoresSafeArea(.all, edges: .top)
         }
     }
     
@@ -77,7 +96,7 @@ struct HomeView: View {
         
         let isNearTop = offset > -15
         let isSlowScroll = abs(delta) < 12
-
+        
         if isNearTop && (isSlowScroll || offset > -5) {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
                 headerOffset = 0
@@ -116,7 +135,7 @@ struct HomeView: View {
             headerOffset = shouldReveal ? 0 : -totalHeaderHeight
         }
     }
-
+    
     @ViewBuilder
     private func headerView() -> some View {
         let progress = min(1.0, max(0.0, -headerOffset / totalHeaderHeight))
@@ -151,6 +170,20 @@ struct HomeView: View {
         )
         .frame(height: totalHeaderHeight)
         .allowsHitTesting(false)
+    }
+    
+    private func handleTabReselect(proxy: ScrollViewProxy) {
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+            headerOffset = 0
+        }
+        
+        if !homeNavigationManager.path.isEmpty {
+            homeNavigationManager.path = NavigationPath()
+        } else {
+            withAnimation(.easeOut(duration: 0.2)) {
+                proxy.scrollTo("topAnchor", anchor: .top)
+            }
+        }
     }
 }
 

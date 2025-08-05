@@ -9,10 +9,18 @@ import SwiftUI
 
 struct ColoredTagView: View {
     let label: String
-    let size: CGFloat = 12
-    let foregroundColor: Color = .primaryPurple
-    let backgroundColor: Color = .primaryPurple100
-    let paddings: EdgeInsets = .init(top: 3, leading: 4, bottom: 3, trailing: 4)
+    let size: CGFloat
+    let foregroundColor: Color
+    let backgroundColor: Color
+    let paddings: EdgeInsets
+    
+    init(label: String, size: CGFloat = 12, foregroundColor: Color = .primaryPurple, backgroundColor: Color = .primaryPurple100, paddings: EdgeInsets = .init(top: 3, leading: 4, bottom: 3, trailing: 4)) {
+        self.label = label
+        self.size = size
+        self.foregroundColor = foregroundColor
+        self.backgroundColor = backgroundColor
+        self.paddings = paddings
+    }
     
     var body: some View {
         Text(label)

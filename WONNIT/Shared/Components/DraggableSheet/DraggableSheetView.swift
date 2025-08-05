@@ -28,6 +28,11 @@ struct SheetView<Content: View>: View {
         .cornerRadius(selectedDetent == .large ? 0 : 20)
         .offset(y: dragOffset)
         .ignoresSafeArea(edges: selectedDetent == .large ? .all : [])
+        .onChange(of: selectedDetent) { _, newDetent in
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                dragOffset = newDetent.offset
+            }
+        }
     }
 }
 
@@ -45,6 +50,18 @@ struct SheetInternalView<Content: View>: View {
             sheetScroll
         }
         .padding(.top, topPadding)
+        .background(
+            SheetGestureIntrospect { view in
+                gestureCoordinator.attachToSheetView(view)
+            }
+        )
+        .onAppear {
+            gestureCoordinator.configure(
+                dragOffset: $dragOffset,
+                selectedDetent: $selectedDetent,
+                isPresented: $isPresented
+            )
+        }
         .onDisappear { gestureCoordinator.cleanup() }
     }
 
@@ -68,15 +85,9 @@ struct SheetInternalView<Content: View>: View {
     private var sheetScroll: some View {
         ScrollView {
             VStack(spacing: 0) { content() }
-                .padding(.bottom, 400)
                 .background(
                     ScrollViewIntrospect { scrollView in
-                        gestureCoordinator.configure(
-                            scrollView: scrollView,
-                            dragOffset: $dragOffset,
-                            selectedDetent: $selectedDetent,
-                            isPresented: $isPresented
-                        )
+                        gestureCoordinator.attachToScrollView(scrollView)
                     }
                 )
         }
