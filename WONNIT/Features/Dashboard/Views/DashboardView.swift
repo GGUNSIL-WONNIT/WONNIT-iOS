@@ -80,7 +80,9 @@ struct DashboardView: View {
             }
             .navigationTitle("내가 등록한 공간")
             .navigationBarTitleDisplayMode(.large)
-            .withBackButtonToolbar()
+//            .withBackButtonToolbar()
+            .navigationBarBackButtonHidden()
+            .toolbarBackground(Color.white)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: toggleEditMode) {
