@@ -68,10 +68,14 @@ struct EditSpaceView: View {
     
     @ViewBuilder
     private var topBar: some View {
-        HStack {
-            backButton
-            Spacer()
-            doneButton
+        ZStack {
+            Text("수정하기")
+                .body_03(.grey900)
+            HStack {
+                backButton
+                Spacer()
+                doneButton
+            }
         }
         .padding(16)
         .padding(.top, safeAreaInsets.top)
