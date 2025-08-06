@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-final class FormStateStore: ObservableObject {
+final class FormStateStore {
     var values: [String: FormValue] = [:]
     var focusedID: String?
     

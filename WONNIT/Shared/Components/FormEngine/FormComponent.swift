@@ -20,7 +20,7 @@ enum FormComponent {
     case pricingField(config: FormFieldBaseConfig)
     case scannerView(id: String)
     case description(id: String, text: String)
-    case donePage
+    case tagSelector(config: FormFieldBaseConfig)
 }
 
 enum ImageUploaderVariant {
@@ -67,13 +67,12 @@ extension FormComponent: Identifiable {
              .imageUploader(let config, _),
              .dayPicker(let config),
              .timeRangePicker(let config),
-             .pricingField(let config):
+             .pricingField(let config),
+             .tagSelector(let config):
             return config.id
         case .scannerView(let id),
              .description(let id, _):
             return id
-        case .donePage:
-            return "donePage"
         }
     }
 }

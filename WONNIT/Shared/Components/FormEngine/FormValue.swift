@@ -87,7 +87,7 @@ enum FormValue: Equatable {
         }
     }
     
-    private func decoded<T: Decodable>(as type: T.Type) -> T? {
+    func decoded<T: Decodable>(as type: T.Type) -> T? {
         guard case let .codable(data) = self else { return nil }
         return try? JSONDecoder().decode(T.self, from: data)
     }

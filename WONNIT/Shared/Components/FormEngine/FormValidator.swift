@@ -80,11 +80,10 @@ extension CreateSpaceFormStep {
             case .scannerView, .description:
                 continue
                 
-            case .donePage:
+            case let .tagSelector(config):
                 continue
             }
         }
-        
         return true
     }
 }
