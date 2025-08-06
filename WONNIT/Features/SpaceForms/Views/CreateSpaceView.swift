@@ -99,7 +99,8 @@ struct CreateSpaceView: View {
         
         return GeometryReader { geometry in
             let totalSpacing: CGFloat = CGFloat(steps.count - 1) * 7
-            let capsuleWidth = (geometry.size.width - totalSpacing) / CGFloat(steps.count)
+            let availableWidth = max(geometry.size.width - totalSpacing, 0)
+            let capsuleWidth = steps.count > 0 ? availableWidth / CGFloat(steps.count) : 0
             
             HStack(spacing: 7) {
                 ForEach(0..<steps.count, id: \.self) { index in
