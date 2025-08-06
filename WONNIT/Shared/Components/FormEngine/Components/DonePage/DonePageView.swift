@@ -10,6 +10,12 @@ import SwiftUI
 struct DonePageView: View {
     @State private var showConfetti = false
     
+    let message: String
+    
+    init(message: String = "새로운 공간이\n등록되었습니다!") {
+        self.message = message
+    }
+    
     var body: some View {
         ZStack {
             VStack(spacing: 24) {
@@ -20,7 +26,7 @@ struct DonePageView: View {
                     .symbolEffect(.bounce.down.byLayer, options: .nonRepeating)
                 
                 
-                Text("새로운 공간이\n등록되었습니다!")
+                Text(message)
                     .head_02(.grey900)
                     .multilineTextAlignment(.center)
             }
