@@ -15,7 +15,7 @@ enum FormComponent {
     case select(config: FormFieldBaseConfig, options: [String])
     case imageUploader(config: FormFieldBaseConfig, variant: ImageUploaderVariant)
     case dayPicker(config: FormFieldBaseConfig)
-    case timePicker(config: FormFieldBaseConfig)
+    case timeRangePicker(config: FormFieldBaseConfig)
     case pricingField(config: FormFieldBaseConfig)
     case scannerView(id: String)
     case description(id: String, text: String)
@@ -63,7 +63,7 @@ extension FormComponent: Identifiable {
              .select(let config, _),
              .imageUploader(let config, _),
              .dayPicker(let config),
-             .timePicker(let config),
+             .timeRangePicker(let config),
              .pricingField(let config):
             return config.id
         case .scannerView(let id),

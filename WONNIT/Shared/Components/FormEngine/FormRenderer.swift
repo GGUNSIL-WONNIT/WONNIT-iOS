@@ -53,7 +53,7 @@ struct FormRenderer {
             }
             
             // MARK: - Multi-line Text Field
-        case let .multiLineTextField(config, formatter):
+        case let .multiLineTextField(config, _):
             MultiLineTextFieldComponentView(
                 id: config.id,
                 title: config.title,
@@ -98,13 +98,13 @@ struct FormRenderer {
             )
             
             // MARK: - Time Picker
-        case let .timePicker(config):
-            Text("⚠️ Not Implemented")
-//            TimePickerComponentView(
-//                id: id,
-//                title: title,
-//                selectedTime: store.binding(for: id)
-//            )
+        case let .timeRangePicker(config):
+            TimeRangePickerComponentView(
+                id: config.id,
+                title: config.title,
+                selectedTimeRange: store.binding(for: config.id, default: TimeRange(startAt: .init(hour: 9, minute: 0), endAt: .init(hour: 22, minute: 0))),
+                focusedField: focusedField
+            )
             
             // MARK: - Scanner
         case let .scannerView(id):

@@ -70,7 +70,7 @@ extension CreateSpaceFormStep {
                     id: "openDay",
                     title: "운영요일"
                 )),
-                .timePicker(config: .init(
+                .timeRangePicker(config: .init(
                     id: "openTime",
                     title: "운영시간"
                 )),

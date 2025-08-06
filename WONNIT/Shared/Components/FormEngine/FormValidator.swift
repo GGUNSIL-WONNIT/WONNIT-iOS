@@ -9,6 +9,7 @@ import Foundation
 
 extension CreateSpaceFormStep {
     func isStepValid(store: FormStateStore) -> Bool {
+        return true
         for component in components {
             switch component {
             case let .textField(config),
@@ -40,8 +41,17 @@ extension CreateSpaceFormStep {
                     return false
                 }
                 
-            case let .timePicker(config):
-                continue
+            case let .timeRangePicker(config):
+                if config.isReadOnly { continue }
+                
+                guard
+                    let value = store.values[config.id],
+                    case let .codable(data) = value,
+                    let range = try? JSONDecoder().decode(TimeRange.self, from: data),
+                    range.isValid
+                else {
+                    return false
+                }
                 
             case let .imageUploader(config, _):
                 guard let images = store.values[config.id]?.images,
