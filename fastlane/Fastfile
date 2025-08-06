@@ -35,7 +35,10 @@ platform :ios do
       include_bitcode: true,
     )
 
-    upload_to_testflight(api_key: lane_context[SharedValues::APP_STORE_CONNECT_API_KEY])
+    upload_to_testflight(
+      api_key: lane_context[SharedValues::APP_STORE_CONNECT_API_KEY],
+      skip_waiting_for_build_processing: true
+    )
   end
 end
 
