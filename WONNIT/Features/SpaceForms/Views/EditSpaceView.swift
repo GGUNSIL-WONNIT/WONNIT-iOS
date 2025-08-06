@@ -94,6 +94,7 @@ struct EditSpaceView: View {
             dismiss()
         } label: {
             Image(systemName: "chevron.left")
+                .contentShape(Rectangle())
         }
         .foregroundStyle(Color.grey900)
         .font(.system(size: 18))

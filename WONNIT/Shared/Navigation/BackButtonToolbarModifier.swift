@@ -21,6 +21,7 @@ struct BackButtonToolbarModifier: ViewModifier {
                         dismiss()
                     } label: {
                         Image(systemName: "chevron.left")
+                            .contentShape(Rectangle())
                     }
                     .foregroundStyle(Color.grey900)
                     .font(.system(size: 18))
