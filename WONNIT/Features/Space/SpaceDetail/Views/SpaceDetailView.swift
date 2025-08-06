@@ -12,6 +12,9 @@ struct SpaceDetailView: View {
     let space: Space
     let namespace: Namespace.ID?
     
+    let isEditable = true // debug
+    @State private var showEditSpaceForm = false
+    
     init(space: Space, namespace: Namespace.ID? = nil) {
         self.space = space
         self.namespace = namespace
@@ -36,6 +39,23 @@ struct SpaceDetailView: View {
             }
             .padding(.top)
             .padding(.bottom, 120)
+        }
+        .toolbar {
+            if isEditable {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showEditSpaceForm = true
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .contentShape(Rectangle())
+                    }
+                    .foregroundStyle(Color.grey900)
+                    .font(.system(size: 18))
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $showEditSpaceForm) {
+            EditSpaceView(spaceData: space)
         }
     }
     
@@ -172,7 +192,9 @@ struct SpaceDetailView: View {
 }
 
 #Preview {
-    SpaceDetailView(space: .placeholder)
-        .padding()
-        .frame(maxWidth: .infinity)
+    NavigationView {
+        SpaceDetailView(space: .placeholder)
+            .padding()
+            .frame(maxWidth: .infinity)
+    }
 }

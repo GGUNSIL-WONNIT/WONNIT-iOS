@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DashboardView: View {
     @State var dashboardNavigationManager = NavigationManager()
+    @Environment(TabShouldResetManager.self) private var tabShouldResetManager
+    
     @State private var spacesToShow: [Space] = Space.mockList
     @State private var isEditMode: Bool = false
     @State private var selectedSpaceIDs: Set<UUID> = []
@@ -16,61 +18,70 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack(path: $dashboardNavigationManager.path) {
             ZStack(alignment: .bottomLeading) {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        if isEditMode {
-                            Button {
-                                toggleSelectAll()
-                            } label: {
-                                HStack(spacing: 6) {
-                                    SelectionIndicatorView(isSelected: selectedSpaceIDs.count == spacesToShow.count)
-                                    Text("전체선택(\(selectedSpaceIDs.count)/\(spacesToShow.count))")
-                                        .body_04(.grey700)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                        } else {
-                            Text("등록 공간 \(spacesToShow.count)개")
-                                .body_04(.grey700)
-                        }
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        Color.clear
+                            .frame(height: 0)
+                            .id("topAnchor")
                         
-                        if spacesToShow.isEmpty {
-                            VStack(spacing: 16) {
-                                Image(systemName: "tray")
-                                    .font(.system(size: 44))
-                                    .foregroundColor(.gray.opacity(0.5))
-                                    .transition(.scale)
-                                Text("등록된 공간이 없습니다.")
-                                    .body_04(.grey500)
+                        VStack(alignment: .leading, spacing: 20) {
+                            if isEditMode {
+                                Button {
+                                    toggleSelectAll()
+                                } label: {
+                                    HStack(spacing: 6) {
+                                        SelectionIndicatorView(isSelected: selectedSpaceIDs.count == spacesToShow.count)
+                                        Text("전체선택(\(selectedSpaceIDs.count)/\(spacesToShow.count))")
+                                            .body_04(.grey700)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                Text("등록 공간 \(spacesToShow.count)개")
+                                    .body_04(.grey700)
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 80)
-                        } else {
-                            LazyVStack(spacing: 20) {
-                                ForEach(spacesToShow) { space in
-                                    if isEditMode {
-                                        SelectableCardView(
-                                            space: space,
-                                            isSelected: selectedSpaceIDs.contains(space.id),
-                                            onToggle: { toggleSelection(for: space.id) }
-                                        )
-                                    } else {
-                                        NavigationLink(value: Route.spaceDetailByModel(space: space)) {
-                                            SpacePreviewCardView(
+                            
+                            if spacesToShow.isEmpty {
+                                VStack(spacing: 16) {
+                                    Image(systemName: "tray")
+                                        .font(.system(size: 44))
+                                        .foregroundColor(.gray.opacity(0.5))
+                                        .transition(.scale)
+                                    Text("등록된 공간이 없습니다.")
+                                        .body_04(.grey500)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 80)
+                            } else {
+                                LazyVStack(spacing: 20) {
+                                    ForEach(spacesToShow) { space in
+                                        if isEditMode {
+                                            SelectableCardView(
                                                 space: space,
-                                                layout: .horizontal(height: 123),
-                                                pricePosition: .leading
+                                                isSelected: selectedSpaceIDs.contains(space.id),
+                                                onToggle: { toggleSelection(for: space.id) }
                                             )
+                                        } else {
+                                            NavigationLink(value: Route.spaceDetailByModel(space: space)) {
+                                                SpacePreviewCardView(
+                                                    space: space,
+                                                    layout: .horizontal(height: 123),
+                                                    pricePosition: .leading
+                                                )
+                                            }
+                                            .buttonStyle(.plain)
                                         }
-                                        .buttonStyle(.plain)
                                     }
                                 }
                             }
                         }
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .paddedForTabBar()
                     }
-                    .padding(.horizontal)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .paddedForTabBar()
+                    .onChange(of: tabShouldResetManager.resetTriggers[.dashboard]) {
+                        handleTabReselect(proxy: proxy)
+                    }
                 }
                 
                 if isEditMode && !selectedSpaceIDs.isEmpty {
@@ -80,7 +91,9 @@ struct DashboardView: View {
             }
             .navigationTitle("내가 등록한 공간")
             .navigationBarTitleDisplayMode(.large)
-            .withBackButtonToolbar()
+            //            .withBackButtonToolbar()
+            .navigationBarBackButtonHidden()
+            .toolbarBackground(Color.white)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: toggleEditMode) {
@@ -161,6 +174,16 @@ struct DashboardView: View {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
     }
+    
+    private func handleTabReselect(proxy: ScrollViewProxy) {
+        if !dashboardNavigationManager.path.isEmpty {
+            dashboardNavigationManager.path = NavigationPath()
+        } else {
+            withAnimation(.easeOut(duration: 0.2)) {
+                proxy.scrollTo("topAnchor", anchor: .top)
+            }
+        }
+    }
 }
 
 struct SelectableCardView: View {
@@ -196,8 +219,4 @@ struct SelectionIndicatorView: View {
             .foregroundColor(isSelected ? Color.primaryPurple : .grey200)
             .accessibilityIdentifier(isSelected ? "선택됨" : "선택 안됨")
     }
-}
-
-#Preview {
-    DashboardView()
 }

@@ -34,6 +34,8 @@ struct CreateSpaceView: View {
                 }
                 
                 nextButton
+                    .padding(.vertical, 8)
+                    .background(Color.white)
             } else {
                 DonePageView()
             }
@@ -69,6 +71,7 @@ struct CreateSpaceView: View {
             }
         } label: {
             Image(systemName: "chevron.left")
+                .contentShape(Rectangle())
         }
         .foregroundStyle(Color.grey900)
         .font(.system(size: 18))

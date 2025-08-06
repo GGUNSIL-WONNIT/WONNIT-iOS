@@ -69,9 +69,17 @@ struct SheetInternalView<Content: View>: View {
         VStack {
             if selectedDetent == .large {
                 HStack {
-                    Button(action: collapseToMiddle) {
-                        Image(systemName: "chevron.left.circle.fill")
-                            .font(.title)
+//                    Button(action: collapseToMiddle) {
+//                        Image(systemName: "chevron.left.circle.fill")
+//                            .font(.title)
+//                    }
+                    Button {
+                        collapseToMiddle()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                            .foregroundStyle(Color.grey900)
+                            .contentShape(Rectangle())
                     }
                     Spacer()
                 }.padding(.horizontal)

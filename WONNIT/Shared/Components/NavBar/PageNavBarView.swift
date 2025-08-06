@@ -30,6 +30,7 @@ struct PageNavBarView: View {
                         
                     } label: {
                         Image(systemName: "chevron.left")
+                            .contentShape(Rectangle())
                     }
                     .foregroundStyle(Color.grey900)
                     .font(.title2)
