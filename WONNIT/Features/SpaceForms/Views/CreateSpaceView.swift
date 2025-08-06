@@ -13,6 +13,7 @@ struct CreateSpaceView: View {
     @FocusState private var focusedField: String?
     @State private var formStore = FormStateStore()
     @State private var transitionDirection: Edge = .trailing
+    @State private var showDonePage = false
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -21,17 +22,21 @@ struct CreateSpaceView: View {
                     focusedField = nil
                 }
             
-            VStack(alignment: .leading, spacing: 0) {
-                VStack(spacing: 6) {
-                    topBar
+            if !showDonePage {
+                VStack(alignment: .leading, spacing: 0) {
+                    VStack(spacing: 6) {
+                        topBar
+                        
+                        formStepProgressBar
+                    }
                     
-                    formStepProgressBar
+                    formContent
                 }
                 
-                formContent
+                nextButton
+            } else {
+                DonePageView()
             }
-            
-            nextButton
         }
         .onChange(of: focusedField) {
             print(focusedField ?? "nil")
@@ -196,6 +201,15 @@ struct CreateSpaceView: View {
     
     private func submitForm() {
         print(formStore.values)
+        
+        withAnimation {
+            showDonePage = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            dismiss()
+        }
+        
     }
 }
 

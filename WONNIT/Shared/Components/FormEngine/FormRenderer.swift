@@ -125,6 +125,9 @@ struct FormRenderer {
         case let .description(id, text):
             Text("⚠️ Not Implemented")
 //            DescriptionComponentView(id: id, text: text)
+            
+        case .donePage:
+            EmptyView()
         }
     }
 }

@@ -79,6 +79,9 @@ extension CreateSpaceFormStep {
                 
             case .scannerView, .description:
                 continue
+                
+            case .donePage:
+                continue
             }
         }
         
