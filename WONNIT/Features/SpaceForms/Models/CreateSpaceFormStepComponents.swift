@@ -53,7 +53,7 @@ extension CreateSpaceFormStep {
                     ),
                     options: SpaceCategory.allCases.map(\.label)
                 ),
-                .numberField(
+                .doubleField(
                     config: .init(
                         id: "area",
                         title: "공간 크기",

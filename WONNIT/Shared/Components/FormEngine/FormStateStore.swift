@@ -8,39 +8,6 @@
 import Foundation
 import SwiftUI
 
-enum FormValue: Equatable {
-    case string(String)
-    case double(Double)
-    case images([UIImage])
-    case codable(Data)
-    
-    var string: String? {
-        if case let .string(value) = self { return value }
-        return nil
-    }
-    
-    var double: Double? {
-        switch self {
-        case let .double(value):
-            return value
-        case let .string(value):
-            return Double(value)
-        default:
-            return nil
-        }
-    }
-    
-    var images: [UIImage]? {
-        if case let .images(value) = self { return value }
-        return nil
-    }
-    
-    var codableData: Data? {
-        if case let .codable(data) = self { return data }
-        return nil
-    }
-}
-
 @Observable
 final class FormStateStore: ObservableObject {
     var values: [String: FormValue] = [:]

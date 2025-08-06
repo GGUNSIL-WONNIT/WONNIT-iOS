@@ -11,7 +11,8 @@ import SwiftUI
 enum FormComponent {
     case textField(config: FormFieldBaseConfig)
     case multiLineTextField(config: FormFieldBaseConfig, characterLimit: Int? = nil)
-    case numberField(config: FormFieldBaseConfig)
+    case doubleField(config: FormFieldBaseConfig)
+    case integerField(config: FormFieldBaseConfig)
     case select(config: FormFieldBaseConfig, options: [String])
     case imageUploader(config: FormFieldBaseConfig, variant: ImageUploaderVariant)
     case dayPicker(config: FormFieldBaseConfig)
@@ -59,7 +60,8 @@ extension FormComponent: Identifiable {
         switch self {
         case .textField(let config),
              .multiLineTextField(let config, _),
-             .numberField(let config),
+             .doubleField(let config),
+             .integerField(let config),
              .select(let config, _),
              .imageUploader(let config, _),
              .dayPicker(let config),

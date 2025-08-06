@@ -21,28 +21,36 @@ struct TimeRangePickerComponentView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if let title {
-                Text(title)
-                    .body_02(.grey900)
-            }
+        ZStack {
+            TextField("", text: .constant(""))
+                .focused($focusedField, equals: id)
+                .opacity(0)
+                .frame(width: 0, height: 0)
+                .disabled(true)
             
-            HStack(spacing: 4) {
-                tappableTimeField(label: "시작", selection: $selectedTimeRange.startAt, field: .startAt)
-                Text("-")
-                    .body_02(.grey900)
-                tappableTimeField(label: "종료", selection: $selectedTimeRange.endAt, field: .endAt)
+            VStack(alignment: .leading, spacing: 12) {
+                if let title {
+                    Text(title)
+                        .body_02(.grey900)
+                }
+                
+                HStack(spacing: 4) {
+                    tappableTimeField(label: "시작", selection: $selectedTimeRange.startAt, field: .startAt)
+                    Text("-")
+                        .body_02(.grey900)
+                    tappableTimeField(label: "종료", selection: $selectedTimeRange.endAt, field: .endAt)
+                }
+                
+                if let expandedField = expanded {
+                    wheel(selection: binding(for: expandedField))
+                        .transition(.opacity)
+                        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: expanded)
+                }
             }
-            
-            if let expandedField = expanded {
-                wheel(selection: binding(for: expandedField))
-                    .transition(.opacity)
-                    .animation(.spring(response: 0.35, dampingFraction: 0.85), value: expanded)
-            }
-        }
-        .onChange(of: focusedField) { _, newValue in
-            if newValue != id {
-                expanded = nil
+            .onChange(of: focusedField) { _, newValue in
+                if newValue != id {
+                    expanded = nil
+                }
             }
         }
     }
@@ -51,7 +59,6 @@ struct TimeRangePickerComponentView: View {
     private func tappableTimeField(label: String, selection: Binding<DateComponents>, field: ExpandedField) -> some View {
         Button {
             withAnimation {
-                focusedField = id
                 expanded = (expanded == field) ? nil : field
             }
         } label: {
@@ -67,6 +74,7 @@ struct TimeRangePickerComponentView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(Color.grey100)
             )
+            .contentShape(Rectangle())
         }
     }
     
@@ -77,6 +85,9 @@ struct TimeRangePickerComponentView: View {
             .labelsHidden()
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
+            .onTapGesture {
+                focusedField = id
+            }
     }
     
     private func binding(for field: ExpandedField) -> Binding<Date> {

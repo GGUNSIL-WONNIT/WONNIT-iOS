@@ -33,6 +33,9 @@ struct CreateSpaceView: View {
             
             nextButton
         }
+        .onChange(of: focusedField) {
+            print(focusedField ?? "nil")
+        }
     }
     
     @ViewBuilder

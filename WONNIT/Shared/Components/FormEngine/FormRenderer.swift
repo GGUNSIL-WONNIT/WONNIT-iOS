@@ -27,16 +27,10 @@ struct FormRenderer {
                 text: store.binding(for: config.id),
                 focusedField: focusedField
             )
-            .onChange(of: focusedField.wrappedValue) { _, new in
-                store.focusedID = new
-            }
-            .onAppear {
-                focusedField.wrappedValue = store.focusedID
-            }
             
             // MARK: - Number Field
-        case let .numberField(config):
-            NumberFieldComponentView(
+        case let .doubleField(config):
+            DoubleFieldComponentView(
                 id: config.id,
                 title: config.title,
                 placeholder: config.placeholder,
@@ -48,9 +42,20 @@ struct FormRenderer {
                 value: store.binding(for: config.id, default: 0.0),
                 focusedField: focusedField
             )
-            .onChange(of: focusedField.wrappedValue) { _, new in
-                store.focusedID = new
-            }
+            
+        case let .integerField(config):
+            IntegerFieldComponentView(
+                id: config.id,
+                title: config.title,
+                placeholder: config.placeholder,
+                suffix: config.suffix,
+//                formatter: formatter,
+                isReadOnly: config.isReadOnly,
+                submitLabel: config.submitLabel,
+                keyboardType: config.keyboardType,
+                value: store.binding(for: config.id, default: 0),
+                focusedField: focusedField
+            )
             
             // MARK: - Multi-line Text Field
         case let .multiLineTextField(config, _):
@@ -62,9 +67,6 @@ struct FormRenderer {
                 text: store.binding(for: config.id),
                 focusedField: focusedField,
             )
-            .onChange(of: focusedField.wrappedValue) { _, new in
-                store.focusedID = new
-            }
             
             // MARK: - Select
         case let .select(config, options):
@@ -106,6 +108,14 @@ struct FormRenderer {
                 focusedField: focusedField
             )
             
+        case let .pricingField(config):
+            PricingFieldComponentView(
+                id: config.id,
+                title: config.title,
+                pricingValue: store.binding(for: config.id, default: AmountInfo.init(timeUnit: .perDay, amount: 10000)),
+                focusedField: focusedField
+            )
+            
             // MARK: - Scanner
         case let .scannerView(id):
             Text("⚠️ Not Implemented")
@@ -115,15 +125,6 @@ struct FormRenderer {
         case let .description(id, text):
             Text("⚠️ Not Implemented")
 //            DescriptionComponentView(id: id, text: text)
-            
-            // MARK: - Pricing Field (custom component)
-        case let .pricingField(config):
-            Text("⚠️ Not Implemented")
-//            PricingFieldComponentView(
-//                id: id,
-//                title: title,
-//                value: store.binding(for: id)
-//            )
         }
     }
 }

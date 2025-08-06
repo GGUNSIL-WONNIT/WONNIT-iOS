@@ -1,5 +1,5 @@
 //
-//  NumberFieldComponentView.swift
+//  DoubleFieldComponentView.swift
 //  WONNIT
 //
 //  Created by dohyeoplim on 8/6/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NumberFieldComponentView: View {
+struct DoubleFieldComponentView: View {
     let id: String
     let title: String?
     let placeholder: String?
@@ -92,6 +92,6 @@ struct NumberFieldComponentView: View {
     @Previewable @State var value = 0.0
     @FocusState var focusedField: String?
     
-    NumberFieldComponentView(id: "areaSize", title: "공간 크기", placeholder: "공간 크기를 입력해주세요 / 예) 12.25", suffix: "m²", isReadOnly: false, submitLabel: .done, keyboardType: .decimalPad, value: $value, focusedField: $focusedField)
+    DoubleFieldComponentView(id: "areaSize", title: "공간 크기", placeholder: "공간 크기를 입력해주세요 / 예) 12.25", suffix: "m²", isReadOnly: false, submitLabel: .done, keyboardType: .decimalPad, value: $value, focusedField: $focusedField)
         .padding()
 }

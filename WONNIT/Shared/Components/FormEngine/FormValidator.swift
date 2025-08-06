@@ -9,7 +9,6 @@ import Foundation
 
 extension CreateSpaceFormStep {
     func isStepValid(store: FormStateStore) -> Bool {
-        return true
         for component in components {
             switch component {
             case let .textField(config),
@@ -23,12 +22,31 @@ extension CreateSpaceFormStep {
                     return false
                 }
                 
-            case let .numberField(config),
-                let .pricingField(config):
-                
+            case let .doubleField(config):
                 if config.isReadOnly { continue }
                 
                 guard let number = store.values[config.id]?.double, number > 0 else {
+                    return false
+                }
+                
+            case let .integerField(config):
+                if config.isReadOnly { continue }
+                
+                guard let intValue = store.values[config.id]?.int, intValue > 0 else {
+                    return false
+                }
+                
+            case let .pricingField(config):
+                if config.isReadOnly { continue }
+                
+                guard let amountInfo = store.values[config.id]?.amountInfo else {
+                    return false
+                }
+                
+                let isValidAmount = amountInfo.amount > 0
+                let isValidTimeUnit = [.perHour, .perDay].contains(amountInfo.timeUnit)
+                
+                guard isValidAmount && isValidTimeUnit else {
                     return false
                 }
                 
