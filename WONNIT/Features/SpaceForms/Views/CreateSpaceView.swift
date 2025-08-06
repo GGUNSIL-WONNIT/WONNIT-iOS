@@ -14,16 +14,21 @@ struct CreateSpaceView: View {
     @State private var formStore = FormStateStore()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(spacing: 6) {
-                topBar
+        ZStack(alignment: .bottom) {
+            Color.clear
+                .onTapGesture {
+                    focusedField = nil
+                }
+            
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 6) {
+                    topBar
+                    
+                    formStepProgressBar
+                }
                 
-                formStepProgressBar
+                formContent
             }
-            
-            formContent
-            
-            Spacer()
             
             nextButton
         }
@@ -35,6 +40,13 @@ struct CreateSpaceView: View {
             backButton
             Spacer()
         }
+        .background(
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    focusedField = nil
+                }
+        )
         .padding(16)
     }
     
@@ -111,23 +123,36 @@ struct CreateSpaceView: View {
     }
     
     private var formContent: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                formStepTitle
-                
-                VStack(spacing: 32) {
-                    ForEach(currentStep.components, id: \.id) { component in
-                        FormRenderer.render(
-                            component,
-                            store: formStore,
-                            focusedField: $focusedField
-                        )
+        GeometryReader { geometry in
+            ScrollView {
+                ZStack {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            focusedField = nil
+                        }
+                    
+                    VStack(spacing: 24) {
+                        formStepTitle
+                        
+                        VStack(spacing: 32) {
+                            ForEach(currentStep.components, id: \.id) { component in
+                                FormRenderer.render(
+                                    component,
+                                    store: formStore,
+                                    focusedField: $focusedField
+                                )
+                            }
+                        }
+                        
+                        Spacer()
+                            .frame(minHeight: geometry.size.height - 600)
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 36)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 36)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
     
