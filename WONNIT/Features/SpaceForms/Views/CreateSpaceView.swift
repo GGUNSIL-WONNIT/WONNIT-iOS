@@ -12,6 +12,7 @@ struct CreateSpaceView: View {
     @State private var currentStep: CreateSpaceFormStep = .addressAndName
     @FocusState private var focusedField: String?
     @State private var formStore = FormStateStore()
+    @State private var transitionDirection: Edge = .trailing
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -54,9 +55,7 @@ struct CreateSpaceView: View {
     private var backButton: some View {
         Button {
             if let prev = currentStep.previous {
-                withAnimation {
-                    currentStep = prev
-                }
+                goToStep(prev)
             } else {
                 dismiss()
             }
@@ -74,7 +73,7 @@ struct CreateSpaceView: View {
         return Button {
             if isValid {
                 if let next = currentStep.next {
-                    currentStep = next
+                    goToStep(next)
                 } else {
                     submitForm()
                 }
@@ -104,10 +103,17 @@ struct CreateSpaceView: View {
             
             HStack(spacing: 7) {
                 ForEach(0..<steps.count, id: \.self) { index in
-                    Capsule()
-                        .fill(index <= currentIndex ? Color.primaryPurple : Color.grey200)
-                        .frame(width: capsuleWidth, height: 6)
-                        .animation(.easeInOut(duration: 0.3), value: currentIndex)
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.grey200)
+                            .frame(width: capsuleWidth, height: 6)
+                        
+                        Capsule()
+                            .fill(Color.primaryPurple)
+                            .frame(width: index <= currentIndex ? capsuleWidth : 0, height: 6)
+                            .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
+                    }
+                    .clipped()
                 }
             }
         }
@@ -115,6 +121,7 @@ struct CreateSpaceView: View {
         .padding(.horizontal, 16)
     }
     
+    // MARK: - Main form content
     private var formStepTitle: some View {
         HStack {
             Text(currentStep.sectionTitle)
@@ -133,27 +140,54 @@ struct CreateSpaceView: View {
                             focusedField = nil
                         }
                     
-                    VStack(spacing: 24) {
-                        formStepTitle
-                        
-                        VStack(spacing: 32) {
-                            ForEach(currentStep.components, id: \.id) { component in
-                                FormRenderer.render(
-                                    component,
-                                    store: formStore,
-                                    focusedField: $focusedField
-                                )
+                    ZStack {
+                        ForEach(CreateSpaceFormStep.allCases, id: \.self) { step in
+                            if step == currentStep {
+                                VStack(spacing: 24) {
+                                    HStack {
+                                        Text(step.sectionTitle)
+                                            .title_01(.grey900)
+                                        Spacer()
+                                    }
+                                    
+                                    VStack(spacing: 32) {
+                                        ForEach(step.components, id: \.id) { component in
+                                            FormRenderer.render(
+                                                component,
+                                                store: formStore,
+                                                focusedField: $focusedField
+                                            )
+                                        }
+                                    }
+                                    
+                                    Spacer()
+                                        .frame(minHeight: geometry.size.height - 600)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 36)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: transitionDirection).combined(with: .opacity),
+                                    removal: .move(edge: transitionDirection == .trailing ? .leading : .trailing).combined(with: .opacity)
+                                ))
                             }
                         }
-                        
-                        Spacer()
-                            .frame(minHeight: geometry.size.height - 600)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 36)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
                 }
             }
+        }
+    }
+    
+    // MARK: - Helper functions
+    private func goToStep(_ step: CreateSpaceFormStep) {
+        let currentIndex = CreateSpaceFormStep.allCases.firstIndex(of: currentStep) ?? 0
+        let nextIndex = CreateSpaceFormStep.allCases.firstIndex(of: step) ?? 0
+        
+        transitionDirection = nextIndex > currentIndex ? .trailing : .leading
+        
+        withAnimation(.easeInOut(duration: 0.35)) {
+            currentStep = step
         }
     }
     
