@@ -93,8 +93,8 @@ struct EditSpaceView: View {
         Button {
             dismiss()
         } label: {
-            Image(systemName: "chevron.left")
-                .contentShape(Rectangle())
+            Text("취소")
+                .body_04(.grey900)
         }
         .foregroundStyle(Color.grey900)
         .font(.system(size: 18))
