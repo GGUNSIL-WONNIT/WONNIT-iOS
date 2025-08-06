@@ -34,6 +34,8 @@ struct CreateSpaceView: View {
                 }
                 
                 nextButton
+                    .padding(.vertical, 8)
+                    .background(Color.white)
             } else {
                 DonePageView()
             }
