@@ -56,7 +56,7 @@ struct CreateSpaceView: View {
     }
     
     private var nextButton: some View {
-        let isValid = formStore.isStepValid(currentStep)
+        let isValid = currentStep.isStepValid(store: formStore)
         let isOptional = currentStep.isOptional
         
         return Button {
@@ -68,7 +68,7 @@ struct CreateSpaceView: View {
                 }
             }
         } label: {
-            Text(currentStep.next == nil ? "제출하기" : "다음")
+            Text(currentStep.next == nil ? "등록하기" : (isOptional ? "건너뛰기" : "다음으로"))
                 .body_01(isValid ? .white : .grey300)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)

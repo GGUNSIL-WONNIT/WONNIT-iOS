@@ -8,47 +8,62 @@
 import Foundation
 import SwiftUI
 
+enum FormValue: Equatable {
+    case string(String)
+    case images([UIImage])
+    
+    var string: String? {
+        if case let .string(value) = self { return value }
+        return nil
+    }
+    
+    var images: [UIImage]? {
+        if case let .images(value) = self { return value }
+        return nil
+    }
+}
+
 @Observable
 final class FormStateStore: ObservableObject {
-    var values: [String: String] = [:]
+    var values: [String: FormValue] = [:]
     var focusedID: String?
     
-    func binding(for id: String) -> Binding<String> {
+    func binding(for id: String, default defaultValue: String = "") -> Binding<String> {
         Binding<String>(
-            get: { self.values[id] ?? "" },
-            set: { self.values[id] = $0 }
-        )
-    }
-    
-    func binding(for id: String) -> Binding<Double> {
-        Binding<Double>(
-            get: { Double(self.values[id] ?? "") ?? 0.0 },
-            set: { self.values[id] = String($0) }
-        )
-    }
-    
-    func binding(for id: String) -> Binding<Int> {
-        Binding<Int>(
-            get: { Int(self.values[id] ?? "") ?? 0 },
-            set: { self.values[id] = String($0) }
-        )
-    }
-    
-    func binding(for id: String) -> Binding<Bool> {
-        Binding<Bool>(
-            get: { Bool(self.values[id] ?? "") ?? false },
-            set: { self.values[id] = String($0) }
-        )
-    }
-    
-    func isStepValid(_ step: CreateSpaceFormStep) -> Bool {
-        for component in step.components {
-            let id = component.id
-            let value = values[id]?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            if value.isEmpty {
-                return false
+            get: {
+                (self.values[id]?.string) ?? defaultValue
+            },
+            set: { newValue in
+                self.values[id] = .string(newValue)
             }
-        }
-        return true
+        )
+    }
+    
+    func binding<T: LosslessStringConvertible>(for id: String, default defaultValue: T) -> Binding<T> {
+        Binding<T>(
+            get: {
+                if let str = self.values[id]?.string, let value = T(str) {
+                    return value
+                }
+                return defaultValue
+            },
+            set: { newValue in
+                self.values[id] = .string(String(newValue))
+            }
+        )
+    }
+    
+    func imageBinding(for id: String) -> Binding<[UIImage]> {
+        Binding<[UIImage]>(
+            get: {
+                if case let .images(images) = self.values[id] {
+                    return images
+                }
+                return []
+            },
+            set: { newImages in
+                self.values[id] = .images(newImages)
+            }
+        )
     }
 }

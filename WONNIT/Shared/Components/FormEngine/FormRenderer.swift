@@ -45,7 +45,7 @@ struct FormRenderer {
                 isReadOnly: config.isReadOnly,
                 submitLabel: config.submitLabel,
                 keyboardType: config.keyboardType,
-                value: store.binding(for: config.id),
+                value: store.binding(for: config.id, default: 0.0),
                 focusedField: focusedField
             )
             .onChange(of: focusedField.wrappedValue) { _, new in
@@ -80,13 +80,13 @@ struct FormRenderer {
             
             // MARK: - Image Uploader
         case let .imageUploader(config, variant):
-            Text("⚠️ Not Implemented")
-//            ImageUploaderComponentView(
-//                id: id,
-//                title: title,
-//                variant: variant,
-//                images: store.binding(for: id)
-//            )
+            ImageUploaderComponentView(
+                id: config.id,
+                title: config.title,
+                variant: variant,
+                images: store.imageBinding(for: config.id),
+                focusedField: focusedField
+            )
             
             // MARK: - Day Picker
         case let .dayPicker(config):
