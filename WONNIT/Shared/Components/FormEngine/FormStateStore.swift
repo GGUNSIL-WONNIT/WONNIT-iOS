@@ -10,15 +10,33 @@ import SwiftUI
 
 enum FormValue: Equatable {
     case string(String)
+    case double(Double)
     case images([UIImage])
+    case codable(Data)
     
     var string: String? {
         if case let .string(value) = self { return value }
         return nil
     }
     
+    var double: Double? {
+        switch self {
+        case let .double(value):
+            return value
+        case let .string(value):
+            return Double(value)
+        default:
+            return nil
+        }
+    }
+    
     var images: [UIImage]? {
         if case let .images(value) = self { return value }
+        return nil
+    }
+    
+    var codableData: Data? {
+        if case let .codable(data) = self { return data }
         return nil
     }
 }
@@ -39,16 +57,35 @@ final class FormStateStore: ObservableObject {
         )
     }
     
-    func binding<T: LosslessStringConvertible>(for id: String, default defaultValue: T) -> Binding<T> {
-        Binding<T>(
+    func binding(for id: String, default defaultValue: Double) -> Binding<Double> {
+        Binding<Double>(
             get: {
-                if let str = self.values[id]?.string, let value = T(str) {
+                if case let .double(value) = self.values[id] {
                     return value
+                }
+                if case let .string(str) = self.values[id], let val = Double(str) {
+                    return val
                 }
                 return defaultValue
             },
             set: { newValue in
-                self.values[id] = .string(String(newValue))
+                self.values[id] = .double(newValue)
+            }
+        )
+    }
+    
+    func binding<T: Codable & Hashable>(for id: String, default defaultValue: T) -> Binding<T> {
+        Binding<T>(
+            get: {
+                if let value = self.values[id], case let .codable(data) = value {
+                    return (try? JSONDecoder().decode(T.self, from: data)) ?? defaultValue
+                }
+                return defaultValue
+            },
+            set: { newValue in
+                if let encoded = try? JSONEncoder().encode(newValue) {
+                    self.values[id] = .codable(encoded)
+                }
             }
         )
     }

@@ -35,13 +35,13 @@ struct FormRenderer {
             }
             
             // MARK: - Number Field
-        case let .numberField(config, formatter):
+        case let .numberField(config):
             NumberFieldComponentView(
                 id: config.id,
                 title: config.title,
                 placeholder: config.placeholder,
                 suffix: config.suffix,
-                formatter: formatter,
+//                formatter: formatter,
                 isReadOnly: config.isReadOnly,
                 submitLabel: config.submitLabel,
                 keyboardType: config.keyboardType,
@@ -90,12 +90,12 @@ struct FormRenderer {
             
             // MARK: - Day Picker
         case let .dayPicker(config):
-            Text("⚠️ Not Implemented")
-//            DayPickerComponentView(
-//                id: id,
-//                title: title,
-//                selectedDate: store.binding(for: id)
-//            )
+            DayPickerComponentView(
+                id: config.id,
+                title: config.title,
+                selectedDays: store.binding(for: config.id, default: []),
+                focusedField: focusedField
+            )
             
             // MARK: - Time Picker
         case let .timePicker(config):

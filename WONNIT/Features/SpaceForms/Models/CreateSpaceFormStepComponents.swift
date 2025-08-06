@@ -61,7 +61,6 @@ extension CreateSpaceFormStep {
                         suffix: "m²",
                         keyboardType: .decimalPad
                     ),
-                    formatter: NumberFormatter.decimalFormatter
                 )
             ]
 

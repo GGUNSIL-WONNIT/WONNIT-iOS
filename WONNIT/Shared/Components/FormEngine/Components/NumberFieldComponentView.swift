@@ -12,13 +12,23 @@ struct NumberFieldComponentView: View {
     let title: String?
     let placeholder: String?
     let suffix: String?
-    let formatter: Formatter
+//    let formatter: Formatter
     let isReadOnly: Bool
     let submitLabel: SubmitLabel
     let keyboardType: UIKeyboardType
     
     @Binding var value: Double
     @FocusState.Binding var focusedField: String?
+    
+    @State private var text: String = ""
+    
+    var formatter = {
+        let nf = NumberFormatter()
+        nf.numberStyle = .decimal
+        nf.minimumFractionDigits = 0
+        nf.maximumFractionDigits = 2
+        return nf
+    }()
     
     private var isFocused: Bool {
         focusedField == id
@@ -32,7 +42,7 @@ struct NumberFieldComponentView: View {
             }
             
             ZStack(alignment: .trailing) {
-                TextField(placeholder ?? "", value: $value, formatter: formatter)
+                TextField(placeholder ?? "", text: $text)
                     .focused($focusedField, equals: id)
                     .keyboardType(keyboardType)
                     .font(.system(size: 16, weight: .regular))
@@ -47,6 +57,21 @@ struct NumberFieldComponentView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(isFocused ? Color.primaryPurple : .grey100, lineWidth: isFocused ? 1.2 : 1)
                     )
+                    .onChange(of: text) { _, newText in
+                        if let parsed = Double(newText) {
+                            value = parsed
+                        }
+                    }
+                    .onChange(of: focusedField) { _, newFocus in
+                        if newFocus == id {
+                            text = String(value)
+                        } else if !isFocused {
+                            text = formatter.string(from: NSNumber(value: value)) ?? ""
+                        }
+                    }
+                    .onAppear {
+                        text = value == 0 ? "" : String(value)
+                    }
                 
                 if let suffix = suffix {
                     Text(suffix)
@@ -67,6 +92,6 @@ struct NumberFieldComponentView: View {
     @Previewable @State var value = 0.0
     @FocusState var focusedField: String?
     
-    NumberFieldComponentView(id: "areaSize", title: "공간 크기", placeholder: "공간 크기를 입력해주세요 / 예) 12.25", suffix: "m²", formatter: NumberFormatter(), isReadOnly: false, submitLabel: .done, keyboardType: .decimalPad, value: $value, focusedField: $focusedField)
+    NumberFieldComponentView(id: "areaSize", title: "공간 크기", placeholder: "공간 크기를 입력해주세요 / 예) 12.25", suffix: "m²", isReadOnly: false, submitLabel: .done, keyboardType: .decimalPad, value: $value, focusedField: $focusedField)
         .padding()
 }
