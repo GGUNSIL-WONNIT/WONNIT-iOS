@@ -34,11 +34,17 @@ struct ExploreView: View {
             MapView(mapViewModel: mapViewModel)
         }
         .draggableContentSheet(
-            isPresented: isSheetPresented,
+            isPresented: .constant(true),
             selectedDetent: $sheetDetent
         ) {
-            if let space = mapViewModel.selectedSpace {
-                SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
+            Group {
+                if let space = mapViewModel.selectedSpace {
+                    SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
+                } else {
+                    SpaceNearbyPeakView()
+                        .allowsHitTesting(false)
+                        .padding()
+                }
             }
         }
         .onChange(of: tabShouldResetManager.resetTriggers[.explore]) {
@@ -47,7 +53,7 @@ struct ExploreView: View {
     }
     
     private func handleTabReselect() {
-        guard let _ = mapViewModel.selection else { return }
+//        guard let _ = mapViewModel.selection else { return }
         
         switch sheetDetent {
         case .large:
@@ -57,10 +63,12 @@ struct ExploreView: View {
 
         case .medium:
             withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
-                mapViewModel.selection = nil
+                if let _ = mapViewModel.selection {
+                    mapViewModel.selection = nil
+                } else {
+                    return
+                }
             }
-//        default:
-//            break
         }
     }
 }
