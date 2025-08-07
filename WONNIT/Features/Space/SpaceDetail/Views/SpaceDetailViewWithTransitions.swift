@@ -15,9 +15,12 @@ struct SpaceDetailViewWithTransitions: View {
     
     var body: some View {
         VStack {
-            if detent == .medium {
+            switch detent {
+            case .small:
+                EmptyView()
+            case .medium:
                 SpacePreviewCardView(space: space, layout: .horizontal(height: 98), additionalTextTopRight: "500m", namespace: namespace)
-            } else {
+            case .large:
                 SpaceDetailView(space: space, namespace: namespace)
             }
         }

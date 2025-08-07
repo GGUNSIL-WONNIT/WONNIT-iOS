@@ -41,7 +41,7 @@ struct SpaceNearbyPeakView: View {
                     }
                 }
             }
-            .padding(.top)
+//            .padding(.top)
             .padding(.bottom, 120)
         }
     }

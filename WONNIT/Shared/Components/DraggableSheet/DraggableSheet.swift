@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 public enum DraggableSheetDetent: CaseIterable {
-    case medium, large
+    case small, medium, large
 }
 
 public extension View {
