@@ -9,21 +9,8 @@ import SwiftUI
 
 struct ExploreView: View {
     @Environment(TabShouldResetManager.self) private var tabShouldResetManager
-    @State var mapViewModel: MapViewModel
-    @State private var sheetDetent: DraggableSheetDetent = .medium
-    
-    private var isSheetPresented: Binding<Bool> {
-        Binding(
-            get: {
-                mapViewModel.selection != nil
-            },
-            set: { isShowing in
-                if !isShowing {
-                    mapViewModel.selection = nil
-                }
-            }
-        )
-    }
+    @Bindable var mapViewModel: MapViewModel
+    @State private var sheetDetent: DraggableSheetDetent = .small
     
     init(mapViewModel: MapViewModel = .init()) {
         self.mapViewModel = mapViewModel
@@ -34,11 +21,29 @@ struct ExploreView: View {
             MapView(mapViewModel: mapViewModel)
         }
         .draggableContentSheet(
-            isPresented: isSheetPresented,
+            isPresented: .constant(true),
             selectedDetent: $sheetDetent
         ) {
-            if let space = mapViewModel.selectedSpace {
+            if let space = mapViewModel.selectedSpace, sheetDetent != .small {
                 SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
+            } else {
+                SpaceNearbyView(mapViewModel: mapViewModel, detent: $sheetDetent)
+                    .padding()
+                    .padding(.top, -16)
+            }
+        }
+        .onChange(of: mapViewModel.selection) { _, newSelection in
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                if newSelection != nil {
+                    sheetDetent = .medium
+                } else {
+                    sheetDetent = .small
+                }
+            }
+        }
+        .onChange(of: sheetDetent) { _, newDetent in
+            if mapViewModel.selection == nil && newDetent == .medium {
+                sheetDetent = .small
             }
         }
         .onChange(of: tabShouldResetManager.resetTriggers[.explore]) {
@@ -47,20 +52,30 @@ struct ExploreView: View {
     }
     
     private func handleTabReselect() {
-        guard let _ = mapViewModel.selection else { return }
+//        guard let _ = mapViewModel.selection else { return }
         
         switch sheetDetent {
         case .large:
             withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
-                sheetDetent = .medium
+                if let _ = mapViewModel.selection {
+                    sheetDetent = .medium
+                } else {
+                    sheetDetent = .small
+                }
             }
 
         case .medium:
             withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
-                mapViewModel.selection = nil
+                if let _ = mapViewModel.selection {
+                    mapViewModel.selection = nil
+                    sheetDetent = .small
+                } else {
+                    sheetDetent = .small
+                }
             }
-//        default:
-//            break
+            
+        case .small:
+            return
         }
     }
 }

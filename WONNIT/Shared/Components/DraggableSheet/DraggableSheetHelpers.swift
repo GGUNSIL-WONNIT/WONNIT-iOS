@@ -43,7 +43,8 @@ struct SheetGestureIntrospect: UIViewRepresentable {
 extension DraggableSheetDetent {
     var offset: CGFloat {
         switch self {
-        case .medium: return UIScreen.main.bounds.height - 360
+        case .small: return UIScreen.main.bounds.height - 280
+        case .medium: return UIScreen.main.bounds.height - 350
         case .large: return 0
         }
     }
