@@ -1,5 +1,5 @@
 //
-//  SpaceNearbyPeakView.swift
+//  SpaceNearbyView.swift
 //  WONNIT
 //
 //  Created by dohyeoplim on 8/7/25.
@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct SpaceNearbyPeakView: View {
+struct SpaceNearbyView: View {
+    @State var mapViewModel: MapViewModel
+    @Binding var detent: DraggableSheetDetent
     
-    private let spacesToShow: [Space] = Space.mockList
+//    let spacesToShow: [Space]
     
     var body: some View {
         ScrollView {
@@ -25,19 +27,25 @@ struct SpaceNearbyPeakView: View {
                         .padding(.top, 12)
                 }
                 
-                if spacesToShow.isEmpty {
+                if mapViewModel.spaces.isEmpty {
                     NotFoundView()
                         .padding(.top, 64)
                         .frame(maxWidth: .infinity)
                 } else {
-                    ForEach(spacesToShow) { space in
-                        NavigationLink(value: Route.spaceDetailByModel(space: space)) {
+                    ForEach(mapViewModel.spaces) { space in
+                        Button {
+                            detent = .small
+                            mapViewModel.selection = space.id
+                        } label: {
                             SpacePreviewCardView(
                                 space: space,
                                 layout: .horizontal(height: 123),
-                                pricePosition: .trailing
+                                pricePosition: .leading,
+                                additionalTextTopRight: "500m"
                             )
                         }
+                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -45,9 +53,4 @@ struct SpaceNearbyPeakView: View {
             .padding(.bottom, 120)
         }
     }
-}
-
-#Preview {
-    SpaceNearbyPeakView()
-        .padding()
 }

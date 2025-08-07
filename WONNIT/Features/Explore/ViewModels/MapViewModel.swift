@@ -23,9 +23,7 @@ final class MapViewModel {
     init(locationService: LocationService = .init()) {
         self.locationService = locationService
         
-        self.spaces = [
-            Space.placeholder,
-        ]
+        self.spaces = Space.mockList
         
         self.mapCameraPosition = .region(
             MKCoordinateRegion(

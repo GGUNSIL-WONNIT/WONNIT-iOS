@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ExploreView: View {
     @Environment(TabShouldResetManager.self) private var tabShouldResetManager
-    @State var mapViewModel: MapViewModel
+    @Bindable var mapViewModel: MapViewModel
     @State private var sheetDetent: DraggableSheetDetent = .small
     
     init(mapViewModel: MapViewModel = .init()) {
@@ -24,15 +24,12 @@ struct ExploreView: View {
             isPresented: .constant(true),
             selectedDetent: $sheetDetent
         ) {
-            Group {
-                if let space = mapViewModel.selectedSpace, sheetDetent != .small {
-                    SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
-                } else {
-                    SpaceNearbyPeakView()
-                        .allowsHitTesting(false)
-                        .padding()
-                        .padding(.top, -16)
-                }
+            if let space = mapViewModel.selectedSpace, sheetDetent != .small {
+                SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
+            } else {
+                SpaceNearbyView(mapViewModel: mapViewModel, detent: $sheetDetent)
+                    .padding()
+                    .padding(.top, -16)
             }
         }
         .onChange(of: mapViewModel.selection) { _, newSelection in
@@ -44,11 +41,11 @@ struct ExploreView: View {
                 }
             }
         }
-//        .onChange(of: sheetDetent) { _, newDetent in
-//            if newSelection != nil && newDetent == .medium {
-//                sheetDetent = .small
-//            }
-//        }
+        .onChange(of: sheetDetent) { _, newDetent in
+            if mapViewModel.selection == nil && newDetent == .medium {
+                sheetDetent = .small
+            }
+        }
         .onChange(of: tabShouldResetManager.resetTriggers[.explore]) {
             handleTabReselect()
         }

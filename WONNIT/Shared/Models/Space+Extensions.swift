@@ -9,10 +9,20 @@ import Foundation
 
 extension Space {
     private static func mock(_ index: Int) -> Space {
-        .init(
+        let baseLat = 37.630969
+        let baseLon = 127.080339
+        let latOffset = Double.random(in: -0.01...0.01)
+        let lonOffset = Double.random(in: -0.01...0.01)
+        
+        return .init(
             id: UUID(),
-            name: "상상관 \(index)층",
-            address: .init(address1: "서울 노원구 공릉로 232", address2: "서울과학기술대학교 상상관", lat: 37.630969, lon: 127.080339),
+            name: "공간 \(index)",
+            address: .init(
+                address1: "서울 노원구 공릉로 232",
+                address2: "서울과학기술대학교",
+                lat: baseLat + latOffset,
+                lon: baseLon + lonOffset
+            ),
             mainImageURL: "https://images.unsplash.com/photo-1595847568639-99fbd1b8fd81?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             subImageURLs: [
                 "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
