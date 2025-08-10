@@ -103,36 +103,44 @@ struct ImageUploaderComponentView: View {
         }
     }
 
-    private func multipleImageUploader(limit: Int) -> some View {
+    private func multipleImageUploader(limit: Int = 4) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    ForEach(images.indices, id: \.self) { index in
-                        Image(uiImage: images[index])
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 84, height: 84)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    ForEach(0..<limit, id: \.self) { _ in
+                        addNewPhotoButtonSmall
                     }
+//                    ForEach(images.indices, id: \.self) { index in
+//                        Image(uiImage: images[index])
+//                            .resizable()
+//                            .scaledToFill()
+//                            .frame(width: 84, height: 84)
+//                            .clipped()
+//                            .clipShape(RoundedRectangle(cornerRadius: 8))
+//                    }
                     
-                    if images.count < limit {
-                        Button {
-                            showSourceActionSheet = true
-                        } label: {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.grey200, lineWidth: 1)
-                                    .frame(width: 84, height: 84)
-                                Image(systemName: "photo.badge.plus")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .foregroundColor(.grey300)
-                                    .frame(width: 36, height: 36)
-                            }
-                        }
-                    }
+//                    if images.count < limit {
+//                        addNewPhotoButtonSmall
+//                    }
                 }
+            }
+        }
+    }
+
+    
+    private var addNewPhotoButtonSmall: some View {
+        Button {
+            showSourceActionSheet = true
+        } label: {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.grey200, lineWidth: 1)
+                    .frame(width: 84, height: 84)
+                Image(systemName: "photo.badge.plus")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.grey300)
+                    .frame(width: 36, height: 36)
             }
         }
     }
@@ -158,7 +166,7 @@ struct ImageUploaderComponentView: View {
     VStack(spacing: 32) {
         ImageUploaderComponentView(id: "Image1", title: "대표사진 등록", description: nil, variant: .singleLarge, images: $images, focusedField: $focusedField)
         
-        ImageUploaderComponentView(id: "Image2", title: "추가사진 등록", description: "구비된 물품들이 잘 보이는 4장의 사진을 등록해주세요.", variant: .multipleSmall(limit: 5), images: $images, focusedField: $focusedField)
+        ImageUploaderComponentView(id: "Image2", title: "추가사진 등록", description: "구비된 물품들이 잘 보이는 4장의 사진을 등록해주세요.", variant: .multipleSmall(limit: 4), images: $images, focusedField: $focusedField)
     }
     .padding()
 }
