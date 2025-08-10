@@ -76,6 +76,7 @@ struct FormRenderer {
                 placeholder: config.placeholder,
                 options: options,
                 suffix: config.suffix,
+                isAIFeatured: config.isAIFeatured,
                 selected: store.binding(for: config.id),
                 focusedField: focusedField
             )
@@ -131,6 +132,7 @@ struct FormRenderer {
             TagSelectorComponentView(
                 id: config.id,
                 title: config.title,
+                isAIFeatured: config.isAIFeatured,
                 selectedTags: store.binding(for: config.id, default: [""]),
                 focusedField: focusedField
             )

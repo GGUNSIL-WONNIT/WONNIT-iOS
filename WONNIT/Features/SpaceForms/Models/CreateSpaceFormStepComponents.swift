@@ -62,13 +62,15 @@ extension CreateSpaceFormStep {
                     config: .init(
                         id: "category",
                         title: "공간 카테고리",
-                        placeholder: "카테고리를 선택하세요"
+                        placeholder: "카테고리를 선택하세요",
+                        isAIFeatured: true
                     ),
                     options: SpaceCategory.allCases.map(\.label)
                 ),
                 .tagSelector(config: .init(
                     id: "tags",
-                    title: "공간 태그"
+                    title: "공간 태그",
+                    isAIFeatured: true
                 ))
             ]
 

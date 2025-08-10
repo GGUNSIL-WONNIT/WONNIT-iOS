@@ -10,6 +10,7 @@ import SwiftUI
 struct TagSelectorComponentView: View {
     let id: String
     let title: String?
+    let isAIFeatured: Bool
     
     @Binding var selectedTags: [String]
     @FocusState.Binding var focusedField: String?
@@ -24,8 +25,14 @@ struct TagSelectorComponentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title {
-                Text(title)
-                    .body_02(.grey900)
+                HStack(spacing: 6) {
+                    Text(title)
+                        .body_02(.grey900)
+                    
+                    if isAIFeatured {
+                        GradientTagView(label: "AI추천")
+                    }
+                }
             }
             
             ScrollViewReader { proxy in
@@ -132,6 +139,7 @@ private struct TagView: View {
         TagSelectorComponentView(
             id: "TagSelector",
             title: "어쩌구",
+            isAIFeatured: true,
             selectedTags: $selectedTags,
             focusedField: $focusedField
         )

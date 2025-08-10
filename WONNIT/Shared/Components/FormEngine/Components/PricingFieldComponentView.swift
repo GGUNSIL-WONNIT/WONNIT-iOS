@@ -27,6 +27,7 @@ struct PricingFieldComponentView: View {
                     placeholder: "단위",
                     options: AmountInfo.TimeUnit.allLocalizedLabels,
                     suffix: nil,
+                    isAIFeatured: false,
                     selected: timeUnitBinding,
                     focusedField: $focusedField
                 )
