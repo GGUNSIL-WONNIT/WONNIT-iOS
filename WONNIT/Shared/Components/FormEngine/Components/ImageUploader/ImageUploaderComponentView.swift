@@ -6,6 +6,34 @@
 //
 
 import SwiftUI
+import PhotosUI
+import UniformTypeIdentifiers
+
+struct ImageDropDelegate: DropDelegate {
+    let item: UIImage
+    @Binding var items: [UIImage]
+    @Binding var draggedItem: UIImage?
+    
+    func performDrop(info: DropInfo) -> Bool {
+        guard let draggedItem = self.draggedItem,
+              let fromIndex = items.firstIndex(of: draggedItem),
+              let toIndex = items.firstIndex(of: item)
+        else {
+            return false
+        }
+        
+        withAnimation {
+            items.move(fromOffsets: IndexSet(integer: fromIndex), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
+        }
+        
+        self.draggedItem = nil
+        return true
+    }
+    
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
+    }
+}
 
 struct ImageUploaderComponentView: View {
     let id: String
@@ -16,9 +44,8 @@ struct ImageUploaderComponentView: View {
     @Binding var images: [UIImage]
     @FocusState.Binding var focusedField: String?
     
-    @State private var isShowingImagePicker: Bool = false
-    @State private var showSourceActionSheet: Bool = false
-    @State private var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State private var isShowingPicker: Bool = false
+    @State private var draggedImage: UIImage?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -34,7 +61,6 @@ struct ImageUploaderComponentView: View {
                 }
             }
             
-            
             switch variant {
             case .singleLarge:
                 singleImageUploader
@@ -44,38 +70,26 @@ struct ImageUploaderComponentView: View {
                 Text("⚠️")
             }
         }
-        .sheet(isPresented: $isShowingImagePicker) {
-            ImagePicker(sourceType: pickerSourceType) { image in
-                handleNewImage(image)
+        .sheet(isPresented: $isShowingPicker) {
+            let configuration = createPickerConfiguration()
+            ImagePicker(configuration: configuration) { selectedImages in
+                handleNewImages(selectedImages)
             }
-        }
-        .confirmationDialog("이미지를 선택하세요", isPresented: $showSourceActionSheet) {
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                Button("카메라") {
-                    pickerSourceType = .camera
-                    isShowingImagePicker = true
-                }
-            }
-            Button("사진 보관함") {
-                pickerSourceType = .photoLibrary
-                isShowingImagePicker = true
-            }
-            Button("취소", role: .cancel) {}
         }
     }
     
     private var singleImageUploader: some View {
         Button {
-            showSourceActionSheet = true
+            isShowingPicker = true
         } label: {
             ZStack {
                 if let image = images.first {
                     Image(uiImage: image)
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 180)
+                        .scaledToFill()
+                        .frame(height: 257)
                         .clipped()
-                        .cornerRadius(12)
+                        .cornerRadius(8)
                 } else {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.grey200, lineWidth: 1)
@@ -86,7 +100,7 @@ struct ImageUploaderComponentView: View {
                                     Circle()
                                         .stroke(Color.grey300, style: .init(lineWidth: 1, dash: [4]))
                                         .frame(width: 95, height: 95)
-
+                                    
                                     Image(systemName: "photo.badge.plus")
                                         .resizable()
                                         .scaledToFit()
@@ -102,58 +116,102 @@ struct ImageUploaderComponentView: View {
             }
         }
     }
-
-    private func multipleImageUploader(limit: Int = 4) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(0..<limit, id: \.self) { _ in
-                        addNewPhotoButtonSmall
-                    }
-//                    ForEach(images.indices, id: \.self) { index in
-//                        Image(uiImage: images[index])
-//                            .resizable()
-//                            .scaledToFill()
-//                            .frame(width: 84, height: 84)
-//                            .clipped()
-//                            .clipShape(RoundedRectangle(cornerRadius: 8))
-//                    }
-                    
-//                    if images.count < limit {
-//                        addNewPhotoButtonSmall
-//                    }
+    
+    private func multipleImageUploader(limit: Int) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(images, id: \.self) { image in
+                    imageThumbnail(image: image)
+                        .onDrag {
+                            self.draggedImage = image
+                            return NSItemProvider(object: image)
+                        }
+                        .onDrop(of: [UTType.image],
+                                delegate: ImageDropDelegate(item: image, items: $images, draggedItem: $draggedImage))
                 }
+                
+                if images.count < limit {
+                    addNewPhotoButton(limit: limit)
+                }
+            }
+            .padding(.top, 7)
+        }
+    }
+    
+    private func imageThumbnail(image: UIImage) -> some View {
+        ZStack(alignment: .topTrailing) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 84, height: 84)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    draggedImage == image ? RoundedRectangle(cornerRadius: 8).fill(Color.black.opacity(0.5)) : nil
+                )
+            
+            Button(action: {
+                withAnimation {
+                    images.removeAll { $0 == image }
+                }
+            }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 10))
+                    .foregroundColor(.white)
+                    .padding(4)
+                    .background(Circle().fill(Color.grey500))
+                    .offset(x: 7, y: -7)
             }
         }
     }
-
     
-    private var addNewPhotoButtonSmall: some View {
+    private func addNewPhotoButton(limit: Int) -> some View {
         Button {
-            showSourceActionSheet = true
+            isShowingPicker = true
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.grey200, lineWidth: 1)
                     .frame(width: 84, height: 84)
-                Image(systemName: "photo.badge.plus")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundColor(.grey300)
-                    .frame(width: 36, height: 36)
+                VStack(spacing: 4) {
+                    Image(systemName: "photo.badge.plus")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(.grey300)
+                        .frame(width: 36, height: 36)
+                    Text("\(images.count)/\(limit)")
+                        .font(.caption)
+                }
+                .foregroundColor(Color.grey700)
             }
         }
     }
     
-    private func handleNewImage(_ image: UIImage) {
+    private func createPickerConfiguration() -> PHPickerConfiguration {
+        var config = PHPickerConfiguration(photoLibrary: .shared())
+        config.filter = .images
+        config.preferredAssetRepresentationMode = .current
+        
         switch variant {
         case .singleLarge:
-            images = [image]
+            config.selectionLimit = 1
         case .multipleSmall(let limit):
-            if images.count < limit {
-                images.append(image)
+            config.selectionLimit = limit - images.count
+        default:
+            config.selectionLimit = 0
+        }
+        return config
+    }
+    
+    private func handleNewImages(_ newImages: [UIImage]) {
+        switch variant {
+        case .singleLarge:
+            if let firstImage = newImages.first {
+                self.images = [firstImage]
             }
-        case .none:
+        case .multipleSmall(let limit):
+            let availableSlots = limit - self.images.count
+            self.images.append(contentsOf: newImages.prefix(availableSlots))
+        default:
             return
         }
     }
