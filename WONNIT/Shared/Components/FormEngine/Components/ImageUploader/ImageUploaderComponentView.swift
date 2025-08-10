@@ -45,6 +45,7 @@ struct ImageUploaderComponentView: View {
     @FocusState.Binding var focusedField: String?
     
     @State private var isShowingPicker: Bool = false
+    @State private var isShowingCamera: Bool = false
     @State private var draggedImage: UIImage?
     
     var body: some View {
@@ -76,12 +77,27 @@ struct ImageUploaderComponentView: View {
                 handleNewImages(selectedImages)
             }
         }
+        .sheet(isPresented: $isShowingCamera) {
+            CameraPicker { image in
+                handleNewImages([image])
+            }
+        }
     }
     
     private var singleImageUploader: some View {
-        Button {
-            isShowingPicker = true
-        } label: {
+        Menu {
+            Button {
+                isShowingCamera = true
+            } label: {
+                Label("카메라로 찍기", systemImage: "camera")
+            }
+            
+            Button {
+                isShowingPicker = true
+            } label: {
+                Label("사진에서 선택하기", systemImage: "photo.on.rectangle")
+            }
+        } label : {
             ZStack {
                 if let image = images.first {
                     Image(uiImage: image)
@@ -165,8 +181,18 @@ struct ImageUploaderComponentView: View {
     }
     
     private func addNewPhotoButton(limit: Int) -> some View {
-        Button {
-            isShowingPicker = true
+        Menu {
+            Button {
+                isShowingCamera = true
+            } label: {
+                Label("카메라로 찍기", systemImage: "camera")
+            }
+            
+            Button {
+                isShowingPicker = true
+            } label: {
+                Label("사진에서 선택하기", systemImage: "photo.on.rectangle")
+            }
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
