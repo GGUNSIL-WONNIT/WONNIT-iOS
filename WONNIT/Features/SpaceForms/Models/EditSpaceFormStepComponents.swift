@@ -24,7 +24,7 @@ extension EditSpaceFormStep {
                         id: "subImages",
                         title: "추가사진"
                     ),
-                    variant: .multipleSmall(limit: 5)
+                    variant: .multipleSmall(limit: 4)
                 )
             ]
         case .details:

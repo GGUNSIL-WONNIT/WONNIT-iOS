@@ -127,7 +127,12 @@ struct FormRenderer {
 //            DescriptionComponentView(id: id, text: text)
             
         case let .tagSelector(config):
-            Text("⚠️ Not Implemented")
+            TagSelectorComponentView(
+                id: config.id,
+                title: config.title,
+                selectedTags: store.binding(for: config.id, default: [""]),
+                focusedField: focusedField
+            )
         }
     }
 }

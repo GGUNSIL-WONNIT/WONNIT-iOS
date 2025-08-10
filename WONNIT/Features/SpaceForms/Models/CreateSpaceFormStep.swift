@@ -11,6 +11,7 @@ import SwiftUI
 enum CreateSpaceFormStep: CaseIterable, Identifiable {
     case addressAndName
     case pictures
+    case categoryAndTags
     case operation
     case scanner
     case miscellaneous
@@ -23,6 +24,8 @@ enum CreateSpaceFormStep: CaseIterable, Identifiable {
             return "공간 주소와 이름 정보를\n입력해주세요"
         case .pictures:
             return "공간 사진과 기본정보를\n등록해주세요"
+        case .categoryAndTags:
+            return "공간 카테고리와 구비물품을\n확인해주세요"
         case .operation:
             return "공간 대여 정보 및\n금액을 입력해주세요"
         case .scanner:
