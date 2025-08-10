@@ -31,6 +31,7 @@ enum ImageUploaderVariant {
 struct FormFieldBaseConfig {
     let id: String
     let title: String?
+    let description: String?
     let placeholder: String?
     let suffix: String?
     let isReadOnly: Bool
@@ -40,6 +41,7 @@ struct FormFieldBaseConfig {
     init(
         id: String,
         title: String? = nil,
+        description: String? = nil,
         placeholder: String? = nil,
         suffix: String? = nil,
         isReadOnly: Bool = false,
@@ -48,6 +50,7 @@ struct FormFieldBaseConfig {
     ) {
         self.id = id
         self.title = title
+        self.description = description
         self.placeholder = placeholder
         self.suffix = suffix
         self.isReadOnly = isReadOnly

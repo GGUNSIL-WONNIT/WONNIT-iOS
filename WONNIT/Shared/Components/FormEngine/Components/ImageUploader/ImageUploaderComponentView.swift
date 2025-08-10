@@ -10,6 +10,7 @@ import SwiftUI
 struct ImageUploaderComponentView: View {
     let id: String
     let title: String?
+    let description: String?
     let variant: ImageUploaderVariant?
     
     @Binding var images: [UIImage]
@@ -22,9 +23,17 @@ struct ImageUploaderComponentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title = title {
-                Text(title)
-                    .body_02(.grey900)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .body_02(.grey900)
+                    
+                    if let description = description {
+                        Text(description)
+                            .body_04(.grey500)
+                    }
+                }
             }
+            
             
             switch variant {
             case .singleLarge:
@@ -147,9 +156,9 @@ struct ImageUploaderComponentView: View {
     @FocusState var focusedField: String?
     
     VStack(spacing: 32) {
-        ImageUploaderComponentView(id: "Image1", title: "대표사진 등록", variant: .singleLarge, images: $images, focusedField: $focusedField)
+        ImageUploaderComponentView(id: "Image1", title: "대표사진 등록", description: nil, variant: .singleLarge, images: $images, focusedField: $focusedField)
         
-        ImageUploaderComponentView(id: "Image2", title: "추가사진 등록", variant: .multipleSmall(limit: 5), images: $images, focusedField: $focusedField)
+        ImageUploaderComponentView(id: "Image2", title: "추가사진 등록", description: "구비된 물품들이 잘 보이는 4장의 사진을 등록해주세요.", variant: .multipleSmall(limit: 5), images: $images, focusedField: $focusedField)
     }
     .padding()
 }

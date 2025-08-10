@@ -85,6 +85,7 @@ struct FormRenderer {
             ImageUploaderComponentView(
                 id: config.id,
                 title: config.title,
+                description: config.description,
                 variant: variant,
                 images: store.imageBinding(for: config.id),
                 focusedField: focusedField
