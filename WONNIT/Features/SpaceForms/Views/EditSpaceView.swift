@@ -42,7 +42,7 @@ struct EditSpaceView: View {
                                         .title_01(.grey900)
                                     
                                     ForEach(step.components, id: \.id) { component in
-                                        FormRenderer.render(
+                                        FormRendererOld.render(
                                             component,
                                             store: formStore,
                                             focusedField: $focusedField

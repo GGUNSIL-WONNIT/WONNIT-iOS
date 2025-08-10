@@ -163,7 +163,7 @@ struct CreateSpaceView: View {
                                     
                                     VStack(spacing: 32) {
                                         ForEach(step.components, id: \.id) { component in
-                                            FormRenderer.render(
+                                            FormRendererOld.render(
                                                 component,
                                                 store: formStore,
                                                 focusedField: $focusedField

@@ -11,7 +11,26 @@ import SwiftUI
 @Observable
 final class FormStateStore {
     var values: [String: FormValue] = [:]
-    var focusedID: String?
+    var focusedID: String? = nil
+    var focusOrder: [String] = []
+    
+    func focus(_ id: String?) { focusedID = id }
+    func blur() { focusedID = nil }
+    
+    func next() {
+        guard let id = focusedID,
+              let i = focusOrder.firstIndex(of: id),
+              i+1 < focusOrder.count else { return }
+        focusedID = focusOrder[i+1]
+    }
+    
+    func previous() {
+        guard let id = focusedID,
+              let i = focusOrder.firstIndex(of: id),
+              i-1 >= 0 else { return }
+        focusedID = focusOrder[i-1]
+    }
+
     
     func binding(for id: String, default defaultValue: String = "") -> Binding<String> {
         Binding<String>(

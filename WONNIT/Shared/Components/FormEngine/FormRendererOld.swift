@@ -1,5 +1,5 @@
 //
-//  FormRenderer.swift
+//  FormRendererOld.swift
 //  WONNIT
 //
 //  Created by dohyeoplim on 8/6/25.
@@ -8,10 +8,10 @@
 import Foundation
 import SwiftUI
 
-struct FormRenderer {
+struct FormRendererOld {
     @ViewBuilder
     static func render(
-        _ component: FormComponent,
+        _ component: FormComponentOld,
         store: FormStateStore,
         focusedField: FocusState<String?>.Binding
     ) -> some View {

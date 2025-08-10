@@ -8,7 +8,7 @@
 import Foundation
 
 extension CreateSpaceFormStep {
-    var components: [FormComponent] {
+    var components: [FormComponentOld] {
         switch self {
         case .addressAndName:
             return [

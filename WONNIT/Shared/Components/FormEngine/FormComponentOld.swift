@@ -1,5 +1,5 @@
 //
-//  FormComponent.swift
+//  FormComponentOld.swift
 //  WONNIT
 //
 //  Created by dohyeoplim on 8/6/25.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum FormComponent {
+enum FormComponentOld {
     case textField(config: FormFieldBaseConfig)
     case multiLineTextField(config: FormFieldBaseConfig, characterLimit: Int? = nil)
     case doubleField(config: FormFieldBaseConfig)
@@ -65,7 +65,7 @@ struct FormFieldBaseConfig {
     }
 }
 
-extension FormComponent: Identifiable {
+extension FormComponentOld: Identifiable {
     var id: String {
         switch self {
         case .textField(let config),

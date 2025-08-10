@@ -8,7 +8,7 @@
 import Foundation
 
 extension EditSpaceFormStep {
-    var components: [FormComponent] {
+    var components: [FormComponentOld] {
         switch self {
         case .pictures:
             return [
