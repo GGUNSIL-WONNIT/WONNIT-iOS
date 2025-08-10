@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct TagSelectorComponentView: View {
-    let id: String
-    let title: String?
-    let isAIFeatured: Bool
+    let config: FormFieldBaseConfig
     
     @Binding var selectedTags: [String]
     @FocusState.Binding var focusedField: String?
@@ -19,17 +17,17 @@ struct TagSelectorComponentView: View {
     @State private var previousText: String = ""
     
     private var isFocused: Bool {
-        focusedField == id
+        focusedField == config.id
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let title {
+            if let title = config.title {
                 HStack(spacing: 6) {
                     Text(title)
                         .body_02(.grey900)
                     
-                    if isAIFeatured {
+                    if config.isAIFeatured {
                         GradientTagView(label: "AI추천")
                     }
                 }
@@ -45,7 +43,7 @@ struct TagSelectorComponentView: View {
                         }
                         
                         TextField("", text: $inputText)
-                            .focused($focusedField, equals: id)
+                            .focused($focusedField, equals: config.id)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(true)
                             .submitLabel(.done)
@@ -68,7 +66,7 @@ struct TagSelectorComponentView: View {
                 )
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    focusedField = id
+                    focusedField = config.id
                 }
                 .onChange(of: selectedTags.count + inputText.count) { _, _ in
                     scrollToEnd(proxy: proxy)
@@ -137,9 +135,11 @@ private struct TagView: View {
     
     VStack(spacing: 20) {
         TagSelectorComponentView(
-            id: "TagSelector",
-            title: "어쩌구",
-            isAIFeatured: true,
+            config: .init(
+                id: "TagSelector",
+                title: "어쩌구",
+                isAIFeatured: true
+            ),
             selectedTags: $selectedTags,
             focusedField: $focusedField
         )

@@ -8,27 +8,24 @@
 import SwiftUI
 
 struct MultiLineTextFieldComponentView: View {
-    let id: String
-    let title: String?
-    let placeholder: String?
-    let characterLimit: Int?
+    let config: FormFieldBaseConfig
 
     @Binding var text: String
     @FocusState.Binding var focusedField: String?
     
     private var isFocused: Bool {
-        focusedField == id
+        focusedField == config.id
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let title {
+            if let title = config.title {
                 Text(title)
                     .body_02(.grey900)
             }
 
             ZStack(alignment: .topLeading) {
-                if text.isEmpty, let placeholder {
+                if text.isEmpty, let placeholder = config.placeholder {
                     Text(placeholder)
                         .font(.system(size: 16))
                         .foregroundColor(.gray)
@@ -48,11 +45,11 @@ struct MultiLineTextFieldComponentView: View {
                     .frame(minHeight: 52, maxHeight: 130)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        focusedField = id
+                        focusedField = config.id
                     }
             }
 
-            if let limit = characterLimit {
+            if let limit = config.characterLimit {
                 HStack {
                     Spacer()
                     Text("\(text.count)/\(limit)")
@@ -69,6 +66,6 @@ struct MultiLineTextFieldComponentView: View {
     @Previewable @State var value = ""
     @FocusState var focusedField: String?
     
-    MultiLineTextFieldComponentView(id: "cautions", title: "주의사항", placeholder: "주의사항이 있다면 입력해주세요", characterLimit: 100, text: $value, focusedField: $focusedField)
+    MultiLineTextFieldComponentView(config: .init(id: "cautions", title: "주의사항", placeholder: "주의사항이 있다면 입력해주세요", characterLimit: 100), text: $value, focusedField: $focusedField)
         .padding()
 }

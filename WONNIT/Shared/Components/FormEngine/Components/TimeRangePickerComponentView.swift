@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct TimeRangePickerComponentView: View {
-    let id: String
-    let title: String?
+    let config: FormFieldBaseConfig
     
     @Binding var selectedTimeRange: TimeRange
     @FocusState.Binding var focusedField: String?
@@ -23,13 +22,13 @@ struct TimeRangePickerComponentView: View {
     var body: some View {
         ZStack {
             TextField("", text: .constant(""))
-                .focused($focusedField, equals: id)
+                .focused($focusedField, equals: config.id)
                 .opacity(0)
                 .frame(width: 0, height: 0)
                 .disabled(true)
             
             VStack(alignment: .leading, spacing: 12) {
-                if let title {
+                if let title = config.title {
                     Text(title)
                         .body_02(.grey900)
                 }
@@ -48,7 +47,7 @@ struct TimeRangePickerComponentView: View {
                 }
             }
             .onChange(of: focusedField) { _, newValue in
-                if newValue != id {
+                if newValue != config.id {
                     expanded = nil
                 }
             }
@@ -86,7 +85,7 @@ struct TimeRangePickerComponentView: View {
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
             .onTapGesture {
-                focusedField = id
+                focusedField = config.id
             }
     }
     
@@ -111,5 +110,5 @@ struct TimeRangePickerComponentView: View {
     @Previewable @State var timeRange: TimeRange = .init(startAt: .init(hour: 9, minute: 0), endAt: .init(hour: 22, minute: 0))
     @FocusState var focusedField: String?
     
-    TimeRangePickerComponentView(id: "TimeRange", title: "운영시간", selectedTimeRange: $timeRange, focusedField: $focusedField)
+    TimeRangePickerComponentView(config: .init(id: "TimeRange", title: "운영시간"), selectedTimeRange: $timeRange, focusedField: $focusedField)
 }

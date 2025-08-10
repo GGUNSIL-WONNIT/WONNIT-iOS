@@ -8,14 +8,7 @@
 import SwiftUI
 
 struct DoubleFieldComponentView: View {
-    let id: String
-    let title: String?
-    let placeholder: String?
-    let suffix: String?
-//    let formatter: Formatter
-    let isReadOnly: Bool
-    let submitLabel: SubmitLabel
-    let keyboardType: UIKeyboardType
+    let config: FormFieldBaseConfig
     
     @Binding var value: Double
     @FocusState.Binding var focusedField: String?
@@ -31,28 +24,28 @@ struct DoubleFieldComponentView: View {
     }()
     
     private var isFocused: Bool {
-        focusedField == id
+        focusedField == config.id
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let title = title {
+            if let title = config.title {
                 Text(title)
                     .body_02(.grey900)
             }
             
             ZStack(alignment: .trailing) {
-                TextField(placeholder ?? "", text: $text)
-                    .focused($focusedField, equals: id)
-                    .keyboardType(keyboardType)
+                TextField(config.placeholder ?? "", text: $text)
+                    .focused($focusedField, equals: config.id)
+                    .keyboardType(config.keyboardType)
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundStyle(isReadOnly ? .gray : .grey900)
+                    .foregroundStyle(config.isReadOnly ? .gray : .grey900)
                     .textInputAutocapitalization(.never)
-                    .disabled(isReadOnly)
-                    .submitLabel(submitLabel)
+                    .disabled(config.isReadOnly)
+                    .submitLabel(config.submitLabel)
                     .padding(.vertical, 14)
                     .padding(.horizontal, 16)
-                    .padding(.trailing, suffix == nil ? 0 : 48)
+                    .padding(.trailing, config.suffix == nil ? 0 : 48)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(isFocused ? Color.primaryPurple : .grey100, lineWidth: isFocused ? 1.2 : 1)
@@ -63,7 +56,7 @@ struct DoubleFieldComponentView: View {
                         }
                     }
                     .onChange(of: focusedField) { _, newFocus in
-                        if newFocus == id {
+                        if newFocus == config.id {
                             text = String(value)
                         } else if !isFocused {
                             text = formatter.string(from: NSNumber(value: value)) ?? ""
@@ -73,7 +66,7 @@ struct DoubleFieldComponentView: View {
                         text = value == 0 ? "" : String(value)
                     }
                 
-                if let suffix = suffix {
+                if let suffix = config.suffix {
                     Text(suffix)
                         .font(.system(size: 16))
                         .foregroundStyle(Color.grey900)
@@ -82,7 +75,7 @@ struct DoubleFieldComponentView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                focusedField = id
+                focusedField = config.id
             }
         }
     }
@@ -92,6 +85,15 @@ struct DoubleFieldComponentView: View {
     @Previewable @State var value = 0.0
     @FocusState var focusedField: String?
     
-    DoubleFieldComponentView(id: "areaSize", title: "공간 크기", placeholder: "공간 크기를 입력해주세요 / 예) 12.25", suffix: "m²", isReadOnly: false, submitLabel: .done, keyboardType: .decimalPad, value: $value, focusedField: $focusedField)
-        .padding()
+    VStack {
+        
+        Button {
+            focusedField = "areaSize"
+        } label: {
+            Text("Test")
+        }
+        
+        DoubleFieldComponentView(config: .init(id: "areaSize", title: "공간 크기", placeholder: "공간 크기를 입력해주세요 / 예) 12.25", suffix: "m²", isReadOnly: false, submitLabel: .done, keyboardType: .decimalPad), value: $value, focusedField: $focusedField)
+            .padding()
+    }
 }

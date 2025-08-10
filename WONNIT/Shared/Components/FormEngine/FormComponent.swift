@@ -37,6 +37,7 @@ struct FormFieldBaseConfig {
     let isReadOnly: Bool
     let submitLabel: SubmitLabel
     let keyboardType: UIKeyboardType
+    let characterLimit: Int?
     let isAIFeatured: Bool
 
     init(
@@ -48,6 +49,7 @@ struct FormFieldBaseConfig {
         isReadOnly: Bool = false,
         submitLabel: SubmitLabel = .done,
         keyboardType: UIKeyboardType = .default,
+        characterLimit: Int? = nil,
         isAIFeatured: Bool = false
     ) {
         self.id = id
@@ -58,6 +60,7 @@ struct FormFieldBaseConfig {
         self.isReadOnly = isReadOnly
         self.submitLabel = submitLabel
         self.keyboardType = keyboardType
+        self.characterLimit = characterLimit
         self.isAIFeatured = isAIFeatured
     }
 }

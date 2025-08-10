@@ -20,10 +20,7 @@ struct FormRenderer {
             // MARK: - Text Field
         case let .textField(config):
             TextFieldComponentView(
-                id: config.id,
-                title: config.title,
-                placeholder: config.placeholder,
-                suffix: config.suffix,
+                config: config,
                 text: store.binding(for: config.id),
                 focusedField: focusedField
             )
@@ -31,28 +28,14 @@ struct FormRenderer {
             // MARK: - Number Field
         case let .doubleField(config):
             DoubleFieldComponentView(
-                id: config.id,
-                title: config.title,
-                placeholder: config.placeholder,
-                suffix: config.suffix,
-//                formatter: formatter,
-                isReadOnly: config.isReadOnly,
-                submitLabel: config.submitLabel,
-                keyboardType: config.keyboardType,
+                config: config,
                 value: store.binding(for: config.id, default: 0.0),
                 focusedField: focusedField
             )
             
         case let .integerField(config):
             IntegerFieldComponentView(
-                id: config.id,
-                title: config.title,
-                placeholder: config.placeholder,
-                suffix: config.suffix,
-//                formatter: formatter,
-                isReadOnly: config.isReadOnly,
-                submitLabel: config.submitLabel,
-                keyboardType: config.keyboardType,
+                config: config,
                 value: store.binding(for: config.id, default: 0),
                 focusedField: focusedField
             )
@@ -60,10 +43,7 @@ struct FormRenderer {
             // MARK: - Multi-line Text Field
         case let .multiLineTextField(config, _):
             MultiLineTextFieldComponentView(
-                id: config.id,
-                title: config.title,
-                placeholder: config.placeholder,
-                characterLimit: nil,
+                config: config,
                 text: store.binding(for: config.id),
                 focusedField: focusedField,
             )
@@ -71,12 +51,8 @@ struct FormRenderer {
             // MARK: - Select
         case let .select(config, options):
             DropdownSelectorComponentView(
-                id: config.id,
-                title: config.title,
-                placeholder: config.placeholder,
+                config: config,
                 options: options,
-                suffix: config.suffix,
-                isAIFeatured: config.isAIFeatured,
                 selected: store.binding(for: config.id),
                 focusedField: focusedField
             )
@@ -84,9 +60,7 @@ struct FormRenderer {
             // MARK: - Image Uploader
         case let .imageUploader(config, variant):
             ImageUploaderComponentView(
-                id: config.id,
-                title: config.title,
-                description: config.description,
+                config: config,
                 variant: variant,
                 images: store.imageBinding(for: config.id),
                 focusedField: focusedField
@@ -95,8 +69,7 @@ struct FormRenderer {
             // MARK: - Day Picker
         case let .dayPicker(config):
             DayPickerComponentView(
-                id: config.id,
-                title: config.title,
+                config: config,
                 selectedDays: store.binding(for: config.id, default: []),
                 focusedField: focusedField
             )
@@ -104,16 +77,14 @@ struct FormRenderer {
             // MARK: - Time Picker
         case let .timeRangePicker(config):
             TimeRangePickerComponentView(
-                id: config.id,
-                title: config.title,
+                config: config,
                 selectedTimeRange: store.binding(for: config.id, default: TimeRange(startAt: .init(hour: 9, minute: 0), endAt: .init(hour: 22, minute: 0))),
                 focusedField: focusedField
             )
             
         case let .pricingField(config):
             PricingFieldComponentView(
-                id: config.id,
-                title: config.title,
+                config: config,
                 pricingValue: store.binding(for: config.id, default: AmountInfo.init(timeUnit: .perDay, amount: 10000)),
                 focusedField: focusedField
             )
@@ -130,9 +101,7 @@ struct FormRenderer {
             
         case let .tagSelector(config):
             TagSelectorComponentView(
-                id: config.id,
-                title: config.title,
-                isAIFeatured: config.isAIFeatured,
+                config: config,
                 selectedTags: store.binding(for: config.id, default: [""]),
                 focusedField: focusedField
             )

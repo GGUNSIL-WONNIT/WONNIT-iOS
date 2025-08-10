@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct DayPickerComponentView: View {
-    let id: String
-    let title: String?
+    let config: FormFieldBaseConfig
 
     @Binding var selectedDays: Set<DayOfWeek>
     @FocusState.Binding var focusedField: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let title {
+            if let title = config.title {
                 Text(title)
                     .body_01(.grey900)
             }
@@ -57,5 +56,5 @@ struct DayPickerComponentView: View {
     @Previewable @State var selectedDays: Set<DayOfWeek> = []
     @FocusState var focusedField: String?
 
-    DayPickerComponentView(id: "DayPicker", title: "운영요일", selectedDays: $selectedDays, focusedField: $focusedField)
+    DayPickerComponentView(config: .init(id: "DayPicker", title: "운영요일"), selectedDays: $selectedDays, focusedField: $focusedField)
 }

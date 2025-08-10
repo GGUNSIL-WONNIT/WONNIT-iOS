@@ -8,39 +8,36 @@
 import SwiftUI
 
 struct TextFieldComponentView: View {
-    let id: String
-    let title: String?
-    let placeholder: String?
-    let suffix: String?
+    let config: FormFieldBaseConfig
     
     @Binding var text: String
     @FocusState.Binding var focusedField: String?
     
     private var isFocused: Bool {
-        focusedField == id
+        focusedField == config.id
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let title = title {
+            if let title = config.title {
                 Text(title)
                     .body_02(.grey900)
             }
             ZStack(alignment: .trailing) {
-                TextField(placeholder ?? "", text: $text)
+                TextField(config.placeholder ?? "", text: $text)
                     .font(.system(size: 16, weight: .regular))
                     .foregroundStyle(Color.grey900)
                     .textInputAutocapitalization(.never)
-                    .focused($focusedField, equals: id)
+                    .focused($focusedField, equals: config.id)
                     .padding(.vertical, 14)
                     .padding(.horizontal, 16)
-                    .padding(.trailing, suffix == nil ? 0 : 40)
+                    .padding(.trailing, config.suffix == nil ? 0 : 40)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(isFocused ? Color.primaryPurple : .grey100, lineWidth: isFocused ? 1.2 : 1)
                     )
                 
-                if let suffix = suffix {
+                if let suffix = config.suffix {
                     Text(suffix)
                         .font(.system(size: 16, weight: .regular))
                         .foregroundStyle(Color.grey900)
@@ -49,7 +46,7 @@ struct TextFieldComponentView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                focusedField = id
+                focusedField = config.id
             }
         }
     }
@@ -59,6 +56,6 @@ struct TextFieldComponentView: View {
     @Previewable @State var text = ""
     @FocusState var focusedField: String?
     
-    TextFieldComponentView(id: "1", title: "써봐", placeholder: "어쩌구", suffix: nil, text: $text, focusedField: $focusedField)
+    TextFieldComponentView(config: .init(id: "1", title: "써봐", placeholder: "어쩌구", suffix: nil), text: $text, focusedField: $focusedField)
         .padding()
 }
