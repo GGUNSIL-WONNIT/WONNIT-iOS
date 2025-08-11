@@ -8,7 +8,7 @@
 import Foundation
 
 extension CreateSpaceFormStep {
-    var components: [FormComponentOld] {
+    var components: [FormComponent] {
         switch self {
         case .addressAndName:
             return [
@@ -97,11 +97,10 @@ extension CreateSpaceFormStep {
 
         case .miscellaneous:
             return [
-                .textField(config: .init(
+                .phoneNumberField(config: .init(
                     id: "contact",
                     title: "담당자 연락처",
                     placeholder: "연락처를 입력해주세요",
-                    keyboardType: .phonePad
                 )),
                 .textField(config: .init(
                     id: "cautions",

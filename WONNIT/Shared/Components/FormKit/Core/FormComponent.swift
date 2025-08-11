@@ -1,5 +1,5 @@
 //
-//  FormComponentOld.swift
+//  FormComponent.swift
 //  WONNIT
 //
 //  Created by dohyeoplim on 8/6/25.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum FormComponentOld {
+enum FormComponent {
     case textField(config: FormFieldBaseConfig)
     case multiLineTextField(config: FormFieldBaseConfig, characterLimit: Int? = nil)
     case doubleField(config: FormFieldBaseConfig)
@@ -21,6 +21,7 @@ enum FormComponentOld {
     case scannerView(id: String)
     case description(id: String, text: String)
     case tagSelector(config: FormFieldBaseConfig)
+    case phoneNumberField(config: FormFieldBaseConfig)
 }
 
 enum ImageUploaderVariant {
@@ -65,10 +66,11 @@ struct FormFieldBaseConfig {
     }
 }
 
-extension FormComponentOld: Identifiable {
+extension FormComponent: Identifiable {
     var id: String {
         switch self {
         case .textField(let config),
+             .phoneNumberField(let config),
              .multiLineTextField(let config, _),
              .doubleField(let config),
              .integerField(let config),
