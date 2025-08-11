@@ -1,10 +1,3 @@
-//
-//  ImageUploaderComponentView.swift
-//  WONNIT
-//
-//  Created by dohyeoplim on 8/6/25.
-//
-
 import SwiftUI
 import PhotosUI
 import UniformTypeIdentifiers
@@ -22,7 +15,7 @@ struct ImageDropDelegate: DropDelegate {
             return false
         }
         
-        withAnimation {
+        withAnimation(.spring()) {
             items.move(fromOffsets: IndexSet(integer: fromIndex), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
         }
         
@@ -94,13 +87,13 @@ struct ImageUploaderComponentView: View {
             } label: {
                 Label("사진에서 선택하기", systemImage: "photo.on.rectangle")
             }
-        } label : {
+        } label: {
             ZStack {
                 if let image = images.first {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 257)
+//                        .frame(height: 257)
                         .clipped()
                         .cornerRadius(8)
                 } else {
@@ -125,6 +118,26 @@ struct ImageUploaderComponentView: View {
                                     .body_05(.grey700)
                             }
                         )
+                }
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(height: 257)
+            .cornerRadius(8)
+            .clipped()
+            .overlay(alignment: .topTrailing) {
+                if !images.isEmpty {
+                    Button(action: {
+                        withAnimation(.spring()) {
+                            images.removeAll()
+                        }
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 10))
+                            .foregroundColor(.white)
+                            .padding(4)
+                            .background(Circle().fill(Color.grey500))
+                            .offset(x: 7, y: -4)
+                    }
                 }
             }
         }
@@ -163,7 +176,7 @@ struct ImageUploaderComponentView: View {
                 )
             
             Button(action: {
-                withAnimation {
+                withAnimation(.spring()) {
                     images.removeAll { $0 == image }
                 }
             }) {
@@ -226,16 +239,19 @@ struct ImageUploaderComponentView: View {
     }
     
     private func handleNewImages(_ newImages: [UIImage]) {
-        switch variant {
-        case .singleLarge:
-            if let firstImage = newImages.first {
-                self.images = [firstImage]
+        withAnimation(.spring()) {
+            switch variant {
+            case .singleLarge:
+                if let firstImage = newImages.first {
+                    self.images = [firstImage]
+                }
+            case .multipleSmall(let limit):
+                let availableSlots = limit - self.images.count
+                self.images.append(contentsOf: newImages.prefix(availableSlots))
+            default:
+                return
             }
-        case .multipleSmall(let limit):
-            let availableSlots = limit - self.images.count
-            self.images.append(contentsOf: newImages.prefix(availableSlots))
-        default:
-            return
         }
     }
 }
+
