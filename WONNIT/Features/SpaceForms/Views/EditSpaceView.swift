@@ -11,13 +11,12 @@ struct EditSpaceView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @State private var formStore = FormStateStore()
-    @FocusState private var focusedField: String?
     
     @State private var showDonePage = false
     
     init(spaceData: Space) {
         let initialState = FormStateStore()
-        initialState.inject(from: spaceData)
+//        initialState.inject(from: spaceData)
         _formStore = State(initialValue: initialState)
     }
     
@@ -25,7 +24,7 @@ struct EditSpaceView: View {
         ZStack(alignment: .top) {
             Color.clear
                 .onTapGesture {
-                    focusedField = nil
+                    formStore.blur()
                 }
             if !showDonePage {
                 ScrollView {
@@ -33,7 +32,7 @@ struct EditSpaceView: View {
                         Color.clear
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                focusedField = nil
+                                formStore.blur()
                             }
                         VStack(alignment: .leading, spacing: 60) {
                             ForEach(EditSpaceFormStep.allCases, id: \.id) { step in
@@ -42,10 +41,9 @@ struct EditSpaceView: View {
                                         .title_01(.grey900)
                                     
                                     ForEach(step.components, id: \.id) { component in
-                                        FormRendererOld.render(
+                                        FormRenderer.render(
                                             component,
                                             store: formStore,
-                                            focusedField: $focusedField
                                         )
                                     }
                                 }
@@ -83,7 +81,7 @@ struct EditSpaceView: View {
             Color.white
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    focusedField = nil
+                    formStore.blur()
                 }
         )
     }

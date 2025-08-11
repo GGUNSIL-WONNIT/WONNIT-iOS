@@ -40,7 +40,6 @@ struct ImageUploaderComponentView: View {
     let variant: ImageUploaderVariant?
     
     @Binding var images: [UIImage]
-    @FocusState.Binding var focusedField: String?
     
     @State private var isShowingPicker: Bool = false
     @State private var isShowingCamera: Bool = false
@@ -239,16 +238,4 @@ struct ImageUploaderComponentView: View {
             return
         }
     }
-}
-
-#Preview {
-    @Previewable @State var images: [UIImage] = []
-    @FocusState var focusedField: String?
-    
-    VStack(spacing: 32) {
-        ImageUploaderComponentView(config: .init(id: "Image1", title: "대표사진 등록", description: nil), variant: .singleLarge, images: $images, focusedField: $focusedField)
-        
-        ImageUploaderComponentView(config: .init(id: "Image2", title: "추가사진 등록", description: "구비된 물품들이 잘 보이는 4장의 사진을 등록해주세요."), variant: .multipleSmall(limit: 4), images: $images, focusedField: $focusedField)
-    }
-    .padding()
 }

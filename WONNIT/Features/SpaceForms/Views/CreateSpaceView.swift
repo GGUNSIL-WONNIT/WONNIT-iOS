@@ -10,7 +10,6 @@ import SwiftUI
 struct CreateSpaceView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var currentStep: CreateSpaceFormStep = .addressAndName
-    @FocusState private var focusedField: String?
     @State private var formStore = FormStateStore()
     @State private var transitionDirection: Edge = .trailing
     @State private var showDonePage = false
@@ -19,7 +18,7 @@ struct CreateSpaceView: View {
         ZStack(alignment: .bottom) {
             Color.clear
                 .onTapGesture {
-                    focusedField = nil
+                    formStore.blur()
                 }
             
             if !showDonePage {
@@ -40,9 +39,6 @@ struct CreateSpaceView: View {
                 DonePageView()
             }
         }
-        .onChange(of: focusedField) {
-            print(focusedField ?? "nil")
-        }
     }
     
     @ViewBuilder
@@ -55,7 +51,7 @@ struct CreateSpaceView: View {
             Color.clear
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    focusedField = nil
+                    formStore.blur()
                 }
         )
         .padding(16)
@@ -78,7 +74,8 @@ struct CreateSpaceView: View {
     }
     
     private var nextButton: some View {
-        let isValid = currentStep.isStepValid(store: formStore)
+//        let isValid = currentStep.isStepValid(store: formStore)
+        let isValid = true
         let isOptional = currentStep.isOptional
         
         return Button {
@@ -148,7 +145,7 @@ struct CreateSpaceView: View {
                     Color.clear
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            focusedField = nil
+                            formStore.blur()
                         }
                     
                     ZStack {
@@ -163,10 +160,9 @@ struct CreateSpaceView: View {
                                     
                                     VStack(spacing: 32) {
                                         ForEach(step.components, id: \.id) { component in
-                                            FormRendererOld.render(
+                                            FormRenderer.render(
                                                 component,
                                                 store: formStore,
-                                                focusedField: $focusedField
                                             )
                                         }
                                     }
@@ -203,8 +199,6 @@ struct CreateSpaceView: View {
     }
     
     private func submitForm() {
-        print(formStore.values)
-        
         withAnimation {
             showDonePage = true
         }
