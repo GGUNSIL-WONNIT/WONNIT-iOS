@@ -28,7 +28,8 @@ struct TimeRangePickerComponentView: View {
                     bgNormal: UIColor(Color.white),
                     borderSelected: UIColor(Color.primaryPurple),
                     borderNormal: UIColor(Color.grey100)
-                )
+                ),
+                onDone: { store.blur() }
             )
             .frame(height: 48)
         }
