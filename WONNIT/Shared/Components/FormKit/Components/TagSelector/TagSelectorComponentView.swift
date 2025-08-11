@@ -11,6 +11,8 @@ struct TagSelectorComponentView: View {
     let config: FormFieldBaseConfig
     @Environment(FormStateStore.self) private var store
     
+    @State private var showTooltip: Bool = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title = config.title {
@@ -49,7 +51,28 @@ struct TagSelectorComponentView: View {
                                 .body_05(.primaryPurple)
                         }
                     }
+                    .id(suggestedTags)
+                    .opacity(showTooltip ? 1 : 0)
+                    .offset(y: showTooltip ? 0 : -8)
+                    .scaleEffect(showTooltip ? 1.0 : 0.98, anchor: .top)
+                    .animation(.spring(), value: showTooltip)
+                    .onAppear {
+                        withAnimation {
+                            showTooltip = true
+                        }
+                    }
+                    .onChange(of: suggestedTags) {
+                        showTooltip = false
+                        DispatchQueue.main.async {
+                            withAnimation { showTooltip = true }
+                        }
+                    }
                     Spacer()
+                }
+                .onChange(of: store.textValues[config.tooltipContentKey ?? ""]) {
+                    if getTooltipText() == nil {
+                        withAnimation { showTooltip = false }
+                    }
                 }
             }
         }
