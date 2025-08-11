@@ -40,6 +40,7 @@ struct FormFieldBaseConfig {
     let keyboardType: UIKeyboardType
     let characterLimit: Int?
     let isAIFeatured: Bool
+    let tooltipContentKey: String?
 
     init(
         id: String,
@@ -51,7 +52,8 @@ struct FormFieldBaseConfig {
         submitLabel: SubmitLabel = .done,
         keyboardType: UIKeyboardType = .default,
         characterLimit: Int? = nil,
-        isAIFeatured: Bool = false
+        isAIFeatured: Bool = false,
+        tooltipContentKey: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -63,6 +65,7 @@ struct FormFieldBaseConfig {
         self.keyboardType = keyboardType
         self.characterLimit = characterLimit
         self.isAIFeatured = isAIFeatured
+        self.tooltipContentKey = tooltipContentKey
     }
 }
 

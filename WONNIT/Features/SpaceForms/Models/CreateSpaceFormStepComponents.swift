@@ -69,8 +69,10 @@ extension CreateSpaceFormStep {
                 ),
                 .tagSelector(config: .init(
                     id: "tags",
-                    title: "공간 태그",
-                    isAIFeatured: true
+                    title: "구비물품",
+                    placeholder: "구비 물품을 작성하세요",
+                    isAIFeatured: true,
+                    tooltipContentKey: "category"
                 ))
             ]
 

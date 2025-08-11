@@ -29,7 +29,7 @@ enum CreateSpaceFormStep: CaseIterable, Identifiable {
         case .operation:
             return "공간 대여 정보 및\n금액을 입력해주세요"
         case .scanner:
-            return "공간 3D 스캔"
+            return "3D 스캔 정보를\n등록해주세요(선택)"
         case .miscellaneous:
             return "기타 정보를 등록해주세요"
         }
