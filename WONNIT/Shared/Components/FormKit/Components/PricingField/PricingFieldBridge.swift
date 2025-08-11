@@ -25,12 +25,10 @@ struct PricingFieldBridge: UIViewRepresentable {
         
         func textFieldDidBeginEditing(_ textField: UITextField) {
             view?.active = PricingFieldView.ActiveSide.amount
-            parent.store.focus(parent.id)
-        }
-        
-        func textFieldDidEndEditing(_ textField: UITextField) {
-            if parent.store.focusedID == parent.id {
-                parent.store.blur()
+            if parent.store.focusedID != parent.id {
+                DispatchQueue.main.async {
+                    self.parent.store.focus(self.parent.id)
+                }
             }
         }
     }
@@ -93,8 +91,14 @@ struct PricingFieldBridge: UIViewRepresentable {
         v.timeUnits = units
         
         let shouldFocus = (store.focusedID == id)
-        if shouldFocus, !v.isEditing { _ = v.becomeFirstResponder() }
-        if !shouldFocus, v.isEditing { _ = v.resignFirstResponder() }
+        if shouldFocus, !v.isEditing {
+            _ = v.becomeFirstResponder()
+        }
+        if !shouldFocus, v.isEditing {
+            DispatchQueue.main.async {
+                _ = v.resignFirstResponder()
+            }
+        }
     }
 }
 

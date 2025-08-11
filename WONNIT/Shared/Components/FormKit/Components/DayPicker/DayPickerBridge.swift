@@ -21,7 +21,9 @@ struct DayPickerBridge: UIViewRepresentable {
         
         @objc func beganEditing(_ sender: DayPickerView) {
             if parent.store.focusedID != parent.id {
-                parent.store.focus(parent.id)
+                DispatchQueue.main.async {
+                    self.parent.store.focus(self.parent.id)
+                }
             }
         }
         
@@ -64,7 +66,13 @@ struct DayPickerBridge: UIViewRepresentable {
         
         v.applyStyle(style)
         
-        if store.focusedID == id, !v.isFirstResponder { _ = v.becomeFirstResponder() }
-        if store.focusedID != id, v.isFirstResponder { _ = v.resignFirstResponder() }
+        if store.focusedID == id, !v.isFirstResponder {
+            _ = v.becomeFirstResponder()
+        }
+        if store.focusedID != id, v.isFirstResponder {
+            DispatchQueue.main.async {
+                _ = v.resignFirstResponder()
+            }
+        }
     }
 }

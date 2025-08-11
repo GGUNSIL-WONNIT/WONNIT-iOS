@@ -14,12 +14,10 @@ struct TextFieldBridge: UIViewRepresentable {
         init(_ parent: TextFieldBridge) { self.parent = parent }
         
         func textFieldDidBeginEditing(_ tf: UITextField) {
-            if parent.store.focusedID != parent.id { parent.store.focus(parent.id) }
-        }
-        
-        func textFieldDidEndEditing(_ tf: UITextField) {
-            if parent.store.focusedID == parent.id {
-                parent.store.blur()
+            if parent.store.focusedID != parent.id {
+                DispatchQueue.main.async {
+                    self.parent.store.focus(self.parent.id)
+                }
             }
         }
         
@@ -83,8 +81,14 @@ struct TextFieldBridge: UIViewRepresentable {
         }
         
         let shouldFocus = (store.focusedID == id)
-        if shouldFocus, !tf.isFirstResponder { tf.becomeFirstResponder() }
-        if !shouldFocus, tf.isFirstResponder { tf.resignFirstResponder() }
+        if shouldFocus, !tf.isFirstResponder {
+            tf.becomeFirstResponder()
+        }
+        if !shouldFocus, tf.isFirstResponder {
+            DispatchQueue.main.async {
+                tf.resignFirstResponder()
+            }
+        }
         
         tf.isUserInteractionEnabled = !readOnly
         tf.keyboardType = keyboard

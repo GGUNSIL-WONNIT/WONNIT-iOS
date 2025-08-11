@@ -31,17 +31,14 @@ struct SelectBridge: UIViewRepresentable {
         }
         
         func textFieldDidBeginEditing(_ tf: UITextField) {
-            guard parent.store.focusedID != parent.id else { return }
-            parent.store.focus(parent.id)
+            if parent.store.focusedID != parent.id {
+                DispatchQueue.main.async {
+                    self.parent.store.focus(self.parent.id)
+                }
+            }
             
             if let idx = parent.options.firstIndex(of: parent.selection.wrappedValue) {
                 picker?.selectRow(idx, inComponent: 0, animated: false)
-            }
-        }
-        
-        func textFieldDidEndEditing(_ tf: UITextField) {
-            if parent.store.focusedID == parent.id {
-                parent.store.blur()
             }
         }
         
@@ -101,9 +98,17 @@ struct SelectBridge: UIViewRepresentable {
         }
         
         let shouldFocus = (store.focusedID == id)
-        if shouldFocus, !tf.isFirstResponder { tf.becomeFirstResponder() }
-        if !shouldFocus, tf.isFirstResponder { tf.resignFirstResponder() }
+        if shouldFocus, !tf.isFirstResponder {
+            tf.becomeFirstResponder()
+        }
+        if !shouldFocus, tf.isFirstResponder {
+            DispatchQueue.main.async {
+                tf.resignFirstResponder()
+            }
+        }
         
-        context.coordinator.picker?.reloadAllComponents()
+        if context.coordinator.picker?.numberOfRows(inComponent: 0) != options.count {
+            context.coordinator.picker?.reloadAllComponents()
+        }
     }
 }

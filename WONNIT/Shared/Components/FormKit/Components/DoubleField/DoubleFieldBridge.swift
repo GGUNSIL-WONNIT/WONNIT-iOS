@@ -34,13 +34,10 @@ struct DoubleFieldBridge: UIViewRepresentable {
         }
         
         func textFieldDidBeginEditing(_ tf: UITextField) {
-            if parent.store.focusedID != parent.id { parent.store.focus(parent.id) }
-        }
-        
-        func textFieldDidEndEditing(_ tf: UITextField) {
-            if parent.store.focusedID == parent.id { parent.store.blur() }
-            if let v = parent.value.wrappedValue {
-                tf.text = formatter.string(from: NSNumber(value: v))
+            if parent.store.focusedID != parent.id {
+                DispatchQueue.main.async {
+                    self.parent.store.focus(self.parent.id)
+                }
             }
         }
         
@@ -120,8 +117,14 @@ struct DoubleFieldBridge: UIViewRepresentable {
         }
         
         let shouldFocus = (store.focusedID == id)
-        if shouldFocus, !tf.isFirstResponder { tf.becomeFirstResponder() }
-        if !shouldFocus, tf.isFirstResponder { tf.resignFirstResponder() }
+        if shouldFocus, !tf.isFirstResponder {
+            tf.becomeFirstResponder()
+        }
+        if !shouldFocus, tf.isFirstResponder {
+            DispatchQueue.main.async {
+                tf.resignFirstResponder()
+            }
+        }
         tf.isUserInteractionEnabled = !readOnly
     }
 }

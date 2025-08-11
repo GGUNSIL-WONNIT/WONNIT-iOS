@@ -28,12 +28,10 @@ struct IntegerFieldBridge: UIViewRepresentable {
         }
         
         func textFieldDidBeginEditing(_ tf: UITextField) {
-            if parent.store.focusedID != parent.id { parent.store.focus(parent.id) }
-        }
-        
-        func textFieldDidEndEditing(_ tf: UITextField) {
-            if parent.store.focusedID == parent.id {
-                parent.store.blur()
+            if parent.store.focusedID != parent.id {
+                DispatchQueue.main.async {
+                    self.parent.store.focus(self.parent.id)
+                }
             }
         }
         
@@ -79,8 +77,14 @@ struct IntegerFieldBridge: UIViewRepresentable {
         if tf.text != s { tf.text = s }
         
         let shouldFocus = (store.focusedID == id)
-        if shouldFocus, !tf.isFirstResponder { tf.becomeFirstResponder() }
-        if !shouldFocus, tf.isFirstResponder { tf.resignFirstResponder() }
+        if shouldFocus, !tf.isFirstResponder {
+            tf.becomeFirstResponder()
+        }
+        if !shouldFocus, tf.isFirstResponder {
+            DispatchQueue.main.async {
+                tf.resignFirstResponder()
+            }
+        }
         tf.isUserInteractionEnabled = !readOnly
     }
 }
