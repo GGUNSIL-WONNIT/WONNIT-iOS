@@ -36,6 +36,9 @@ struct FormRenderer {
         case let .pricingField(config):
             PricingFieldComponentView(config: config)
                 .environment(store)
+        case let .tagSelector(config):
+            TagSelectorComponentView(config: config)
+                .environment(store)
         case let .phoneNumberField(config):
             PhoneNumberFieldComponentView(config: config)
                 .environment(store)
