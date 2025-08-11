@@ -14,73 +14,61 @@ extension CreateSpaceFormStep {
             case let .textField(config),
                 let .multiLineTextField(config, _),
                 let .select(config, _):
-                
                 if config.isReadOnly { continue }
+                guard let value = store.textValues[config.id], !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                    return false
+                }
                 
-                guard let value = store.values[config.id]?.string,
-                      !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            case let .phoneNumberField(config):
+                if config.isReadOnly { continue }
+                guard let value = store.textValues[config.id], value.filter(\.isNumber).count >= 10 else {
                     return false
                 }
                 
             case let .doubleField(config):
                 if config.isReadOnly { continue }
-                
-                guard let number = store.values[config.id]?.double, number > 0 else {
+                guard let number = store.doubleValues[config.id], let unwrapped = number, unwrapped > 0 else {
                     return false
                 }
                 
             case let .integerField(config):
                 if config.isReadOnly { continue }
-                
-                guard let intValue = store.values[config.id]?.int, intValue > 0 else {
+                guard let intValue = store.intValues[config.id], let unwrapped = intValue, unwrapped > 0 else {
                     return false
                 }
                 
             case let .pricingField(config):
                 if config.isReadOnly { continue }
-                
-                guard let amountInfo = store.values[config.id]?.amountInfo else {
-                    return false
+                guard let amountInfo = store.amountInfoValues[config.id] else {
+                    // If not set, it defaults to 0, which is valid.
+                    continue
                 }
-                
-                let isValidAmount = amountInfo.amount > 0
-                let isValidTimeUnit = [.perHour, .perDay].contains(amountInfo.timeUnit)
-                
-                guard isValidAmount && isValidTimeUnit else {
+                let isValidAmount = amountInfo.amount >= 0
+                guard isValidAmount else {
                     return false
                 }
                 
             case let .dayPicker(config):
-                guard
-                    let data = store.values[config.id]?.codableData,
-                    let selectedDays = try? JSONDecoder().decode(Set<DayOfWeek>.self, from: data),
-                    !selectedDays.isEmpty
-                else {
+                guard let selectedDays = store.daySetValues[config.id], !selectedDays.isEmpty else {
                     return false
                 }
                 
             case let .timeRangePicker(config):
                 if config.isReadOnly { continue }
-                
-                guard
-                    let value = store.values[config.id],
-                    case let .codable(data) = value,
-                    let range = try? JSONDecoder().decode(TimeRange.self, from: data),
-                    range.isValid
-                else {
+                // The time range has a valid default, so we only need to check if an explicitly set value is valid.
+                if let range = store.timeRangeValues[config.id], !range.isValid {
                     return false
                 }
                 
             case let .imageUploader(config, _):
-                guard let images = store.values[config.id]?.images,
-                      !images.isEmpty else {
+                guard let images = store.imageValues[config.id], !images.isEmpty else {
                     return false
                 }
                 
             case .scannerView, .description:
                 continue
                 
-            case let .tagSelector(config):
+            case .tagSelector(_):
                 continue
             }
         }

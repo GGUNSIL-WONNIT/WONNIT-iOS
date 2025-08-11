@@ -26,7 +26,16 @@ extension CreateSpaceFormStep {
                     id: "name",
                     title: "공간이름",
                     placeholder: "공간 이름을 입력해주세요 / 예) 노원 힐링스페이스"
-                ))
+                )),
+                .doubleField(
+                    config: .init(
+                        id: "area",
+                        title: "공간 크기",
+                        placeholder: "공간 크기를 입력해주세요 / 예) 12.25",
+                        suffix: "m²",
+                        keyboardType: .decimalPad
+                    )
+                )
             ]
 
         case .pictures:
@@ -43,25 +52,28 @@ extension CreateSpaceFormStep {
                         id: "subImages",
                         title: "추가사진 등록"
                     ),
-                    variant: .multipleSmall(limit: 5)
-                ),
+                    variant: .multipleSmall(limit: 4)
+                )
+            ]
+            
+        case .categoryAndTags:
+            return [
                 .select(
                     config: .init(
                         id: "category",
                         title: "공간 카테고리",
-                        placeholder: "카테고리를 선택하세요"
+                        placeholder: "카테고리를 선택하세요",
+                        isAIFeatured: true
                     ),
                     options: SpaceCategory.allCases.map(\.label)
                 ),
-                .doubleField(
-                    config: .init(
-                        id: "area",
-                        title: "공간 크기",
-                        placeholder: "공간 크기를 입력해주세요 / 예) 12.25",
-                        suffix: "m²",
-                        keyboardType: .decimalPad
-                    ),
-                )
+                .tagSelector(config: .init(
+                    id: "tags",
+                    title: "구비물품",
+                    placeholder: "구비 물품을 작성하세요",
+                    isAIFeatured: true,
+                    tooltipContentKey: "category"
+                ))
             ]
 
         case .operation:
@@ -87,11 +99,10 @@ extension CreateSpaceFormStep {
 
         case .miscellaneous:
             return [
-                .textField(config: .init(
+                .phoneNumberField(config: .init(
                     id: "contact",
                     title: "담당자 연락처",
                     placeholder: "연락처를 입력해주세요",
-                    keyboardType: .phonePad
                 )),
                 .textField(config: .init(
                     id: "cautions",

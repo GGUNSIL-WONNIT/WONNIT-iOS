@@ -21,6 +21,7 @@ enum FormComponent {
     case scannerView(id: String)
     case description(id: String, text: String)
     case tagSelector(config: FormFieldBaseConfig)
+    case phoneNumberField(config: FormFieldBaseConfig)
 }
 
 enum ImageUploaderVariant {
@@ -31,28 +32,40 @@ enum ImageUploaderVariant {
 struct FormFieldBaseConfig {
     let id: String
     let title: String?
+    let description: String?
     let placeholder: String?
     let suffix: String?
     let isReadOnly: Bool
     let submitLabel: SubmitLabel
     let keyboardType: UIKeyboardType
+    let characterLimit: Int?
+    let isAIFeatured: Bool
+    let tooltipContentKey: String?
 
     init(
         id: String,
         title: String? = nil,
+        description: String? = nil,
         placeholder: String? = nil,
         suffix: String? = nil,
         isReadOnly: Bool = false,
         submitLabel: SubmitLabel = .done,
-        keyboardType: UIKeyboardType = .default
+        keyboardType: UIKeyboardType = .default,
+        characterLimit: Int? = nil,
+        isAIFeatured: Bool = false,
+        tooltipContentKey: String? = nil
     ) {
         self.id = id
         self.title = title
+        self.description = description
         self.placeholder = placeholder
         self.suffix = suffix
         self.isReadOnly = isReadOnly
         self.submitLabel = submitLabel
         self.keyboardType = keyboardType
+        self.characterLimit = characterLimit
+        self.isAIFeatured = isAIFeatured
+        self.tooltipContentKey = tooltipContentKey
     }
 }
 
@@ -60,6 +73,7 @@ extension FormComponent: Identifiable {
     var id: String {
         switch self {
         case .textField(let config),
+             .phoneNumberField(let config),
              .multiLineTextField(let config, _),
              .doubleField(let config),
              .integerField(let config),
