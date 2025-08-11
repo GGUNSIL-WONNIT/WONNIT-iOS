@@ -25,9 +25,7 @@ struct TimeRangePickerBridge: UIViewRepresentable {
         
         @objc func beganEditing(_ sender: TimeRangePickerView) {
             if parent.store.focusedID != parent.id {
-                DispatchQueue.main.async {
-                    self.parent.store.focus(self.parent.id)
-                }
+                parent.store.focus(parent.id)
             }
         }
     }

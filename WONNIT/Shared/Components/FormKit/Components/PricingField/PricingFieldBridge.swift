@@ -26,9 +26,7 @@ struct PricingFieldBridge: UIViewRepresentable {
         func textFieldDidBeginEditing(_ textField: UITextField) {
             view?.active = PricingFieldView.ActiveSide.amount
             if parent.store.focusedID != parent.id {
-                DispatchQueue.main.async {
-                    self.parent.store.focus(self.parent.id)
-                }
+                parent.store.focus(parent.id)
             }
         }
     }

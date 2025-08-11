@@ -29,9 +29,7 @@ struct IntegerFieldBridge: UIViewRepresentable {
         
         func textFieldDidBeginEditing(_ tf: UITextField) {
             if parent.store.focusedID != parent.id {
-                DispatchQueue.main.async {
-                    self.parent.store.focus(self.parent.id)
-                }
+                parent.store.focus(parent.id)
             }
         }
         

@@ -32,9 +32,7 @@ struct SelectBridge: UIViewRepresentable {
         
         func textFieldDidBeginEditing(_ tf: UITextField) {
             if parent.store.focusedID != parent.id {
-                DispatchQueue.main.async {
-                    self.parent.store.focus(self.parent.id)
-                }
+                parent.store.focus(parent.id)
             }
             
             if let idx = parent.options.firstIndex(of: parent.selection.wrappedValue) {
