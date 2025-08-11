@@ -184,11 +184,7 @@ struct CreateSpaceView: View {
                     }
                     .id("topAnchor")
                 }
-                .onAppear {
-                    formStore.fieldIDs = currentStep.components.map { $0.id }
-                }
                 .onChange(of: currentStep) { _, newStep in
-                    formStore.fieldIDs = newStep.components.map { $0.id }
                     withAnimation {
                         proxy.scrollTo("topAnchor", anchor: .top)
                     }
