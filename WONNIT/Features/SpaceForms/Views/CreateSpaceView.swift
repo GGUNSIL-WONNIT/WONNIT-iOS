@@ -74,8 +74,7 @@ struct CreateSpaceView: View {
     }
     
     private var nextButton: some View {
-        //        let isValid = currentStep.isStepValid(store: formStore)
-        let isValid = true
+        let isValid = currentStep.isStepValid(store: formStore)
         let isOptional = currentStep.isOptional
         
         return Button {
