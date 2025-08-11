@@ -30,17 +30,18 @@ struct IntegerFieldBridge: UIViewRepresentable {
         func textFieldDidBeginEditing(_ tf: UITextField) {
             if parent.store.focusedID != parent.id { parent.store.focus(parent.id) }
         }
+        
         func textFieldDidEndEditing(_ tf: UITextField) {
-            if parent.store.focusedID == parent.id { parent.store.blur() }
+            if parent.store.focusedID == parent.id {
+                parent.store.blur()
+            }
         }
+        
         func textFieldShouldReturn(_ tf: UITextField) -> Bool {
-            parent.onReturn?() ?? { tf.resignFirstResponder() }()
             return false
         }
         
-        @objc func handlePrev() { parent.onPrev?() }
-        @objc func handleNext() { parent.onNext?() }
-        @objc func handleDone() { parent.onDone?() ?? { parent.store.blur() }() }
+        @objc func handleDone() { parent.onDone?() }
     }
     
     let id: String
@@ -50,10 +51,7 @@ struct IntegerFieldBridge: UIViewRepresentable {
     var allowNegative: Bool = false
     var readOnly: Bool = false
     
-    var onReturn: (() -> Void)? = nil
-    var onPrev: (() -> Void)? = nil
-    var onNext: (() -> Void)? = nil
-    var onDone:  (() -> Void)? = nil
+    var onDone: (() -> Void)? = nil
     
     func makeCoordinator() -> Coordinator { Coordinator(self) }
     
@@ -61,10 +59,9 @@ struct IntegerFieldBridge: UIViewRepresentable {
         let tf = UITextField(frame: .zero)
         tf.delegate = context.coordinator
         tf.keyboardType = .numberPad
+        tf.returnKeyType = .next
         tf.inputAccessoryView = UIToolbar.makeFormToolbar(
             target: context.coordinator,
-            prev: #selector(Coordinator.handlePrev),
-            next: #selector(Coordinator.handleNext),
             done: #selector(Coordinator.handleDone)
         )
         tf.borderStyle = .none

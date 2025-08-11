@@ -30,8 +30,6 @@ struct PricingFieldComponentView: View {
                 ),
                 unitWidth: 102,
                 units: Array(AmountInfo.TimeUnit.allCases),
-                onPrev: { /* store.previous() */ },
-                onNext: { /* store.next() */ },
                 onDone: { store.blur() }
             )
             .frame(height: 48)

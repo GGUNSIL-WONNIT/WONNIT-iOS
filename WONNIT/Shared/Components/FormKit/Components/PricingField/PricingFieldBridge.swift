@@ -9,24 +9,30 @@ import SwiftUI
 import UIKit
 
 struct PricingFieldBridge: UIViewRepresentable {
-    final class Coordinator: NSObject {
+    final class Coordinator: NSObject, UITextFieldDelegate {
         let parent: PricingFieldBridge
         weak var view: PricingFieldView?
         
         init(_ parent: PricingFieldBridge) { self.parent = parent }
         
-        @objc func handlePrev() { parent.onPrev?() }
-        @objc func handleNext() { parent.onNext?() }
         @objc func handleDone() {
-            if let onDone = parent.onDone { onDone() }
-            else { parent.store.blur() }
-            let _ = view?.resignFirstResponder()
+            parent.onDone?()
         }
         
         @objc func valueChanged(_ sender: PricingFieldView) {
             parent.value.wrappedValue = sender.value
         }
-        @objc func beganEditing(_ sender: PricingFieldView) { }
+        
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            view?.active = PricingFieldView.ActiveSide.amount
+            parent.store.focus(parent.id)
+        }
+        
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            if parent.store.focusedID == parent.id {
+                parent.store.blur()
+            }
+        }
     }
     
     let id: String
@@ -37,8 +43,6 @@ struct PricingFieldBridge: UIViewRepresentable {
     var unitWidth: CGFloat = 102
     var units: [AmountInfo.TimeUnit] = Array(AmountInfo.TimeUnit.allCases)
     
-    var onPrev: (() -> Void)? = nil
-    var onNext: (() -> Void)? = nil
     var onDone: (() -> Void)? = nil
     
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -48,8 +52,6 @@ struct PricingFieldBridge: UIViewRepresentable {
         
         v.toolbar = UIToolbar.makeFormToolbar(
             target: context.coordinator,
-            prev: #selector(Coordinator.handlePrev),
-            next: #selector(Coordinator.handleNext),
             done: #selector(Coordinator.handleDone)
         )
         
@@ -69,7 +71,7 @@ struct PricingFieldBridge: UIViewRepresentable {
         v.value = value.wrappedValue
         
         v.addTarget(context.coordinator, action: #selector(Coordinator.valueChanged(_:)), for: .valueChanged)
-        v.addTarget(context.coordinator, action: #selector(Coordinator.beganEditing(_:)), for: .editingDidBegin)
+        v.amountField.delegate = context.coordinator
         v.accessibilityIdentifier = id
         
         context.coordinator.view = v
@@ -91,8 +93,8 @@ struct PricingFieldBridge: UIViewRepresentable {
         v.timeUnits = units
         
         let shouldFocus = (store.focusedID == id)
-        if shouldFocus, !v.isFirstResponder { _ = v.becomeFirstResponder() }
-        if !shouldFocus, v.isFirstResponder   { _ = v.resignFirstResponder() }
+        if shouldFocus, !v.isEditing { _ = v.becomeFirstResponder() }
+        if !shouldFocus, v.isEditing { _ = v.resignFirstResponder() }
     }
 }
 

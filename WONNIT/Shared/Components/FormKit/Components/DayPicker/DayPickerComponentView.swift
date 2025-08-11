@@ -31,8 +31,6 @@ struct DayPickerComponentView: View {
                         borderSelected: UIColor(Color.primaryPurple),
                         borderNormal: UIColor(Color.grey100)
                     ),
-                    onPrev: { /* store.previous() */ },
-                    onNext: { /* store.next() */ },
                     onDone: { store.blur() }
                 )
                 .frame(height: 56)

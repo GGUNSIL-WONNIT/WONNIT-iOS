@@ -15,14 +15,19 @@ struct TimeRangePickerBridge: UIViewRepresentable {
         
         init(_ parent: TimeRangePickerBridge) { self.parent = parent }
         
-        @objc func handlePrev() { parent.onPrev?() }
-        @objc func handleNext() { parent.onNext?() }
-        @objc func handleDone() { parent.onDone?() ?? { parent.store.blur() }() }
+        @objc func handleDone() {
+            parent.onDone?()
+        }
         
         @objc func valueChanged(_ sender: TimeRangePickerView) {
             parent.value.wrappedValue = sender.timeRange
         }
-        @objc func beganEditing(_ sender: TimeRangePickerView) { }
+        
+        @objc func beganEditing(_ sender: TimeRangePickerView) {
+            if parent.store.focusedID != parent.id {
+                parent.store.focus(parent.id)
+            }
+        }
     }
     
     let id: String
@@ -31,8 +36,6 @@ struct TimeRangePickerBridge: UIViewRepresentable {
     
     var style: PickerStyleColorsMapping
     
-    var onPrev: (() -> Void)? = nil
-    var onNext: (() -> Void)? = nil
     var onDone: (() -> Void)? = nil
     
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -42,8 +45,6 @@ struct TimeRangePickerBridge: UIViewRepresentable {
         
         v.toolbar = UIToolbar.makeFormToolbar(
             target: context.coordinator,
-            prev: #selector(Coordinator.handlePrev),
-            next: #selector(Coordinator.handleNext),
             done: #selector(Coordinator.handleDone)
         )
         
@@ -82,8 +83,8 @@ struct TimeRangePickerBridge: UIViewRepresentable {
         )
         
         let shouldFocus = (store.focusedID == id)
-        if shouldFocus, !v.isFirstResponder { _ = v.becomeFirstResponder() }
-        if !shouldFocus, v.isFirstResponder { _ = v.resignFirstResponder() }
+        if shouldFocus, !v.isEditing { _ = v.becomeFirstResponder() }
+        if !shouldFocus, v.isEditing { _ = v.resignFirstResponder() }
     }
 }
 

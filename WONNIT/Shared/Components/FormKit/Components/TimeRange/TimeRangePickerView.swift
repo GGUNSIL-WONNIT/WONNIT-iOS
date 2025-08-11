@@ -21,11 +21,13 @@ final class TimeRangePickerView: UIControl {
     }
     
     override var canBecomeFirstResponder: Bool { true }
+    var isEditing: Bool { isFirstResponder }
+
     override var inputView: UIView? { pickerContainer }
     override var inputAccessoryView: UIView? { toolbar }
     
     var toolbar: UIToolbar? {
-        didSet { if isFirstResponder { reloadInputViews() } }
+        didSet { if isEditing { reloadInputViews() } }
     }
     
     private let hstack = UIStackView()
@@ -45,8 +47,10 @@ final class TimeRangePickerView: UIControl {
     
     var active: ActiveSide? {
         didSet {
+            guard oldValue != active else { return }
             syncPickerFromActive()
             updateVisuals()
+            if isEditing { reloadInputViews() }
         }
     }
     

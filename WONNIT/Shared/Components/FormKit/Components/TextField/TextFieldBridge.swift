@@ -18,7 +18,9 @@ struct TextFieldBridge: UIViewRepresentable {
         }
         
         func textFieldDidEndEditing(_ tf: UITextField) {
-            if parent.store.focusedID == parent.id { parent.store.blur() }
+            if parent.store.focusedID == parent.id {
+                parent.store.blur()
+            }
         }
         
         @objc func changed(_ tf: UITextField) {
@@ -26,13 +28,10 @@ struct TextFieldBridge: UIViewRepresentable {
         }
         
         func textFieldShouldReturn(_ tf: UITextField) -> Bool {
-            parent.onReturn?() ?? { tf.resignFirstResponder() }()
             return false
         }
         
-        @objc func handlePrev() { parent.onPrev?() }
-        @objc func handleNext() { parent.onNext?() }
-        @objc func handleDone() { parent.onDone?() ?? { parent.store.blur() }() }
+        @objc func handleDone() { parent.onDone?() }
     }
     
     let id: String
@@ -42,15 +41,12 @@ struct TextFieldBridge: UIViewRepresentable {
     var placeholder: String? = nil
     var isSecure: Bool = false
     var keyboard: UIKeyboardType = .default
-    var returnKey: UIReturnKeyType = .default
-    var submitLabel: SubmitLabel = .done
+    var returnKey: UIReturnKeyType = .next
+    var submitLabel: SubmitLabel = .next
     var readOnly: Bool = false
     var characterLimit: Int? = nil
     
-    var onReturn: (() -> Void)? = nil
-    var onPrev: (() -> Void)? = nil
-    var onNext: (() -> Void)? = nil
-    var onDone:  (() -> Void)? = nil
+    var onDone: (() -> Void)? = nil
     
     func makeCoordinator() -> Coordinator { Coordinator(self) }
     
@@ -71,8 +67,6 @@ struct TextFieldBridge: UIViewRepresentable {
         }
         tf.inputAccessoryView = UIToolbar.makeFormToolbar(
             target: context.coordinator,
-            prev: #selector(Coordinator.handlePrev),
-            next: #selector(Coordinator.handleNext),
             done: #selector(Coordinator.handleDone)
         )
         tf.isUserInteractionEnabled = !readOnly

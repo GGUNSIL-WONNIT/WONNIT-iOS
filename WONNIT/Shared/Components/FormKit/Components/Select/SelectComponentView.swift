@@ -31,8 +31,6 @@ struct SelectComponentView: View {
                     selection: store.stringBinding(for: config.id, default: "").projectedToNonOptional(),
                     placeholder: config.placeholder,
                     readOnly: config.isReadOnly,
-                    onPrev: { /* store.previous() */ },
-                    onNext: { /* store.next() */ },
                     onDone: { store.blur() }
                 )
                 .frame(height: height)

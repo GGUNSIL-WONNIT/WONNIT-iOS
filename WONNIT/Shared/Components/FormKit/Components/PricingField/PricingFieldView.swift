@@ -20,6 +20,11 @@ final class PricingFieldView: UIControl {
     }
     
     override var canBecomeFirstResponder: Bool { true }
+    
+    var isEditing: Bool {
+        isFirstResponder || amountField.isFirstResponder
+    }
+    
     override var inputView: UIView? {
         switch active {
         case .unit?: return pickerContainer
@@ -31,14 +36,13 @@ final class PricingFieldView: UIControl {
     var toolbar: UIToolbar? {
         didSet {
             amountField.inputAccessoryView = toolbar
-            if isFirstResponder { reloadInputViews() }
-            if amountField.isFirstResponder { amountField.reloadInputViews() }
+            if isEditing { reloadInputViews() }
         }
     }
     
     private let hstack = UIStackView()
     private let unitButton = UIButton(type: .system)
-    private let amountField = UITextField()
+    let amountField = UITextField()
     private let suffixLabel = UILabel()
     
     private let picker = UIPickerView()
@@ -54,7 +58,12 @@ final class PricingFieldView: UIControl {
     }
     
     var active: ActiveSide? {
-        didSet { syncPickerFromActive(); updateVisuals(); if isFirstResponder { reloadInputViews() } }
+        didSet {
+            guard oldValue != active else { return }
+            syncPickerFromActive()
+            updateVisuals()
+            if isEditing { reloadInputViews() }
+        }
     }
     
     private var unitWidthConstraint: NSLayoutConstraint?
@@ -147,7 +156,10 @@ final class PricingFieldView: UIControl {
     
     override func becomeFirstResponder() -> Bool {
         let ok = super.becomeFirstResponder()
-        if ok, active == nil { active = .unit }
+        if ok, active == nil {
+            active = .unit
+            sendActions(for: .editingDidBegin)
+        }
         return ok
     }
     
@@ -182,8 +194,6 @@ final class PricingFieldView: UIControl {
         tf.leftViewMode = .always
         tf.rightViewMode = .never
         tf.placeholder = "금액"
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapAmountField))
-        tf.addGestureRecognizer(tap)
     }
     
     private func configureSuffixLabel(_ l: UILabel) {
@@ -207,19 +217,12 @@ final class PricingFieldView: UIControl {
         _ = becomeFirstResponder()
     }
     
-    @objc private func tapUnit() {
+    @objc func tapUnit() {
         if !isFirstResponder { _ = becomeFirstResponder() }
         active = .unit
         if let idx = timeUnits.firstIndex(of: value.timeUnit) {
             picker.selectRow(idx, inComponent: 0, animated: false)
         }
-        sendActions(for: .editingDidBegin)
-    }
-    
-    @objc private func tapAmountField() {
-        if !isFirstResponder { _ = becomeFirstResponder() }
-        active = .amount
-        amountField.becomeFirstResponder()
         sendActions(for: .editingDidBegin)
     }
     
@@ -235,8 +238,15 @@ final class PricingFieldView: UIControl {
     }
     
     private func syncUIFromValue(oldValue: AmountInfo?) {
+        if let oldValue, oldValue == value { return }
+        
         unitButton.setTitle(value.timeUnit.localizedLabel, for: .normal)
-        amountField.text = formattedAmount(value.amount)
+        
+        let newText = formattedAmount(value.amount)
+        if amountField.text != newText {
+            amountField.text = newText
+        }
+        
         if active == .unit, let idx = timeUnits.firstIndex(of: value.timeUnit) {
             picker.selectRow(idx, inComponent: 0, animated: false)
         }

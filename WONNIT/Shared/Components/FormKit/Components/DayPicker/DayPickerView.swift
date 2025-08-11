@@ -36,6 +36,14 @@ public struct PickerStyleColorsMapping {
 final class DayPickerView: UIControl {
     override var canBecomeFirstResponder: Bool { true }
     
+    override func becomeFirstResponder() -> Bool {
+        let result = super.becomeFirstResponder()
+        if result {
+            sendActions(for: .editingDidBegin)
+        }
+        return result
+    }
+    
     override var inputView: UIView? {
         if _inputView == nil {
             let v = UIView(frame: .init(x: 0, y: 0, width: 0, height: 1))

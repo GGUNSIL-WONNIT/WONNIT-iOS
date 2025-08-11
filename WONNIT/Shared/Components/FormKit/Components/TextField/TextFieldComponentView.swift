@@ -23,14 +23,11 @@ struct TextFieldComponentView: View {
                     placeholder: config.placeholder,
                     isSecure: false,
                     keyboard: config.keyboardType,
-                    returnKey: .done,
-                    submitLabel: config.submitLabel,
+                    returnKey: .next,
+                    submitLabel: .next,
                     readOnly: config.isReadOnly,
                     characterLimit: config.characterLimit,
-                    onReturn: { store.blur() },
-                    onPrev: { /* store.previous() */ },
-                    onNext: { /* store.next() */ },
-                    onDone:  { store.blur() }
+                    onDone: { store.blur() }
                 )
                 .frame(height: 48)
                 .padding(.horizontal, 12)

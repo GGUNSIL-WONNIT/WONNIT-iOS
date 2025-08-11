@@ -15,13 +15,17 @@ struct DayPickerBridge: UIViewRepresentable {
         
         init(_ parent: DayPickerBridge) { self.parent = parent }
         
-        @objc func handlePrev() { parent.onPrev?() }
-        @objc func handleNext() { parent.onNext?() }
-        @objc func handleDone() { parent.onDone?() ?? { parent.store.blur() }() }
-        
         @objc func valueChanged(_ sender: DayPickerView) {
             parent.selection.wrappedValue = sender.selectedDays
         }
+        
+        @objc func beganEditing(_ sender: DayPickerView) {
+            if parent.store.focusedID != parent.id {
+                parent.store.focus(parent.id)
+            }
+        }
+        
+        @objc func handleDone() { parent.onDone?() }
     }
     
     let id: String
@@ -30,8 +34,6 @@ struct DayPickerBridge: UIViewRepresentable {
     
     var style: PickerStyleColorsMapping
     
-    var onPrev: (() -> Void)? = nil
-    var onNext: (() -> Void)? = nil
     var onDone: (() -> Void)? = nil
     
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -41,8 +43,6 @@ struct DayPickerBridge: UIViewRepresentable {
         
         v.toolbar = UIToolbar.makeFormToolbar(
             target: context.coordinator,
-            prev: #selector(Coordinator.handlePrev),
-            next: #selector(Coordinator.handleNext),
             done: #selector(Coordinator.handleDone)
         )
         
@@ -50,6 +50,7 @@ struct DayPickerBridge: UIViewRepresentable {
         v.applyStyle(style)
         
         v.addTarget(context.coordinator, action: #selector(Coordinator.valueChanged(_:)), for: .valueChanged)
+        v.addTarget(context.coordinator, action: #selector(Coordinator.beganEditing(_:)), for: .editingDidBegin)
         v.accessibilityIdentifier = id
         
         context.coordinator.view = v

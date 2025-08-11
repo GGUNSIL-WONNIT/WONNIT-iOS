@@ -36,6 +36,7 @@ struct DoubleFieldBridge: UIViewRepresentable {
         func textFieldDidBeginEditing(_ tf: UITextField) {
             if parent.store.focusedID != parent.id { parent.store.focus(parent.id) }
         }
+        
         func textFieldDidEndEditing(_ tf: UITextField) {
             if parent.store.focusedID == parent.id { parent.store.blur() }
             if let v = parent.value.wrappedValue {
@@ -46,26 +47,30 @@ struct DoubleFieldBridge: UIViewRepresentable {
         func textField(_ tf: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
             guard parent.allowNegative || string != "-" else { return false }
             let current = tf.text ?? ""
+            let decimalSeparator = formatter.decimalSeparator ?? "."
+
+            // Prevent multiple decimal separators.
+            if current.contains(decimalSeparator) && string == decimalSeparator {
+                return false
+            }
+
             let ns = current as NSString
             let next = ns.replacingCharacters(in: range, with: string)
             
-            if parent.maxFractionDigits >= 0, let dot = next.firstIndex(of: ".") {
+            if parent.maxFractionDigits >= 0, let dot = next.firstIndex(of: Character(decimalSeparator)) {
                 let frac = next[next.index(after: dot)...]
                 if frac.count > parent.maxFractionDigits { return false }
             }
             
-            let allowed = parent.allowNegative ? "0123456789.-" : "0123456789."
+            let allowed = parent.allowNegative ? "0123456789-\(decimalSeparator)" : "0123456789\(decimalSeparator)"
             return next.allSatisfy { allowed.contains($0) }
         }
         
         func textFieldShouldReturn(_ tf: UITextField) -> Bool {
-            parent.onReturn?() ?? { tf.resignFirstResponder() }()
             return false
         }
         
-        @objc func handlePrev() { parent.onPrev?() }
-        @objc func handleNext() { parent.onNext?() }
-        @objc func handleDone() { parent.onDone?() ?? { parent.store.blur() }() }
+        @objc func handleDone() { parent.onDone?() }
     }
     
     let id: String
@@ -78,10 +83,7 @@ struct DoubleFieldBridge: UIViewRepresentable {
     var locale: Locale = .current
     var readOnly: Bool = false
     
-    var onReturn: (() -> Void)? = nil
-    var onPrev: (() -> Void)? = nil
-    var onNext: (() -> Void)? = nil
-    var onDone:  (() -> Void)? = nil
+    var onDone: (() -> Void)? = nil
     
     func makeCoordinator() -> Coordinator { Coordinator(self) }
     
@@ -89,7 +91,7 @@ struct DoubleFieldBridge: UIViewRepresentable {
         let tf = UITextField(frame: .zero)
         tf.delegate = context.coordinator
         tf.keyboardType = .decimalPad
-        tf.returnKeyType = .done
+        tf.returnKeyType = .next
         tf.autocorrectionType = .no
         tf.autocapitalizationType = .none
         tf.borderStyle = .none
@@ -100,8 +102,6 @@ struct DoubleFieldBridge: UIViewRepresentable {
         }
         tf.inputAccessoryView = UIToolbar.makeFormToolbar(
             target: context.coordinator,
-            prev: #selector(Coordinator.handlePrev),
-            next: #selector(Coordinator.handleNext),
             done: #selector(Coordinator.handleDone)
         )
         tf.isUserInteractionEnabled = !readOnly
@@ -110,11 +110,13 @@ struct DoubleFieldBridge: UIViewRepresentable {
     }
     
     func updateUIView(_ tf: UITextField, context: Context) {
-        if let v = value.wrappedValue {
-            let s = context.coordinator.formatter.string(from: NSNumber(value: v)) ?? ""
-            if tf.text != s { tf.text = s }
-        } else if (tf.text?.isEmpty == false) {
-            tf.text = ""
+        if !tf.isFirstResponder {
+            if let v = value.wrappedValue {
+                let s = context.coordinator.formatter.string(from: NSNumber(value: v)) ?? ""
+                if tf.text != s { tf.text = s }
+            } else if (tf.text?.isEmpty == false) {
+                tf.text = ""
+            }
         }
         
         let shouldFocus = (store.focusedID == id)

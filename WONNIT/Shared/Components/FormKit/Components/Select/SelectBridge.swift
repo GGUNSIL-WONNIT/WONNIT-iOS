@@ -38,15 +38,14 @@ struct SelectBridge: UIViewRepresentable {
                 picker?.selectRow(idx, inComponent: 0, animated: false)
             }
         }
+        
         func textFieldDidEndEditing(_ tf: UITextField) {
             if parent.store.focusedID == parent.id {
                 parent.store.blur()
             }
         }
         
-        @objc func handlePrev() { parent.onPrev?() }
-        @objc func handleNext() { parent.onNext?() }
-        @objc func handleDone() { parent.onDone?() ?? { parent.store.blur() }() }
+        @objc func handleDone() { parent.onDone?() }
     }
     
     let id: String
@@ -57,8 +56,6 @@ struct SelectBridge: UIViewRepresentable {
     var placeholder: String? = nil
     var readOnly: Bool = false
     
-    var onPrev: (() -> Void)? = nil
-    var onNext: (() -> Void)? = nil
     var onDone: (() -> Void)? = nil
     
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -79,8 +76,6 @@ struct SelectBridge: UIViewRepresentable {
         
         tf.inputAccessoryView = UIToolbar.makeFormToolbar(
             target: context.coordinator,
-            prev: #selector(Coordinator.handlePrev),
-            next: #selector(Coordinator.handleNext),
             done: #selector(Coordinator.handleDone)
         )
         

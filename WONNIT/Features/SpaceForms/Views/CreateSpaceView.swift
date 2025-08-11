@@ -74,7 +74,7 @@ struct CreateSpaceView: View {
     }
     
     private var nextButton: some View {
-//        let isValid = currentStep.isStepValid(store: formStore)
+        //        let isValid = currentStep.isStepValid(store: formStore)
         let isValid = true
         let isOptional = currentStep.isOptional
         
@@ -140,47 +140,66 @@ struct CreateSpaceView: View {
     
     private var formContent: some View {
         GeometryReader { geometry in
-            ScrollView {
-                ZStack {
-                    Color.clear
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            formStore.blur()
-                        }
-                    
+            ScrollViewReader { proxy in
+                ScrollView {
                     ZStack {
-                        ForEach(CreateSpaceFormStep.allCases, id: \.self) { step in
-                            if step == currentStep {
-                                VStack(spacing: 24) {
-                                    HStack {
-                                        Text(step.sectionTitle)
-                                            .title_01(.grey900)
-                                        Spacer()
-                                    }
-                                    
-                                    VStack(spacing: 32) {
-                                        ForEach(step.components, id: \.id) { component in
-                                            FormRenderer.render(
-                                                component,
-                                                store: formStore,
-                                            )
+                        Color.clear
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                formStore.blur()
+                            }
+                        
+                        ZStack {
+                            ForEach(CreateSpaceFormStep.allCases, id: \.self) { step in
+                                if step == currentStep {
+                                    VStack(spacing: 24) {
+                                        HStack {
+                                            Text(step.sectionTitle)
+                                                .title_01(.grey900)
+                                            Spacer()
+                                        }
+                                        
+                                        VStack(spacing: 32) {
+                                            ForEach(step.components, id: \.id) { component in
+                                                FormRenderer.render(
+                                                    component,
+                                                    store: formStore
+                                                )
+                                                .id(component.id)
+                                            }
                                         }
                                     }
-                                    
-                                    Spacer()
-                                        .frame(minHeight: geometry.size.height - 600)
+                                    .padding(.horizontal, 16)
+                                    .padding(.top, 36)
+                                    .padding(.bottom, 386)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .transition(.asymmetric(
+                                        insertion: .move(edge: transitionDirection).combined(with: .opacity),
+                                        removal: .move(edge: transitionDirection == .trailing ? .leading : .trailing).combined(with: .opacity)
+                                    ))
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 36)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .transition(.asymmetric(
-                                    insertion: .move(edge: transitionDirection).combined(with: .opacity),
-                                    removal: .move(edge: transitionDirection == .trailing ? .leading : .trailing).combined(with: .opacity)
-                                ))
                             }
                         }
+                        .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
                     }
-                    .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
+                    .id("topAnchor")
+                }
+                .onAppear {
+                    formStore.fieldIDs = currentStep.components.map { $0.id }
+                }
+                .onChange(of: currentStep) { _, newStep in
+                    formStore.fieldIDs = newStep.components.map { $0.id }
+                    withAnimation {
+                        proxy.scrollTo("topAnchor", anchor: .top)
+                    }
+                }
+                .onChange(of: formStore.focusedID) { _, newID in
+                    guard let newID = newID else { return }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        withAnimation {
+                            proxy.scrollTo(newID, anchor: .center)
+                        }
+                    }
                 }
             }
         }

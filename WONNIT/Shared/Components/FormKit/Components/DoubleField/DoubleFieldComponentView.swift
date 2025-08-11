@@ -21,7 +21,8 @@ struct DoubleFieldComponentView: View {
                     value: store.doubleBinding(for: config.id),
                     placeholder: config.placeholder,
                     maxFractionDigits: 2,
-                    allowNegative: false
+                    allowNegative: false,
+                    onDone: { store.blur() }
                 )
                 .frame(height: 48)
                 .padding(.horizontal, 12)

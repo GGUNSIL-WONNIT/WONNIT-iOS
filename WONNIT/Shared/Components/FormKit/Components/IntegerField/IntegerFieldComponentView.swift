@@ -20,7 +20,8 @@ struct IntegerFieldComponentView: View {
                     store: store,
                     value: store.intBinding(for: config.id),
                     placeholder: config.placeholder,
-                    allowNegative: false
+                    allowNegative: false,
+                    onDone: { store.blur() }
                 )
                 .frame(height: 48)
                 .padding(.horizontal, 12)
