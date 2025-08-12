@@ -10,27 +10,25 @@ import UIKit
 import RoomPlan
 
 @Observable
-final class RoomCaptureController: NSObject, RoomCaptureViewDelegate, NSCoding {
+final class RoomCaptureController: RoomCaptureViewDelegate {
     static let shared = RoomCaptureController()
     
+    func encode(with coder: NSCoder) {}
+    
+    required init?(coder: NSCoder) {
+        fatalError("Not Implemented")
+    }
+
     var finalResult: CapturedRoom?
     var isProcessing = false
     
-    private(set) var captureView: RoomCaptureView
-    private var sessionConfig = RoomCaptureSession.Configuration()
+    var captureView: RoomCaptureView
+    private var sessionConfig: RoomCaptureSession.Configuration
     
-    private override init() {
+    init() {
         captureView = RoomCaptureView(frame: .zero)
-        super.init()
+        sessionConfig = .init()
         captureView.delegate = self
-    }
-    
-    required init?(coder: NSCoder) { // NSCoding
-        fatalError("not implemented")
-    }
-    
-    func encode(with coder: NSCoder) { // NSCoding
-        fatalError("not implemented")
     }
     
     func startSession() {
@@ -52,11 +50,10 @@ final class RoomCaptureController: NSObject, RoomCaptureViewDelegate, NSCoding {
     func captureView(didPresent processedResult: CapturedRoom, error: Error?) {
         if let error = error {
             print("RoomCapture Error: \(error.localizedDescription)")
-            print("\(#fileID) \(#line)-line, \(#function)")
-            self.finalResult = nil
+            finalResult = nil
         } else {
-            self.finalResult = processedResult
+            finalResult = processedResult
         }
-        self.isProcessing = false
+        isProcessing = false
     }
 }
