@@ -8,6 +8,18 @@
 import SwiftUI
 import RoomPlan
 
+private enum ScannerAlert: Identifiable {
+    case error(String)
+    case replaceExisting
+    
+    var id: String {
+        switch self {
+        case .error(let message): return "error-\(message)"
+        case .replaceExisting: return "replace"
+        }
+    }
+}
+
 struct RoomScannerComponentView: View {
     let config: FormFieldBaseConfig
     @Binding var roomData: RoomData?
@@ -16,26 +28,23 @@ struct RoomScannerComponentView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     
+    @State private var activeAlert: ScannerAlert?
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title = config.title {
                 Text(title).body_02(.grey900)
             }
             
-            Button(action: {
-                if RoomCaptureSession.isSupported {
-                    isShowingScanner = true
-                } else {
-                    errorMessage = "해당 기능이 지원되지 않는 기기입니다."
-                    showError = true
-                }
-            }) {
+            Button {
+                handleTap()
+            } label: {
                 ZStack {
                     if let thumbnail = roomData?.thumbnail {
                         Image(uiImage: thumbnail)
                             .resizable()
-                            .scaledToFill()
-                            .frame(height: 257)
+                            .scaledToFit()
+                            .frame(height: 300)
                             .clipped()
                             .cornerRadius(8)
                     } else {
@@ -44,8 +53,24 @@ struct RoomScannerComponentView: View {
                 }
                 .frame(height: 257)
             }
-            .alert(isPresented: $showError) {
-                Alert(title: Text("사용 불가"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
+            .alert(item: $activeAlert) { alert in
+                switch alert {
+                case .error(let message):
+                    return Alert(
+                        title: Text("사용 불가"),
+                        message: Text(message),
+                        dismissButton: .default(Text("OK"))
+                    )
+                case .replaceExisting:
+                    return Alert(
+                        title: Text("기존 스캔을 덮어쓸까요?"),
+                        message: Text("현재 저장된 스캔과 썸네일이 새 스캔으로 교체됩니다."),
+                        primaryButton: .destructive(Text("덮어쓰기")) {
+                            isShowingScanner = true
+                        },
+                        secondaryButton: .cancel(Text("취소"))
+                    )
+                }
             }
             .fullScreenCover(isPresented: $isShowingScanner) {
                 RoomScannerHostView(roomData: $roomData)
@@ -75,5 +100,17 @@ struct RoomScannerComponentView: View {
                         .body_05(.grey700)
                 }
             )
+    }
+    
+    private func handleTap() {
+        guard RoomCaptureSession.isSupported else {
+            activeAlert = .error("해당 기능이 지원되지 않는 기기입니다.")
+            return
+        }
+        if roomData != nil {
+            activeAlert = .replaceExisting
+        } else {
+            isShowingScanner = true
+        }
     }
 }
