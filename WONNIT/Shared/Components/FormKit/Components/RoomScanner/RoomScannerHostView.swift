@@ -10,8 +10,10 @@ import RoomPlan
 
 struct RoomScannerHostView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var roomController = RoomCaptureController.shared
-    @State private var roomScanStorageManager = ScanStorageManager.shared
+    
+    @State private var roomController = RoomCaptureController()
+    
+    private let roomScanStorageManager = ScanStorageManager.shared
     
     @Binding var roomData: RoomData?
     
@@ -21,7 +23,7 @@ struct RoomScannerHostView: View {
     
     var body: some View {
         ZStack {
-            RoomCaptureContainerView()
+            RoomCaptureContainerView(roomController: roomController)
                 .ignoresSafeArea()
                 .onAppear(perform: roomController.startSession)
             
