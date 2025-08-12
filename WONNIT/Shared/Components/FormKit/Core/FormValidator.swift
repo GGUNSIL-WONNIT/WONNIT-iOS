@@ -40,7 +40,6 @@ extension CreateSpaceFormStep {
             case let .pricingField(config):
                 if config.isReadOnly { continue }
                 guard let amountInfo = store.amountInfoValues[config.id] else {
-                    // If not set, it defaults to 0, which is valid.
                     continue
                 }
                 let isValidAmount = amountInfo.amount >= 0
@@ -55,7 +54,6 @@ extension CreateSpaceFormStep {
                 
             case let .timeRangePicker(config):
                 if config.isReadOnly { continue }
-                // The time range has a valid default, so we only need to check if an explicitly set value is valid.
                 if let range = store.timeRangeValues[config.id], !range.isValid {
                     return false
                 }
@@ -65,7 +63,10 @@ extension CreateSpaceFormStep {
                     return false
                 }
                 
-            case .scannerView, .description:
+            case .roomScanner(_):
+                continue
+                    
+            case .description:
                 continue
                 
             case .tagSelector(_):

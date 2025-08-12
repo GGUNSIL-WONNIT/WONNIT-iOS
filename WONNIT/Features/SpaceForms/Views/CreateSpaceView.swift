@@ -74,7 +74,12 @@ struct CreateSpaceView: View {
     }
     
     private var nextButton: some View {
+        #if DEBUG
+        let isValid = true
+        #else
         let isValid = currentStep.isStepValid(store: formStore)
+        #endif
+        
         let isOptional = currentStep.isOptional
         
         return Button {

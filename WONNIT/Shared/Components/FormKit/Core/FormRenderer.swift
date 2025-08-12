@@ -46,7 +46,12 @@ struct FormRenderer {
             ImageUploaderComponentView(
                 config: config,
                 variant: variant,
-                images: store.imageBinding(for: config.id),
+                images: store.imageBinding(for: config.id)
+            )
+        case let .roomScanner(config):
+            RoomScannerComponentView(
+                config: config,
+                roomData: store.roomDataBinding(for: config.id)
             )
         default:
             Text("😭 곧.")

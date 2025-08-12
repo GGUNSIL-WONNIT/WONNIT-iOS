@@ -94,4 +94,11 @@ extension FormStateStore {
             set: { self.imageValues[id] = $0 }
         )
     }
+    
+    func roomDataBinding(for id: String) -> Binding<RoomData?> {
+        Binding(
+            get: { self.roomDataValues[id, default: nil] },
+            set: { self.roomDataValues[id] = $0 }
+        )
+    }
 }

@@ -94,7 +94,9 @@ extension CreateSpaceFormStep {
 
         case .scanner:
             return [
-                .scannerView(id: "scannerView")
+                .roomScanner(config: .init(
+                    id: "roomScanner",
+                ))
             ]
 
         case .miscellaneous:

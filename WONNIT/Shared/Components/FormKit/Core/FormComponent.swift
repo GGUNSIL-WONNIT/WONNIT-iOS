@@ -18,7 +18,7 @@ enum FormComponent {
     case dayPicker(config: FormFieldBaseConfig)
     case timeRangePicker(config: FormFieldBaseConfig)
     case pricingField(config: FormFieldBaseConfig)
-    case scannerView(id: String)
+    case roomScanner(config: FormFieldBaseConfig)
     case description(id: String, text: String)
     case tagSelector(config: FormFieldBaseConfig)
     case phoneNumberField(config: FormFieldBaseConfig)
@@ -82,10 +82,10 @@ extension FormComponent: Identifiable {
              .dayPicker(let config),
              .timeRangePicker(let config),
              .pricingField(let config),
+             .roomScanner(let config),
              .tagSelector(let config):
             return config.id
-        case .scannerView(let id),
-             .description(let id, _):
+        case .description(let id, _):
             return id
         }
     }

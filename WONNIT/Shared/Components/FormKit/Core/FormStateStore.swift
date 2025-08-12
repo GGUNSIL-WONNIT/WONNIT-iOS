@@ -25,4 +25,5 @@ final class FormStateStore: NSObject {
     var tagsValues: [String: [String]] = [:]
     var amountInfoValues: [String: AmountInfo] = [:]
     var imageValues: [String: [UIImage]] = [:]
+    var roomDataValues: [String: RoomData?] = [:]
 }
