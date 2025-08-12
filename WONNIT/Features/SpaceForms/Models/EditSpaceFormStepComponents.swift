@@ -99,7 +99,9 @@ extension EditSpaceFormStep {
             
         case .roomScan:
             return [
-                .scannerView(id: "roomScan")
+                .roomScanner(config: .init(
+                    id: "roomScanner",
+                ))
             ]
         }
     }

@@ -43,7 +43,8 @@ extension CreateSpaceFormStep {
                 .imageUploader(
                     config: .init(
                         id: "mainImage",
-                        title: "대표사진 등록"
+                        title: "대표사진 등록",
+                        tooltipContentKey: "category"
                     ),
                     variant: .singleLarge
                 ),
@@ -94,7 +95,9 @@ extension CreateSpaceFormStep {
 
         case .scanner:
             return [
-                .scannerView(id: "scannerView")
+                .roomScanner(config: .init(
+                    id: "roomScanner",
+                ))
             ]
 
         case .miscellaneous:
