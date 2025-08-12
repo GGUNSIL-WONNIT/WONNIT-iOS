@@ -1,18 +1,18 @@
 //
-//  MySpacesView.swift
+//  MyCreatedSpacesView.swift
 //  WONNIT
 //
-//  Created by dohyeoplim on 8/2/25.
+//  Created by dohyeoplim on 8/13/25.
 //
 
 import SwiftUI
 
-struct MySpacesView: View {
+struct MyCreatedSpacesView: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    MySpacesView()
+    MyCreatedSpacesView()
 }
