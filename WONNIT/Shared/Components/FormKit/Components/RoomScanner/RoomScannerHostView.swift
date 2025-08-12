@@ -13,6 +13,7 @@ struct RoomScannerHostView: View {
     
     @State private var roomController = RoomCaptureController()
     
+    private let screenshotManager = ScreenshotManager()
     private let roomScanStorageManager = ScanStorageManager.shared
     
     @Binding var roomData: RoomData?
@@ -102,10 +103,11 @@ struct RoomScannerHostView: View {
     @ViewBuilder
     private func saveButton() -> some View {
         Button {
+            let screenshot = screenshotManager.captureScreen()
             isSaving = true
             Task {
                 if let result = roomController.finalResult,
-                   let data = await roomScanStorageManager.save(capturedRoom: result) {
+                   let data = await roomScanStorageManager.save(capturedRoom: result, screenshot: screenshot) {
                     await MainActor.run {
                         self.roomData = data
                         self.isSaving = false
@@ -121,7 +123,7 @@ struct RoomScannerHostView: View {
         } label: {
             Text("저장하기")
         }
-        .buttonStyle(ScannerButtonStyle(color: .green))
+        .buttonStyle(ScannerButtonStyle(color: .primaryPurple))
     }
 }
 
