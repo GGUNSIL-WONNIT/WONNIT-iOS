@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="symbol" translatesAutoresizingMaskIntoConstraints="NO" id="lrs-8N-cp8">
+                                <rect key="frame" x="136.66666666666666" y="345" width="119.99999999999997" height="162"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="typedLogoWhite" translatesAutoresizingMaskIntoConstraints="NO" id="MG4-Ui-0wb">
+                                <rect key="frame" x="162" y="747" width="69" height="41"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
+                        <color key="backgroundColor" name="AccentColor"/>
+                        <constraints>
+                            <constraint firstItem="MG4-Ui-0wb" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1kJ-wd-InN"/>
+                            <constraint firstAttribute="bottom" secondItem="MG4-Ui-0wb" secondAttribute="bottom" constant="64" id="1t3-VB-vQU"/>
+                            <constraint firstItem="lrs-8N-cp8" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="rdG-On-tPf"/>
+                            <constraint firstItem="lrs-8N-cp8" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="wZO-Ut-BSN"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="53" y="375"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="symbol" width="120" height="162"/>
+        <image name="typedLogoWhite" width="69" height="41"/>
+        <namedColor name="AccentColor">
+            <color red="0.50980392156862742" green="0.27058823529411763" blue="0.95686274509803926" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
