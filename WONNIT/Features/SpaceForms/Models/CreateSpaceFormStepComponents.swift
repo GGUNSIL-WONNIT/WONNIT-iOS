@@ -44,14 +44,16 @@ extension CreateSpaceFormStep {
                     config: .init(
                         id: "mainImage",
                         title: "대표사진 등록",
-                        tooltipContentKey: "category"
+                        spaceCategoryFormComponentKey: "category",
+                        spaceTagFormComponentKey: "tags"
                     ),
                     variant: .singleLarge
                 ),
                 .imageUploader(
                     config: .init(
                         id: "subImages",
-                        title: "추가사진 등록"
+                        title: "추가사진 등록",
+                        spaceTagFormComponentKey: "tags"
                     ),
                     variant: .multipleSmall(limit: 4)
                 )
@@ -71,9 +73,9 @@ extension CreateSpaceFormStep {
                 .tagSelector(config: .init(
                     id: "tags",
                     title: "구비물품",
-                    placeholder: "구비 물품을 작성하세요",
+//                    placeholder: "구비 물품을 작성하세요",
                     isAIFeatured: true,
-                    tooltipContentKey: "category"
+                    spaceCategoryFormComponentKey: "category"
                 ))
             ]
 

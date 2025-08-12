@@ -49,8 +49,10 @@ struct ImageUploaderComponentView: View {
     @State private var draggedImage: UIImage?
     
     @State private var spaceCategoryPrediction: SpaceCategoryClassifierPrediction? = nil
+    @State private var detectedSpaceItems: [String] = []
     
     private let spaceCategoryClassifier = SpaceCategoryClassifier.shared
+    private let spaceItemDetector = SpaceItemDetector.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -86,11 +88,18 @@ struct ImageUploaderComponentView: View {
                 handleNewImages([image])
             }
         }
-        .onChange(of: spaceCategoryPrediction) {
-            if let prediction = spaceCategoryPrediction?.label, let key = config.spaceCategoryFormComponentKey {
-                store.textValues[key] = prediction.label
-            }
-        }
+//        .onChange(of: spaceCategoryPrediction) {
+//            if let prediction = spaceCategoryPrediction?.label, let key = config.spaceCategoryFormComponentKey {
+//                store.textValues[key] = prediction.label
+//            }
+//        }
+//        .onChange(of: detectedSpaceItems) { _, new in
+//            if let key = config.spaceTagFormComponentKey {
+//                let existing = store.tagsValues[key] ?? []
+//                let merged = Array(Set(existing + new)).sorted()
+//                store.tagsValues[key] = merged
+//            }
+//        }
     }
     
     private var singleImageUploader: some View {
@@ -115,18 +124,37 @@ struct ImageUploaderComponentView: View {
                             .clipped()
                             .cornerRadius(8)
                             .overlay(alignment: .bottomLeading) {
-                                if let prediction = spaceCategoryPrediction?.label {
-                                    HStack(spacing: 8) {
-                                        Text("공간 분류: \(prediction.label)")
-                                            .font(.system(size: 13, weight: .semibold))
-                                            .foregroundStyle(Color.grey900)
+                                VStack(alignment: .leading, spacing: 6) {
+                                    if let prediction = spaceCategoryPrediction?.label {
+                                        HStack(spacing: 8) {
+                                            Text("공간 분류: \(prediction.label)")
+                                                .font(.system(size: 13, weight: .semibold))
+                                                .foregroundStyle(Color.grey900)
+                                        }
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(.thinMaterial)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
                                     }
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 6)
-                                    .background(.thinMaterial)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    .padding(10)
+                                    
+                                    if !detectedSpaceItems.isEmpty {
+                                        ScrollView(.horizontal, showsIndicators: false) {
+                                            HStack(spacing: 6) {
+                                                ForEach(detectedSpaceItems, id: \.self) { tag in
+                                                    Text(tag)
+                                                        .font(.system(size: 11, weight: .regular))
+                                                        .foregroundStyle(Color.grey900)
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 4)
+                                                        .background(.thinMaterial)
+                                                        .clipShape(Capsule())
+                                                }
+                                            }
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
                                 }
+                                .padding(10)
                     }
                 } else {
                     RoundedRectangle(cornerRadius: 8)
@@ -175,23 +203,41 @@ struct ImageUploaderComponentView: View {
     }
     
     private func multipleImageUploader(limit: Int) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(images, id: \.self) { image in
-                    imageThumbnail(image: image)
-                        .onDrag {
-                            self.draggedImage = image
-                            return NSItemProvider(object: image)
-                        }
-                        .onDrop(of: [UTType.image],
-                                delegate: ImageDropDelegate(item: image, items: $images, draggedItem: $draggedImage))
+        VStack(alignment: .leading) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(images, id: \.self) { image in
+                        imageThumbnail(image: image)
+                            .onDrag {
+                                self.draggedImage = image
+                                return NSItemProvider(object: image)
+                            }
+                            .onDrop(of: [UTType.image],
+                                    delegate: ImageDropDelegate(item: image, items: $images, draggedItem: $draggedImage))
+                    }
+                    
+                    if images.count < limit {
+                        addNewPhotoButton(limit: limit)
+                    }
                 }
+                .padding(.top, 7)
                 
-                if images.count < limit {
-                    addNewPhotoButton(limit: limit)
+                if !detectedSpaceItems.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
+                            ForEach(detectedSpaceItems, id: \.self) { tag in
+                                Text(tag)
+                                    .font(.system(size: 11, weight: .regular))
+                                    .foregroundStyle(Color.grey900)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(.thinMaterial)
+                                    .clipShape(Capsule())
+                            }
+                        }
+                    }
                 }
             }
-            .padding(.top, 7)
         }
     }
     
@@ -269,6 +315,36 @@ struct ImageUploaderComponentView: View {
         return config
     }
     
+    private func detectAndStoreSpaceItemsIntoTags(for images: [UIImage]) {
+        Task.detached(priority: .userInitiated) { [spaceItemDetector] in
+            let perImage: [[SpaceItem]] = await withTaskGroup(of: [SpaceItem].self) { group in
+                for img in images {
+                    group.addTask { @Sendable in
+                        (try? await spaceItemDetector.topLabels(in: img, minConfidence: 0.40, maxItems: 8)) ?? []
+                    }
+                }
+                var acc: [[SpaceItem]] = []
+                for await chunk in group { acc.append(chunk) }
+                return acc
+            }
+            
+            let uniqueItems = Array(Set(perImage.flatMap { $0 }))
+                .sorted { $0.rawValue < $1.rawValue }
+            
+            let newDisplayTags = uniqueItems.map { $0.displayLabel }
+            
+            await MainActor.run {
+                self.detectedSpaceItems = newDisplayTags
+                
+                if let key = config.spaceTagFormComponentKey {
+                    let existing = store.tagsValues[key] ?? []
+                    let merged = Array(Set(existing + newDisplayTags)).sorted()
+                    store.tagsValues[key] = merged
+                }
+            }
+        }
+    }
+    
     private func handleNewImages(_ newImages: [UIImage]) {
         withAnimation(.spring()) {
             switch variant {
@@ -279,13 +355,25 @@ struct ImageUploaderComponentView: View {
                     
                     Task.detached(priority: .userInitiated) { [image = firstImage] in
                         let preds = (try? await spaceCategoryClassifier.classifyTopK(image, k: 1)) ?? []
-                        await MainActor.run { self.spaceCategoryPrediction = preds.first }
+                        await MainActor.run {
+                            self.spaceCategoryPrediction = preds.first
+                            
+                            if let prediction = spaceCategoryPrediction?.label, let key = config.spaceCategoryFormComponentKey {
+                                store.textValues[key] = prediction.label
+                            }
+                        }
                     }
+                    
+                    detectAndStoreSpaceItemsIntoTags(for: [firstImage])
                 }
 
             case .multipleSmall(let limit):
                 let availableSlots = limit - self.images.count
-                self.images.append(contentsOf: newImages.prefix(availableSlots))
+                let taken = Array(newImages.prefix(max(0, availableSlots)))
+                guard !taken.isEmpty else { break }
+                self.images.append(contentsOf: taken)
+                detectAndStoreSpaceItemsIntoTags(for: taken)
+                
             default:
                 return
             }
