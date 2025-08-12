@@ -48,6 +48,7 @@ struct FormRenderer {
                 variant: variant,
                 images: store.imageBinding(for: config.id)
             )
+            .environment(store)
         case let .roomScanner(config):
             RoomScannerComponentView(
                 config: config,

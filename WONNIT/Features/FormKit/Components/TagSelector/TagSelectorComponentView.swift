@@ -69,7 +69,7 @@ struct TagSelectorComponentView: View {
                     }
                     Spacer()
                 }
-                .onChange(of: store.textValues[config.tooltipContentKey ?? ""]) {
+                .onChange(of: store.textValues[config.spaceCategoryFormComponentKey ?? ""]) {
                     if getTooltipText() == nil {
                         withAnimation { showTooltip = false }
                     }
@@ -79,7 +79,7 @@ struct TagSelectorComponentView: View {
     }
     
     private func getTooltipText() -> String? {
-        guard let key = config.tooltipContentKey,
+        guard let key = config.spaceCategoryFormComponentKey,
               let category = store.textValues[key],
               !category.isEmpty else {
             return nil

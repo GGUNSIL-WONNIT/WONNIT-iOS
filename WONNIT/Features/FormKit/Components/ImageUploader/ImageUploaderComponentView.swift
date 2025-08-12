@@ -37,6 +37,8 @@ struct ImageDropDelegate: DropDelegate {
 }
 
 struct ImageUploaderComponentView: View {
+    @Environment(FormStateStore.self) private var store
+    
     let config: FormFieldBaseConfig
     let variant: ImageUploaderVariant?
     
@@ -82,6 +84,11 @@ struct ImageUploaderComponentView: View {
         .sheet(isPresented: $isShowingCamera) {
             CameraPicker { image in
                 handleNewImages([image])
+            }
+        }
+        .onChange(of: spaceCategoryPrediction) {
+            if let prediction = spaceCategoryPrediction?.label, let key = config.spaceCategoryFormComponentKey {
+                store.textValues[key] = prediction.label
             }
         }
     }

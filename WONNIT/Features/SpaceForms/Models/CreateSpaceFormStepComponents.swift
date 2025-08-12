@@ -43,7 +43,8 @@ extension CreateSpaceFormStep {
                 .imageUploader(
                     config: .init(
                         id: "mainImage",
-                        title: "대표사진 등록"
+                        title: "대표사진 등록",
+                        tooltipContentKey: "category"
                     ),
                     variant: .singleLarge
                 ),
