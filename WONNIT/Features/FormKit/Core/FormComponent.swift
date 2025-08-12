@@ -41,6 +41,7 @@ struct FormFieldBaseConfig {
     let characterLimit: Int?
     let isAIFeatured: Bool
     let spaceCategoryFormComponentKey: String?
+    let spaceTagFormComponentKey: String?
 
     init(
         id: String,
@@ -53,7 +54,8 @@ struct FormFieldBaseConfig {
         keyboardType: UIKeyboardType = .default,
         characterLimit: Int? = nil,
         isAIFeatured: Bool = false,
-        tooltipContentKey: String? = nil
+        spaceCategoryFormComponentKey: String? = nil,
+        spaceTagFormComponentKey: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -65,7 +67,8 @@ struct FormFieldBaseConfig {
         self.keyboardType = keyboardType
         self.characterLimit = characterLimit
         self.isAIFeatured = isAIFeatured
-        self.spaceCategoryFormComponentKey = tooltipContentKey
+        self.spaceCategoryFormComponentKey = spaceCategoryFormComponentKey
+        self.spaceTagFormComponentKey = spaceTagFormComponentKey
     }
 }
 
