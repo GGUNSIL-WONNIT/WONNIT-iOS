@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 import UniformTypeIdentifiers
+import CoreML
 
 struct ImageDropDelegate: DropDelegate {
     let item: UIImage
@@ -44,6 +45,10 @@ struct ImageUploaderComponentView: View {
     @State private var isShowingPicker: Bool = false
     @State private var isShowingCamera: Bool = false
     @State private var draggedImage: UIImage?
+    
+    @State private var spaceCategoryPrediction: SpaceCategoryClassifierPrediction? = nil
+    
+    private let spaceCategoryClassifier = SpaceCategoryClassifier.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -97,12 +102,25 @@ struct ImageUploaderComponentView: View {
         } label: {
             ZStack {
                 if let image = images.first {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-//                        .frame(height: 257)
-                        .clipped()
-                        .cornerRadius(8)
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .clipped()
+                            .cornerRadius(8)
+                            .overlay(alignment: .bottomLeading) {
+                                if let prediction = spaceCategoryPrediction?.label {
+                                    HStack(spacing: 8) {
+                                        Text("공간 분류: \(prediction.label)")
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundStyle(Color.grey900)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(.thinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .padding(10)
+                                }
+                    }
                 } else {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.grey200, lineWidth: 1)
@@ -128,7 +146,6 @@ struct ImageUploaderComponentView: View {
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
-            .frame(height: 257)
             .cornerRadius(8)
             .clipped()
             .overlay(alignment: .topTrailing) {
@@ -251,7 +268,14 @@ struct ImageUploaderComponentView: View {
             case .singleLarge:
                 if let firstImage = newImages.first {
                     self.images = [firstImage]
+                    self.spaceCategoryPrediction = nil
+                    
+                    Task.detached(priority: .userInitiated) { [image = firstImage] in
+                        let preds = (try? await spaceCategoryClassifier.classifyTopK(image, k: 1)) ?? []
+                        await MainActor.run { self.spaceCategoryPrediction = preds.first }
+                    }
                 }
+
             case .multipleSmall(let limit):
                 let availableSlots = limit - self.images.count
                 self.images.append(contentsOf: newImages.prefix(availableSlots))

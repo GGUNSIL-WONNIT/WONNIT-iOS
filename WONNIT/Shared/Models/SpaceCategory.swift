@@ -12,10 +12,10 @@ enum SpaceCategory: String, Codable, CaseIterable {
     case makerSpace = "MAKER_SPACE"
     case musicPracticeRoom = "MUSIC_PRACTICE_ROOM"
     case danceStudio = "DANCE_STUDIO"
-    case meetingRoom = "MEETING_ROOM"
+    case studyRoom = "STUDY_ROOM"
     
     static var allCases: [SpaceCategory] {
-        [.smallTheater, .meetingRoom, .makerSpace, .musicPracticeRoom, .danceStudio] // manually ordered
+        [.smallTheater, .studyRoom, .makerSpace, .musicPracticeRoom, .danceStudio] // manually ordered
     }
     
     var label: String {
@@ -28,7 +28,7 @@ enum SpaceCategory: String, Codable, CaseIterable {
             return "음악연습실"
         case .danceStudio:
             return "댄스연습실"
-        case .meetingRoom:
+        case .studyRoom:
             return "스터디룸"
         }
     }
@@ -43,7 +43,7 @@ enum SpaceCategory: String, Codable, CaseIterable {
             return "spaceCategory/musicPracticeRoom"
         case .danceStudio:
             return "spaceCategory/danceStudio"
-        case .meetingRoom:
+        case .studyRoom:
             return "spaceCategory/meetingRoom"
         }
     }
