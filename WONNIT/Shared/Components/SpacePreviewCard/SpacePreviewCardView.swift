@@ -43,8 +43,10 @@ struct SpacePreviewCardView: View {
         switch layout {
         case .vertical:
             verticalLayout
+                .contentShape(Rectangle())
         case .horizontal(let height):
             horizontalLayout(for: height)
+                .contentShape(Rectangle())
         }
     }
     

@@ -26,19 +26,20 @@ struct DashboardView: View {
                 ],
                 selection: $selectedDashboardTab
             )
-        }
-        .navigationBarBackButtonHidden()
-        .toolbarBackground(Color.white)
-        .navigationDestination(for: Route.self) { route in
-            switch route {
-            case .spaceDetailByModel(let space):
-                SpaceDetailView(space: space)
-                    .padding(.horizontal)
-                    .padding(.bottom, -40)
-                    .frame(maxWidth: .infinity)
-                    .withBackButtonToolbar()
-            default:
-                Text("⚠️")
+            .environment(\.navigationManager, dashboardNavigationManager)
+            .navigationBarBackButtonHidden()
+            .toolbarBackground(Color.white)
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .spaceDetailByModel(let space):
+                    SpaceDetailView(space: space)
+                        .padding(.horizontal)
+                        .padding(.bottom, -40)
+                        .frame(maxWidth: .infinity)
+                        .withBackButtonToolbar()
+                default:
+                    Text("⚠️")
+                }
             }
         }
     }

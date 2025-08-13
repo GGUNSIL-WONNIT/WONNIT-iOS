@@ -20,6 +20,24 @@ enum DashboardTab: Int, Identifiable, Hashable, Comparable, TabLabelConvertible 
         }
     }
     
+    var shortWord: String {
+        switch self {
+        case .myCreatedSpaces:
+            return "등록"
+        case .myRentedSpaces:
+            return "대여"
+        }
+    }
+    
+    var isEditable: Bool {
+        switch self {
+        case .myCreatedSpaces:
+            return true
+        case .myRentedSpaces:
+            return false
+        }
+    }
+    
     var id: Int { rawValue }
     
     static func < (lhs: Self, rhs: Self) -> Bool {

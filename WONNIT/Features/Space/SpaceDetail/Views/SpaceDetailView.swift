@@ -46,7 +46,8 @@ struct SpaceDetailView: View {
                     Button {
                         showEditSpaceForm = true
                     } label: {
-                        Image(systemName: "ellipsis")
+                        Text("수정하기")
+                            .body_04(.grey900)
                             .contentShape(Rectangle())
                     }
                     .foregroundStyle(Color.grey900)

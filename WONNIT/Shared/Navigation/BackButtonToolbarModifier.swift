@@ -24,7 +24,7 @@ struct BackButtonToolbarModifier: ViewModifier {
                             .contentShape(Rectangle())
                     }
                     .foregroundStyle(Color.grey900)
-                    .font(.system(size: 18))
+                    .font(.system(size: 16))
                 }
             }
     }
