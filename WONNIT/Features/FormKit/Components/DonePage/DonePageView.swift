@@ -12,10 +12,12 @@ struct DonePageView: View {
     
     let message: String
     let imageName: String
+    let showConfettiOnAppear: Bool
     
-    init(message: String = "새로운 공간이\n등록되었습니다!", imageName: String = "checkmark.circle") {
+    init(message: String = "새로운 공간이\n등록되었습니다!", imageName: String = "checkmark.circle", showConfettiOnAppear: Bool = true) {
         self.message = message
         self.imageName = imageName
+        self.showConfettiOnAppear = showConfettiOnAppear
     }
     
     var body: some View {
@@ -38,7 +40,7 @@ struct DonePageView: View {
             ConfettiView(isEmitting: $showConfetti)
         }
         .onAppear {
-            showConfetti = true
+            showConfetti = showConfettiOnAppear
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 showConfetti = false
             }

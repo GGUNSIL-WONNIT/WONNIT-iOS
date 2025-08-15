@@ -30,8 +30,12 @@ enum SpaceStatus: String, Codable, CaseIterable {
     @ViewBuilder
     var statusIndicator: some View {
         switch self {
-        case .available:
+        case .occupied:
             Text("대여 중")
+                .body_05(.primaryPurple)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        case .returnRequest:
+            Text("반납 요청됨")
                 .body_05(.primaryPurple)
                 .frame(maxWidth: .infinity, alignment: .trailing)
         case .returnRejected:

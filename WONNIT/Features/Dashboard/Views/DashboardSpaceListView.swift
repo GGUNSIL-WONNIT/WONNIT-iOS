@@ -103,7 +103,8 @@ struct DashboardSpaceListView: View {
                         SpacePreviewCardView(
                             space: space,
                             layout: .horizontal(height: 123),
-                            pricePosition: .leading
+                            pricePosition: .leading,
+                            showSpaceStatus: true
                         )
                         .opacity(isEditMode ? (isSelected ? 1 : 0.6) : 1)
                         
@@ -120,9 +121,15 @@ struct DashboardSpaceListView: View {
                             nav.push(Route.spaceDetailByModel(space: space))
                         }
                     }
-                    
-                    if selectedDashboardTab == .myRentedSpaces {
-                        ReturnSpaceActionButtonView(spaceId: space.id)
+                    switch selectedDashboardTab {
+                    case .myCreatedSpaces:
+                        if let status = space.status, status == .returnRequest {
+                            ReviewReturnSpaceActionButtonView(spaceId: space.id)
+                        }
+                    case .myRentedSpaces:
+                        if let status = space.status, status == .occupied {
+                            ReturnSpaceActionButtonView(spaceId: space.id)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)

@@ -14,9 +14,11 @@ extension Space {
         let latOffset = Double.random(in: -0.01...0.01)
         let lonOffset = Double.random(in: -0.01...0.01)
         
-        let sampleCategory = SpaceCategory.allCases.randomElement() ?? .makerSpace
+        let allCategories = SpaceCategory.allCases
+        let sampleCategory = allCategories[index % allCategories.count]
         
-        let sampleSpaceStatus = SpaceStatus.allCases.randomElement() ?? .available
+        let allStatuses = SpaceStatus.allCases
+        let sampleSpaceStatus = allStatuses[index % allStatuses.count]
         
         return .init(
             id: UUID(),
