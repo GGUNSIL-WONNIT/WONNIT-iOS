@@ -4,6 +4,8 @@ target 'WONNIT' do
   use_frameworks!
   use_modular_headers!
 
+  pod 'lottie-ios'
+
   pod 'Kingfisher', '~> 8.0'
 
 end
