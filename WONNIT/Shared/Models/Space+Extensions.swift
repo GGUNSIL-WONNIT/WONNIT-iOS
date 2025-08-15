@@ -14,6 +14,10 @@ extension Space {
         let latOffset = Double.random(in: -0.01...0.01)
         let lonOffset = Double.random(in: -0.01...0.01)
         
+        let sampleCategory = SpaceCategory.allCases.randomElement() ?? .makerSpace
+        
+        let sampleSpaceStatus = SpaceStatus.allCases.randomElement() ?? .available
+        
         return .init(
             id: UUID(),
             name: "공간 \(index)",
@@ -29,14 +33,15 @@ extension Space {
                 "https://images.unsplash.com/photo-1462826303086-329426d1aef5?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 "https://images.unsplash.com/photo-1686100511314-7d4a52987f2f?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             ],
-            category: .makerSpace,
+            category: sampleCategory,
             spaceTags: ["책상", "의자", "조명"],
             size: 100.0,
             operationInfo: .init(dayOfWeeks: [.MONDAY, .TUESDAY, .WEDNESDAY, .THURSDAY, .FRIDAY], startAt: DateComponents(hour: 5, minute: 0), endAt: DateComponents(hour: 23, minute: 0)),
             amountInfo: .init(timeUnit: .perDay, amount: 1000),
             spaceModelURL: nil,
             phoneNumber: .init(value: "02-970-6114"),
-            precautions: "주의사항"
+            precautions: "주의사항",
+            status: sampleSpaceStatus
         )
     }
 }
@@ -55,7 +60,8 @@ extension Space {
         amountInfo: nil,
         spaceModelURL: nil,
         phoneNumber: nil,
-        precautions: nil
+        precautions: nil,
+        status: nil
     )
     
     static let placeholder: Space = .mock(2)

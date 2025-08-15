@@ -112,13 +112,6 @@ struct DashboardSpaceListView: View {
                                 .padding(10)
                         }
                     }
-                    .overlay(alignment: .bottomTrailing) {
-                        if selectedDashboardTab == .myCreatedSpaces {
-                            Text("대여 중")
-                                .body_05(.primaryPurple)
-                                .opacity(isEditMode ? (isSelected ? 1 : 0.6) : 1)
-                        }
-                    }
                     .contentShape(Rectangle())
                     .onTapGesture {
                         if isEditMode {
