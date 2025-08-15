@@ -40,9 +40,11 @@ struct DonePageView: View {
             ConfettiView(isEmitting: $showConfetti)
         }
         .onAppear {
-            showConfetti = showConfettiOnAppear
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                showConfetti = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                showConfetti = showConfettiOnAppear
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    showConfetti = false
+                }
             }
         }
     }

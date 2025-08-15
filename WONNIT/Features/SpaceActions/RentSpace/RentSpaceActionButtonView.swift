@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct RentSpaceActionButtonView: View {
-    @Environment(\.dismiss) private var dismiss
-    
     @State private var isShowingRentSpaceView: Bool = false
     
     let spaceId: UUID
