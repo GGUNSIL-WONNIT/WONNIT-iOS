@@ -40,7 +40,7 @@ extension CreateSpaceFormStep {
 
         case .pictures:
             return [
-                .imageUploader(
+                .imageUploaderWithML(
                     config: .init(
                         id: "mainImage",
                         title: "대표사진 등록",
@@ -49,7 +49,7 @@ extension CreateSpaceFormStep {
                     ),
                     variant: .singleLarge
                 ),
-                .imageUploader(
+                .imageUploaderWithML(
                     config: .init(
                         id: "subImages",
                         title: "추가사진 등록",

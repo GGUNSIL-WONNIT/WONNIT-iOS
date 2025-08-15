@@ -10,7 +10,7 @@ import SwiftUI
 struct MyRentedSpacesView: View {
     let selectedDashboardTab: DashboardTab = .myRentedSpaces
     
-    @State var spacesToShow: [Space] = []
+    @State var spacesToShow: [Space] = Space.mockList
     
     var body: some View {
         DashboardSpaceListView(selectedDashboardTab: selectedDashboardTab, spacesToShow: $spacesToShow)

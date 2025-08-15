@@ -1,43 +1,38 @@
 //
-//  CreateSpaceView.swift
+//  ReturnSpaceView.swift
 //  WONNIT
 //
-//  Created by dohyeoplim on 8/5/25.
+//  Created by dohyeoplim on 8/13/25.
 //
 
 import SwiftUI
 
-struct CreateSpaceView: View {
+struct ReturnSpaceView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var currentStep: CreateSpaceFormStep = .addressAndName
+    @State private var currentStep: ReturnSpaceStep = .before
     @State private var formStore = FormStateStore()
     @State private var transitionDirection: Edge = .trailing
     @State private var showDonePage = false
     
+    let spaceId: UUID
+    
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Color.clear
-                .onTapGesture {
-                    formStore.blur()
-                }
-            
-            if !showDonePage {
-                VStack(alignment: .leading, spacing: 0) {
-                    VStack(spacing: 6) {
-                        topBar
-                        
-                        formStepProgressBar
-                    }
+        if !showDonePage {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 6) {
+                    topBar
                     
-                    formContent
+                    formStepProgressBar
                 }
                 
-                nextButton
-                    .padding(.vertical, 8)
-                    .background(Color.white)
-            } else {
-                DonePageView()
+                formContent
             }
+            
+            nextButton
+                .padding(.vertical, 8)
+                .background(Color.white)
+        } else {
+            DonePageView()
         }
     }
     
@@ -47,13 +42,6 @@ struct CreateSpaceView: View {
             backButton
             Spacer()
         }
-        .background(
-            Color.clear
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    formStore.blur()
-                }
-        )
         .padding(16)
     }
     
@@ -74,11 +62,11 @@ struct CreateSpaceView: View {
     }
     
     private var nextButton: some View {
-        #if DEBUG
-        let isValid = true
-        #else
+//        #if DEBUG
+//        let isValid = true
+//        #else
         let isValid = currentStep.isStepValid(store: formStore)
-        #endif
+//        #endif
         
         let isOptional = currentStep.isOptional
         
@@ -91,7 +79,7 @@ struct CreateSpaceView: View {
                 }
             }
         } label: {
-            Text(currentStep.next == nil ? "등록하기" : (isOptional ? "건너뛰기" : "다음으로"))
+            Text(currentStep.next == nil ? "마치기" : (isOptional ? "건너뛰기" : "다음으로"))
                 .body_01(isValid ? .white : .grey300)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
@@ -105,7 +93,7 @@ struct CreateSpaceView: View {
     }
     
     private var formStepProgressBar: some View {
-        let steps = CreateSpaceFormStep.allCases
+        let steps = ReturnSpaceStep.allCases
         let currentIndex = steps.firstIndex(of: currentStep) ?? 0
         
         return GeometryReader { geometry in
@@ -145,46 +133,36 @@ struct CreateSpaceView: View {
         GeometryReader { geometry in
             ScrollViewReader { proxy in
                 ScrollView {
-                    ZStack {
-                        Color.clear
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                formStore.blur()
-                            }
-                        
-                        ZStack {
-                            ForEach(CreateSpaceFormStep.allCases, id: \.self) { step in
-                                if step == currentStep {
-                                    VStack(spacing: 24) {
-                                        HStack {
-                                            Text(step.sectionTitle)
-                                                .title_01(.grey900)
-                                            Spacer()
-                                        }
-                                        
-                                        VStack(spacing: 32) {
-                                            ForEach(step.components, id: \.id) { component in
-                                                FormRenderer.render(
-                                                    component,
-                                                    store: formStore
-                                                )
-                                                .id(component.id)
-                                            }
-                                        }
+                    ForEach(ReturnSpaceStep.allCases, id: \.self) { step in
+                        if step == currentStep {
+                            VStack(spacing: 24) {
+                                HStack {
+                                    Text(step.sectionTitle)
+                                        .title_01(.grey900)
+                                    Spacer()
+                                }
+                                
+                                VStack(spacing: 32) {
+                                    ForEach(step.components, id: \.id) { component in
+                                        FormRenderer.render(
+                                            component,
+                                            store: formStore
+                                        )
+                                        .id(component.id)
                                     }
-                                    .padding(.horizontal, 16)
-                                    .padding(.top, 36)
-                                    .padding(.bottom, 386)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .transition(.asymmetric(
-                                        insertion: .move(edge: transitionDirection).combined(with: .opacity),
-                                        removal: .move(edge: transitionDirection == .trailing ? .leading : .trailing).combined(with: .opacity)
-                                    ))
                                 }
                             }
+                            .padding(.horizontal, 16)
+                            .padding(.top, 36)
+                            .padding(.bottom, 386)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: transitionDirection).combined(with: .opacity),
+                                removal: .move(edge: transitionDirection == .trailing ? .leading : .trailing).combined(with: .opacity)
+                            ))
                         }
-                        .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
                     }
+                    .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
                     .id("topAnchor")
                 }
                 .onChange(of: currentStep) { _, newStep in
@@ -192,21 +170,13 @@ struct CreateSpaceView: View {
                         proxy.scrollTo("topAnchor", anchor: .top)
                     }
                 }
-                .onChange(of: formStore.focusedID) { _, newID in
-                    guard let newID = newID else { return }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        withAnimation {
-                            proxy.scrollTo(newID, anchor: .center)
-                        }
-                    }
-                }
             }
         }
     }
     
-    private func goToStep(_ step: CreateSpaceFormStep) {
-        let currentIndex = CreateSpaceFormStep.allCases.firstIndex(of: currentStep) ?? 0
-        let nextIndex = CreateSpaceFormStep.allCases.firstIndex(of: step) ?? 0
+    private func goToStep(_ step: ReturnSpaceStep) {
+        let currentIndex = ReturnSpaceStep.allCases.firstIndex(of: currentStep) ?? 0
+        let nextIndex = ReturnSpaceStep.allCases.firstIndex(of: step) ?? 0
         
         transitionDirection = nextIndex > currentIndex ? .trailing : .leading
         
@@ -228,5 +198,7 @@ struct CreateSpaceView: View {
 }
 
 #Preview {
-    CreateSpaceView()
+    let sampleSpace = Space.placeholder
+    
+    ReturnSpaceView(spaceId: sampleSpace.id)
 }

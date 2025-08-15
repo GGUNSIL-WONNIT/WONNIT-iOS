@@ -1,13 +1,13 @@
 //
-//  FormValidator.swift
+//  ReturnSpaceFormStepValidator.swift
 //  WONNIT
 //
-//  Created by dohyeoplim on 8/6/25.
+//  Created by dohyeoplim on 8/15/25.
 //
 
 import Foundation
 
-extension CreateSpaceFormStep {
+extension ReturnSpaceStep {
     func isStepValid(store: FormStateStore) -> Bool {
         for component in components {
             switch component {
@@ -58,7 +58,12 @@ extension CreateSpaceFormStep {
                     return false
                 }
                 
-            case let .imageUploader(config, _):
+            case let .imageUploaderSimple(config):
+                guard let images = store.imageValues[config.id], !images.isEmpty else {
+                    return false
+                }
+                
+            case let .imageUploaderWithML(config, _):
                 guard let images = store.imageValues[config.id], !images.isEmpty else {
                     return false
                 }

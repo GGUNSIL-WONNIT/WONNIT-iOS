@@ -15,6 +15,7 @@ struct DashboardSpaceListView: View {
     @Binding var spacesToShow: [Space]
     @State var selectedSpaceIDs: Set<UUID> = []
     @State var isEditMode: Bool = false
+    @State private var showDeleteConfirmation = false
     
     @Namespace private var namespace
     
@@ -26,6 +27,7 @@ struct DashboardSpaceListView: View {
             
             LazyVStack(alignment: .leading, spacing: 24) {
                 dashboardTabHeaderView
+                    .padding(.horizontal, 16)
                 
                 if spacesToShow.isEmpty {
                     NotFoundView(label: "아직 \(selectedDashboardTab.shortWord)한 공간이 없어요!")
@@ -36,7 +38,6 @@ struct DashboardSpaceListView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
             .padding(.top, 20)
             .paddedForTabBar()
         }
@@ -93,30 +94,48 @@ struct DashboardSpaceListView: View {
     }
     
     private var spaceList: some View {
-        LazyVStack(spacing: 20) {
+        LazyVStack(spacing: 24) {
             ForEach(spacesToShow) { space in
-                ZStack(alignment: .topLeading) {
+                VStack(spacing: 12) {
                     let isSelected = selectedSpaceIDs.contains(space.id)
-                    SpacePreviewCardView(
-                        space: space,
-                        layout: .horizontal(height: 123),
-                        pricePosition: .leading
-                    )
-                    .opacity(isEditMode ? (isSelected ? 1 : 0.6) : 1)
                     
-                    if isEditMode {
-                        SelectionIndicatorView(isSelected: isSelected)
-                            .padding(10)
+                    ZStack(alignment: .topLeading) {
+                        SpacePreviewCardView(
+                            space: space,
+                            layout: .horizontal(height: 123),
+                            pricePosition: .leading
+                        )
+                        .opacity(isEditMode ? (isSelected ? 1 : 0.6) : 1)
+                        
+                        if isEditMode {
+                            SelectionIndicatorView(isSelected: isSelected)
+                                .padding(10)
+                        }
+                    }
+                    .overlay(alignment: .bottomTrailing) {
+                        if selectedDashboardTab == .myCreatedSpaces {
+                            Text("대여 중")
+                                .body_05(.primaryPurple)
+                                .opacity(isEditMode ? (isSelected ? 1 : 0.6) : 1)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if isEditMode {
+                            toggleSelection(for: space.id)
+                        } else {
+                            nav.push(Route.spaceDetailByModel(space: space))
+                        }
+                    }
+                    
+                    if selectedDashboardTab == .myRentedSpaces {
+                        ReturnSpaceActionButtonView(spaceId: space.id)
                     }
                 }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if isEditMode {
-                        toggleSelection(for: space.id)
-                    } else {
-                        nav.push(Route.spaceDetailByModel(space: space))
-                    }
-                }
+                .padding(.horizontal, 16)
+                
+                Divider()
+                    .frame(maxWidth: .infinity)
             }
         }
     }
@@ -158,7 +177,7 @@ struct DashboardSpaceListView: View {
         let isVisible = isEditMode && !selectedSpaceIDs.isEmpty
         
         Button {
-            deleteSelectedSpaces()
+            showDeleteConfirmation = true
         } label: {
             Image(systemName: "trash")
                 .font(.system(size: 24))
@@ -172,6 +191,14 @@ struct DashboardSpaceListView: View {
         .opacity(isVisible ? 1 : 0)
         .allowsHitTesting(isVisible)
         .accessibilityHidden(!isVisible)
+        .alert("선택한 공간을 삭제하시겠어요?", isPresented: $showDeleteConfirmation) {
+            Button("삭제", role: .destructive) {
+                deleteSelectedSpaces()
+            }
+            Button("취소", role: .cancel) { }
+        } message: {
+            Text("\(selectedSpaceIDs.count)개의 공간이 삭제됩니다.")
+        }
     }
 }
 
