@@ -11,9 +11,17 @@ import MapKit
 struct SpaceDetailMiniMapView: View {
     let spaceCoordinates: CLLocationCoordinate2D
     
-    private var cameraPosition: MapCameraPosition {
+    @State private var resetTimer: Timer?
+    @State private var position: MapCameraPosition
+    
+    init(spaceCoordinates: CLLocationCoordinate2D) {
+        self.spaceCoordinates = spaceCoordinates
+        _position = State(initialValue: Self.defaultCamera(for: spaceCoordinates))
+    }
+    
+    static func defaultCamera(for coord: CLLocationCoordinate2D) -> MapCameraPosition {
         .camera(MapCamera(
-            centerCoordinate: spaceCoordinates,
+            centerCoordinate: coord,
             distance: 800,
             heading: 0,
             pitch: 40
@@ -21,13 +29,21 @@ struct SpaceDetailMiniMapView: View {
     }
     
     var body: some View {
-        Map(initialPosition: cameraPosition) {
+        Map(position: $position) {
             Marker("", coordinate: spaceCoordinates)
         }
         .frame(height: 220)
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .disabled(true)
+        .onMapCameraChange { _ in
+            resetTimer?.invalidate()
+            resetTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+                withAnimation(.easeInOut) {
+                    position = Self.defaultCamera(for: spaceCoordinates)
+                }
+            }
+        }
     }
+
 }
 
 #Preview {

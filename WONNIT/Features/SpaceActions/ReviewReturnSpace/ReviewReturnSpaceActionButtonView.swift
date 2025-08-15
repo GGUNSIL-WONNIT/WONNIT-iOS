@@ -10,13 +10,13 @@ import SwiftUI
 struct ReviewReturnSpaceActionButtonView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @State private var isShowingReturnSpaceView: Bool = false
+    @State private var isShowingReviewReturnSpaceView: Bool = false
     
     let spaceId: UUID
     
     var body: some View {
         Button {
-            isShowingReturnSpaceView = true
+            isShowingReviewReturnSpaceView = true
         } label: {
             Text("반납 확인하기")
                 .body_05(.primaryPurple)
@@ -27,7 +27,7 @@ struct ReviewReturnSpaceActionButtonView: View {
                         .stroke(style: .init(lineWidth: 1))
                 )
         }
-        .fullScreenCover(isPresented: $isShowingReturnSpaceView) {
+        .fullScreenCover(isPresented: $isShowingReviewReturnSpaceView) {
             ReviewReturnSpaceView(spaceId: spaceId)
         }
     }

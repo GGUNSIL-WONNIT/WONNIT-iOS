@@ -25,23 +25,31 @@ struct SpaceDetailView: View {
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 26) {
                     spaceImagesCarousel
+                        .padding(.horizontal)
                     
                     spaceInfoFromPreview
+                        .padding(.horizontal)
                     
-                    Divider()
-                        .padding(.vertical, 24)
+                    RentSpaceActionButtonView(spaceId: space.id, isAvailable: space.status == .available)
+                        .padding(.horizontal)
+                    
+                    Rectangle()
+                        .fill(Color.grey100)
+                        .frame(height: 8)
                     
                     spaceInfoSection
+                        .padding(.horizontal)
                     
-                    Divider()
-                        .padding(.vertical, 24)
+                    Rectangle()
+                        .fill(Color.grey100)
+                        .frame(height: 8)
                     
                     spaceScannerSection
+                        .padding(.horizontal)
                 }
                 .padding(.top, 20)
-                .padding(.horizontal)
                 .padding(.bottom, 120)
             }
             .padding(.top, safeAreaInsets.top + 44)
@@ -206,7 +214,6 @@ struct SpaceDetailView: View {
 #Preview {
     NavigationView {
         SpaceDetailView(space: .placeholder)
-            .padding()
-            .frame(maxWidth: .infinity)
+            .withBackButtonToolbar()
     }
 }
