@@ -8,192 +8,23 @@
 import SwiftUI
 
 struct ReturnSpaceView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State private var currentStep: ReturnSpaceStep = .before
-    @State private var formStore = FormStateStore()
-    @State private var transitionDirection: Edge = .trailing
-    @State private var showDonePage = false
-    
     let spaceId: UUID
     
     var body: some View {
-        if !showDonePage {
-            VStack(alignment: .leading, spacing: 0) {
-                VStack(spacing: 6) {
-                    topBar
-                    
-                    formStepProgressBar
-                }
-                
-                formContent
-            }
-            
-            nextButton
-                .padding(.vertical, 8)
-                .background(Color.white)
-        } else {
-            DonePageView()
-        }
-    }
-    
-    @ViewBuilder
-    private var topBar: some View {
-        HStack {
-            backButton
-            Spacer()
-        }
-        .padding(16)
-    }
-    
-    @ViewBuilder
-    private var backButton: some View {
-        Button {
-            if let prev = currentStep.previous {
-                goToStep(prev)
-            } else {
-                dismiss()
-            }
-        } label: {
-            Image(systemName: "chevron.left")
-                .contentShape(Rectangle())
-        }
-        .foregroundStyle(Color.grey900)
-        .font(.system(size: 18))
-    }
-    
-    private var nextButton: some View {
-//        #if DEBUG
-//        let isValid = true
-//        #else
-        let isValid = currentStep.isStepValid(store: formStore)
-//        #endif
-        
-        let isOptional = currentStep.isOptional
-        
-        return Button {
-            if isValid {
-                if let next = currentStep.next {
-                    goToStep(next)
-                } else {
-                    submitForm()
+        MultiStepFormView(
+            initialStep: ReturnSpaceStep.before,
+            donePageView: DonePageView(message: "반납이 요청되었습니다!", imageName: "paperplane"),
+            onSubmit: { formStore in
+                print("Submit\nspaceId: \(spaceId)\nstore: \(formStore)")
+            },
+            onCustomButtonTap: { buttonLabel, formStore, actions in
+                if buttonLabel == "다시 등록하기" {
+                    actions.goToStep(.before)
+                } else if buttonLabel == "마치기" {
+                    actions.submit()
                 }
             }
-        } label: {
-            Text(currentStep.next == nil ? "마치기" : (isOptional ? "건너뛰기" : "다음으로"))
-                .body_01(isValid ? .white : .grey300)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(isValid ? Color.primaryPurple : .grey100)
-                )
-                .padding(.horizontal, 16)
-        }
-        .disabled(!isValid && !isOptional)
-    }
-    
-    private var formStepProgressBar: some View {
-        let steps = ReturnSpaceStep.allCases
-        let currentIndex = steps.firstIndex(of: currentStep) ?? 0
-        
-        return GeometryReader { geometry in
-            let totalSpacing: CGFloat = CGFloat(steps.count - 1) * 7
-            let availableWidth = max(geometry.size.width - totalSpacing, 0)
-            let capsuleWidth = steps.count > 0 ? availableWidth / CGFloat(steps.count) : 0
-            
-            HStack(spacing: 7) {
-                ForEach(0..<steps.count, id: \.self) { index in
-                    ZStack(alignment: .leading) {
-                        Capsule()
-                            .fill(Color.grey200)
-                            .frame(width: capsuleWidth, height: 6)
-                        
-                        Capsule()
-                            .fill(Color.primaryPurple)
-                            .frame(width: index <= currentIndex ? capsuleWidth : 0, height: 6)
-                            .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
-                    }
-                    .clipped()
-                }
-            }
-        }
-        .frame(height: 6)
-        .padding(.horizontal, 16)
-    }
-    
-    private var formStepTitle: some View {
-        HStack {
-            Text(currentStep.sectionTitle)
-                .title_01(.grey900)
-            Spacer()
-        }
-    }
-    
-    private var formContent: some View {
-        GeometryReader { geometry in
-            ScrollViewReader { proxy in
-                ScrollView {
-                    ForEach(ReturnSpaceStep.allCases, id: \.self) { step in
-                        if step == currentStep {
-                            VStack(spacing: 24) {
-                                HStack {
-                                    Text(step.sectionTitle)
-                                        .title_01(.grey900)
-                                    Spacer()
-                                }
-                                
-                                VStack(spacing: 32) {
-                                    ForEach(step.components, id: \.id) { component in
-                                        FormRenderer.render(
-                                            component,
-                                            store: formStore
-                                        )
-                                        .id(component.id)
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.top, 36)
-                            .padding(.bottom, 386)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .transition(.asymmetric(
-                                insertion: .move(edge: transitionDirection).combined(with: .opacity),
-                                removal: .move(edge: transitionDirection == .trailing ? .leading : .trailing).combined(with: .opacity)
-                            ))
-                        }
-                    }
-                    .animation(.interactiveSpring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2), value: currentStep)
-                    .id("topAnchor")
-                }
-                .onChange(of: currentStep) { _, newStep in
-                    withAnimation {
-                        proxy.scrollTo("topAnchor", anchor: .top)
-                    }
-                }
-            }
-        }
-    }
-    
-    private func goToStep(_ step: ReturnSpaceStep) {
-        let currentIndex = ReturnSpaceStep.allCases.firstIndex(of: currentStep) ?? 0
-        let nextIndex = ReturnSpaceStep.allCases.firstIndex(of: step) ?? 0
-        
-        transitionDirection = nextIndex > currentIndex ? .trailing : .leading
-        
-        withAnimation(.easeInOut(duration: 0.35)) {
-            currentStep = step
-        }
-    }
-    
-    private func submitForm() {
-        withAnimation {
-            showDonePage = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            dismiss()
-        }
-        
+        )
     }
 }
 

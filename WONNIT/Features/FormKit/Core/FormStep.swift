@@ -1,5 +1,5 @@
 //
-//  ReturnSpaceFormStepValidator.swift
+//  FormStep.swift
 //  WONNIT
 //
 //  Created by dohyeoplim on 8/15/25.
@@ -7,7 +7,39 @@
 
 import Foundation
 
-extension ReturnSpaceStep {
+protocol FormStep: CaseIterable, Identifiable, Equatable where AllCases: RandomAccessCollection, Self.ID == String {
+    var sectionTitle: String { get }
+    var isOptional: Bool { get }
+    var components: [FormComponent] { get }
+    
+    var next: Self? { get }
+    var previous: Self? { get }
+    
+    func isStepValid(store: FormStateStore) -> Bool
+    
+    var buttons: [FormStepButton]? { get }
+    var submitButtonTitle: String { get }
+}
+
+extension FormStep {
+    var id: String { String(describing: self) }
+    
+    var next: Self? {
+        let allCases = Self.allCases
+        guard let currentIndex = allCases.firstIndex(of: self) else { return nil }
+        let nextIndex = allCases.index(after: currentIndex)
+        guard nextIndex < allCases.endIndex else { return nil }
+        return allCases[nextIndex]
+    }
+    
+    var previous: Self? {
+        let allCases = Self.allCases
+        guard let currentIndex = allCases.firstIndex(of: self) else { return nil }
+        guard currentIndex != allCases.startIndex else { return nil }
+        let previousIndex = allCases.index(before: currentIndex)
+        return allCases[previousIndex]
+    }
+    
     func isStepValid(store: FormStateStore) -> Bool {
         for component in components {
             switch component {
@@ -70,7 +102,7 @@ extension ReturnSpaceStep {
                 
             case .roomScanner(_):
                 continue
-                    
+                
             case .description:
                 continue
                 
@@ -80,4 +112,8 @@ extension ReturnSpaceStep {
         }
         return true
     }
+    
+    var isOptional: Bool { false }
+    var buttons: [FormStepButton]? { nil }
+    var submitButtonTitle: String { "등록하기" }
 }

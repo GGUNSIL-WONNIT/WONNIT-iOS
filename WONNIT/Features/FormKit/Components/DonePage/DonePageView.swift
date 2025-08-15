@@ -11,15 +11,17 @@ struct DonePageView: View {
     @State private var showConfetti = false
     
     let message: String
+    let imageName: String
     
-    init(message: String = "새로운 공간이\n등록되었습니다!") {
+    init(message: String = "새로운 공간이\n등록되었습니다!", imageName: String = "checkmark.circle") {
         self.message = message
+        self.imageName = imageName
     }
     
     var body: some View {
         ZStack {
             VStack(spacing: 24) {
-                Image(systemName: "checkmark.circle")
+                Image(systemName: imageName)
                     .resizable()
                     .frame(width: 96, height: 96)
                     .foregroundColor(.primaryPurple)
