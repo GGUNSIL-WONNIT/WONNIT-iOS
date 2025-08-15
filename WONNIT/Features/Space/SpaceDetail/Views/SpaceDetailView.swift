@@ -9,6 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct SpaceDetailView: View {
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+    
     let space: Space
     let namespace: Namespace.ID?
     
@@ -21,25 +23,34 @@ struct SpaceDetailView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 8) {
-                spaceImagesCarousel
-                
-                spaceInfoFromPreview
-                
-                Divider()
-                    .padding(.vertical, 24)
-                
-                spaceInfoSection
-                
-                Divider()
-                    .padding(.vertical, 24)
-                
-                spaceScannerSection
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    spaceImagesCarousel
+                    
+                    spaceInfoFromPreview
+                    
+                    Divider()
+                        .padding(.vertical, 24)
+                    
+                    spaceInfoSection
+                    
+                    Divider()
+                        .padding(.vertical, 24)
+                    
+                    spaceScannerSection
+                }
+                .padding(.top, 20)
+                .padding(.horizontal)
+                .padding(.bottom, 120)
             }
-            .padding(.top)
-            .padding(.bottom, 120)
+            .padding(.top, safeAreaInsets.top + 44)
+            
+            Color.white
+                .frame(height: safeAreaInsets.top + 44)
         }
+        .ignoresSafeArea(.all, edges: .top)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar {
             if isEditable {
                 ToolbarItem(placement: .topBarTrailing) {

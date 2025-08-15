@@ -44,9 +44,7 @@ struct SpaceListView: View {
 //            .navigationDestination(for: UUID.self) { id in
 //                if let space = spacesToShow.first(where: { $0.id == id }) {
 //                    SpaceDetailView(space: space)
-//                        .padding(.horizontal)
 //                        .padding(.bottom, -24)
-//                        .frame(maxWidth: .infinity)
 //                        .withBackButtonToolbar()
 //                } else {
 //                    ZStack {
