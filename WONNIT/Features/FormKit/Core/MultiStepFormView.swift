@@ -1,18 +1,41 @@
 //
-//  CreateSpaceView.swift
+//  MultiStepFormView.swift
 //  WONNIT
 //
-//  Created by dohyeoplim on 8/5/25.
+//  Created by dohyeoplim on 8/15/25.
 //
 
 import SwiftUI
 
-struct CreateSpaceView: View {
+struct MultiStepFormView<Step: FormStep>: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var currentStep: CreateSpaceFormStep = .addressAndName
+    @State private var currentStep: Step
     @State private var formStore = FormStateStore()
     @State private var transitionDirection: Edge = .trailing
     @State private var showDonePage = false
+    
+    private let initialStep: Step
+    private let donePageView: AnyView
+    private let onSubmit: (FormStateStore) -> Void
+    private let onCustomButtonTap: ((String, FormStateStore, FormActions) -> Void)?
+    
+    struct FormActions {
+        let goToStep: (Step) -> Void
+        let submit: () -> Void
+    }
+    
+    init(
+        initialStep: Step,
+        donePageView: some View,
+        onSubmit: @escaping (FormStateStore) -> Void,
+        onCustomButtonTap: ((String, FormStateStore, FormActions) -> Void)? = nil
+    ) {
+        self._currentStep = State(initialValue: initialStep)
+        self.initialStep = initialStep
+        self.donePageView = AnyView(donePageView)
+        self.onSubmit = onSubmit
+        self.onCustomButtonTap = onCustomButtonTap
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -25,18 +48,16 @@ struct CreateSpaceView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(spacing: 6) {
                         topBar
-                        
                         formStepProgressBar
                     }
-                    
                     formContent
                 }
                 
-                nextButton
+                bottomButtons
                     .padding(.vertical, 8)
                     .background(Color.white)
             } else {
-                DonePageView()
+                donePageView
             }
         }
     }
@@ -73,39 +94,64 @@ struct CreateSpaceView: View {
         .font(.system(size: 18))
     }
     
-    private var nextButton: some View {
-        #if DEBUG
-        let isValid = true
-        #else
+    private var bottomButtons: some View {
         let isValid = currentStep.isStepValid(store: formStore)
-        #endif
-        
         let isOptional = currentStep.isOptional
         
-        return Button {
-            if isValid {
-                if let next = currentStep.next {
-                    goToStep(next)
-                } else {
-                    submitForm()
+        return Group {
+            if let customButtons = currentStep.buttons, onCustomButtonTap != nil {
+                VStack(spacing: 12) {
+                    ForEach(customButtons, id: \.label) { buttonConfig in
+                        Button {
+                            let actions = FormActions(
+                                goToStep: { step in self.goToStep(step) },
+                                submit: { self.submitForm() }
+                            )
+                            onCustomButtonTap?(buttonConfig.label, formStore, actions)
+                        } label: {
+                            Text(buttonConfig.label)
+                                .body_01(buttonConfig.style == .primary ? .white : .primaryPurple)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(buttonConfig.style == .primary ? Color.primaryPurple : .white)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.primaryPurple, lineWidth: buttonConfig.style == .outlined ? 1 : 0)
+                                )
+                        }
+                    }
                 }
-            }
-        } label: {
-            Text(currentStep.next == nil ? "등록하기" : (isOptional ? "건너뛰기" : "다음으로"))
-                .body_01(isValid ? .white : .grey300)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(isValid ? Color.primaryPurple : .grey100)
-                )
                 .padding(.horizontal, 16)
+            } else {
+                Button {
+                    if isValid || isOptional {
+                        if let next = currentStep.next {
+                            goToStep(next)
+                        } else {
+                            submitForm()
+                        }
+                    }
+                } label: {
+                    Text(currentStep.next == nil ? currentStep.submitButtonTitle : (isOptional ? "건너뛰기" : "다음으로"))
+                        .body_01((isValid || isOptional) ? .white : .grey300)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill((isValid || isOptional) ? Color.primaryPurple : .grey100)
+                        )
+                        .padding(.horizontal, 16)
+                }
+                .disabled(!isValid && !isOptional)
+            }
         }
-        .disabled(!isValid && !isOptional)
     }
     
     private var formStepProgressBar: some View {
-        let steps = CreateSpaceFormStep.allCases
+        let steps = Array(Step.allCases)
         let currentIndex = steps.firstIndex(of: currentStep) ?? 0
         
         return GeometryReader { geometry in
@@ -133,15 +179,6 @@ struct CreateSpaceView: View {
         .padding(.horizontal, 16)
     }
     
-    // MARK: - Main form content
-    private var formStepTitle: some View {
-        HStack {
-            Text(currentStep.sectionTitle)
-                .title_01(.grey900)
-            Spacer()
-        }
-    }
-    
     private var formContent: some View {
         GeometryReader { geometry in
             ScrollViewReader { proxy in
@@ -154,7 +191,7 @@ struct CreateSpaceView: View {
                             }
                         
                         ZStack {
-                            ForEach(CreateSpaceFormStep.allCases, id: \.self) { step in
+                            ForEach(Array(Step.allCases), id: \.id) { step in
                                 if step == currentStep {
                                     VStack(spacing: 24) {
                                         HStack {
@@ -205,10 +242,10 @@ struct CreateSpaceView: View {
         }
     }
     
-    // MARK: - Helper functions
-    private func goToStep(_ step: CreateSpaceFormStep) {
-        let currentIndex = CreateSpaceFormStep.allCases.firstIndex(of: currentStep) ?? 0
-        let nextIndex = CreateSpaceFormStep.allCases.firstIndex(of: step) ?? 0
+    private func goToStep(_ step: Step) {
+        let allCases = Array(Step.allCases)
+        let currentIndex = allCases.firstIndex(of: currentStep) ?? 0
+        let nextIndex = allCases.firstIndex(of: step) ?? 0
         
         transitionDirection = nextIndex > currentIndex ? .trailing : .leading
         
@@ -218,6 +255,7 @@ struct CreateSpaceView: View {
     }
     
     private func submitForm() {
+        onSubmit(formStore)
         withAnimation {
             showDonePage = true
         }
@@ -225,10 +263,5 @@ struct CreateSpaceView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             dismiss()
         }
-        
     }
-}
-
-#Preview {
-    CreateSpaceView()
 }

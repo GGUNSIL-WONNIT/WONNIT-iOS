@@ -8,7 +8,8 @@
 import Foundation
 import SwiftUI
 
-@Observable class NavigationManager {
+@Observable
+final class NavigationManager {
     var path = NavigationPath()
     
     func push<T: Hashable>(_ value: T) {

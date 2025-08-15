@@ -10,21 +10,24 @@ import SwiftUI
 
 struct BackButtonToolbarModifier: ViewModifier {
     @Environment(\.dismiss) private var dismiss
-
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+    
     func body(content: Content) -> some View {
         content
+            .toolbarBackground(.white)
+            .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
-            .toolbarBackground(Color.white)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
                         dismiss()
                     } label: {
                         Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .regular))
+                            .foregroundStyle(Color.grey900)
+                            .frame(width: 36, height: 36, alignment: .leading)
                             .contentShape(Rectangle())
                     }
-                    .foregroundStyle(Color.grey900)
-                    .font(.system(size: 18))
                 }
             }
     }

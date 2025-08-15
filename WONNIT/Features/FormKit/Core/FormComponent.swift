@@ -14,7 +14,8 @@ enum FormComponent {
     case doubleField(config: FormFieldBaseConfig)
     case integerField(config: FormFieldBaseConfig)
     case select(config: FormFieldBaseConfig, options: [String])
-    case imageUploader(config: FormFieldBaseConfig, variant: ImageUploaderVariant)
+    case imageUploaderSimple(config: FormFieldBaseConfig)
+    case imageUploaderWithML(config: FormFieldBaseConfig, variant: ImageUploaderVariant)
     case dayPicker(config: FormFieldBaseConfig)
     case timeRangePicker(config: FormFieldBaseConfig)
     case pricingField(config: FormFieldBaseConfig)
@@ -81,7 +82,8 @@ extension FormComponent: Identifiable {
              .doubleField(let config),
              .integerField(let config),
              .select(let config, _),
-             .imageUploader(let config, _),
+             .imageUploaderSimple(let config),
+             .imageUploaderWithML(let config, _),
              .dayPicker(let config),
              .timeRangePicker(let config),
              .pricingField(let config),

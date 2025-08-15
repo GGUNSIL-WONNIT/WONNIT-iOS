@@ -12,14 +12,14 @@ extension EditSpaceFormStep {
         switch self {
         case .pictures:
             return [
-                .imageUploader(
+                .imageUploaderWithML(
                     config: .init(
                         id: "mainImage",
                         title: "대표사진"
                     ),
                     variant: .singleLarge
                 ),
-                .imageUploader(
+                .imageUploaderWithML(
                     config: .init(
                         id: "subImages",
                         title: "추가사진"

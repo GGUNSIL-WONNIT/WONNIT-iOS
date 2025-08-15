@@ -1,13 +1,47 @@
 //
-//  CreateSpaceFormStepComponents.swift
+//  CreateSpaceFormStep.swift
 //  WONNIT
 //
 //  Created by dohyeoplim on 8/6/25.
 //
 
 import Foundation
+import SwiftUI
 
-extension CreateSpaceFormStep {
+enum CreateSpaceFormStep: FormStep {
+    case addressAndName
+    case pictures
+    case categoryAndTags
+    case operation
+    case scanner
+    case miscellaneous
+    
+    var sectionTitle: String {
+        switch self {
+        case .addressAndName:
+            return "공간 주소와 이름 정보를\n입력해주세요"
+        case .pictures:
+            return "공간 사진과 기본정보를\n등록해주세요"
+        case .categoryAndTags:
+            return "공간 카테고리와 구비물품을\n확인해주세요"
+        case .operation:
+            return "공간 대여 정보 및\n금액을 입력해주세요"
+        case .scanner:
+            return "3D 스캔 정보를\n등록해주세요(선택)"
+        case .miscellaneous:
+            return "기타 정보를 등록해주세요"
+        }
+    }
+    
+    var isOptional: Bool {
+        switch self {
+        case .scanner:
+            return true
+        default:
+            return false
+        }
+    }
+    
     var components: [FormComponent] {
         switch self {
         case .addressAndName:
@@ -40,7 +74,7 @@ extension CreateSpaceFormStep {
 
         case .pictures:
             return [
-                .imageUploader(
+                .imageUploaderWithML(
                     config: .init(
                         id: "mainImage",
                         title: "대표사진 등록",
@@ -49,7 +83,7 @@ extension CreateSpaceFormStep {
                     ),
                     variant: .singleLarge
                 ),
-                .imageUploader(
+                .imageUploaderWithML(
                     config: .init(
                         id: "subImages",
                         title: "추가사진 등록",
@@ -116,16 +150,5 @@ extension CreateSpaceFormStep {
                 ))
             ]
         }
-    }
-}
-
-extension NumberFormatter {
-    static var decimalFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2
-        formatter.locale = Locale.current
-        return formatter
     }
 }

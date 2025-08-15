@@ -42,8 +42,14 @@ struct FormRenderer {
         case let .phoneNumberField(config):
             PhoneNumberFieldComponentView(config: config)
                 .environment(store)
-        case let .imageUploader(config, variant):
-            ImageUploaderComponentView(
+        case let .imageUploaderSimple(config: config):
+            ImageUploaderSimpleComponentView(
+                config: config,
+                images: store.imageBinding(for: config.id)
+            )
+            .environment(store)
+        case let .imageUploaderWithML(config, variant):
+            ImageUploaderWithMLComponentView(
                 config: config,
                 variant: variant,
                 images: store.imageBinding(for: config.id)
@@ -54,8 +60,9 @@ struct FormRenderer {
                 config: config,
                 roomData: store.roomDataBinding(for: config.id)
             )
+            .environment(store)
         default:
-            Text("😭 곧.")
+            Text("😭 곧")
         }
     }
 }

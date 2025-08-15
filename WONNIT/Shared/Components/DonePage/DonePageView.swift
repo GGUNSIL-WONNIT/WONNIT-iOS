@@ -11,15 +11,19 @@ struct DonePageView: View {
     @State private var showConfetti = false
     
     let message: String
+    let imageName: String
+    let showConfettiOnAppear: Bool
     
-    init(message: String = "새로운 공간이\n등록되었습니다!") {
+    init(message: String = "새로운 공간이\n등록되었습니다!", imageName: String = "checkmark.circle", showConfettiOnAppear: Bool = true) {
         self.message = message
+        self.imageName = imageName
+        self.showConfettiOnAppear = showConfettiOnAppear
     }
     
     var body: some View {
         ZStack {
             VStack(spacing: 24) {
-                Image(systemName: "checkmark.circle")
+                Image(systemName: imageName)
                     .resizable()
                     .frame(width: 96, height: 96)
                     .foregroundColor(.primaryPurple)
@@ -36,9 +40,11 @@ struct DonePageView: View {
             ConfettiView(isEmitting: $showConfetti)
         }
         .onAppear {
-            showConfetti = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                showConfetti = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                showConfetti = showConfettiOnAppear
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    showConfetti = false
+                }
             }
         }
     }

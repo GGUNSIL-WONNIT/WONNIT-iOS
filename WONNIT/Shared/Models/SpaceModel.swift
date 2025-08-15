@@ -24,6 +24,7 @@ struct Space: Identifiable, Codable, Equatable, Hashable {
     let spaceModelURL: String?
     let phoneNumber: PhoneNumber?
     let precautions: String?
+    let status: SpaceStatus?
     
     var coordinate: CLLocationCoordinate2D? {
         address?.coordinate

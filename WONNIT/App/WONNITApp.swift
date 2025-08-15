@@ -12,7 +12,7 @@ struct WONNITApp: App {
     @State private var tabManager = TabManager()
     @State private var tabShouldResetManager = TabShouldResetManager()
     @State private var showCreateSpaceSheet: Bool = false
-
+    
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .bottomTrailing) {

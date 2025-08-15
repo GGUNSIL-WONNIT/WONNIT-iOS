@@ -29,13 +29,15 @@ struct SpacePreviewCardView: View {
     let layout: SpacePreviewCardLayout
     let pricePosition: SpacePreviewCardPricePosition
     let additionalTextTopRight: String?
+    let showSpaceStatus: Bool
     let namespace: Namespace.ID?
     
-    init(space: Space, layout: SpacePreviewCardLayout, pricePosition: SpacePreviewCardPricePosition = .none, additionalTextTopRight: String? = nil, namespace: Namespace.ID? = nil) {
+    init(space: Space, layout: SpacePreviewCardLayout, pricePosition: SpacePreviewCardPricePosition = .none, additionalTextTopRight: String? = nil, showSpaceStatus: Bool = false, namespace: Namespace.ID? = nil) {
         self.space = space
         self.layout = layout
         self.pricePosition = pricePosition
         self.additionalTextTopRight = additionalTextTopRight
+        self.showSpaceStatus = showSpaceStatus
         self.namespace = namespace
     }
     
@@ -43,8 +45,10 @@ struct SpacePreviewCardView: View {
         switch layout {
         case .vertical:
             verticalLayout
+                .contentShape(Rectangle())
         case .horizontal(let height):
             horizontalLayout(for: height)
+                .contentShape(Rectangle())
         }
     }
     
@@ -125,23 +129,17 @@ struct SpacePreviewCardView: View {
                 Spacer()
             }
 
-            if pricePosition != .none, let price = space.amountInfo?.amount {
-                HStack {
-                    if pricePosition == .trailing {
-                        Spacer()
+            
+            HStack {
+                if let status = space.status, showSpaceStatus && status == .returnRejected {
+                    status.statusIndicator
+                } else {
+                    if pricePosition != .none, let price = space.amountInfo?.amount {
+                        priceInfo(price: price)
                     }
-                    HStack(alignment: .bottom, spacing: 4) {
-                        Text("\(price)원")
-                            .body_01(.grey900)
-                        if let unit = space.amountInfo?.timeUnit {
-                            Text(unit.displayText)
-                                .caption_03(.grey700)
-                                .padding(.bottom, 2)
-                        }
-                    }
-                    .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
-                    if pricePosition == .leading {
-                        Spacer()
+                    
+                    if let status = space.status, showSpaceStatus {
+                        status.statusIndicator
                     }
                 }
             }
@@ -154,6 +152,21 @@ struct SpacePreviewCardView: View {
             }
         }())
     }
+    
+    @ViewBuilder
+    private func priceInfo(price: Int) -> some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            Text("\(price)원")
+                .body_01(.grey900)
+            if let unit = space.amountInfo?.timeUnit {
+                Text(unit.displayText)
+                    .caption_03(.grey700)
+                    .padding(.bottom, 2)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: pricePosition == .leading ? .leading : .trailing)
+        .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
+    }
 }
 
 #Preview {
@@ -163,7 +176,7 @@ struct SpacePreviewCardView: View {
                 SpacePreviewCardView(space: .placeholder, layout: .vertical)
                 SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 123), pricePosition: .trailing)
                 SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 98), pricePosition: .none, additionalTextTopRight: "500m")
-                SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 123), pricePosition: .leading, additionalTextTopRight: "500m")
+                SpacePreviewCardView(space: .placeholder, layout: .horizontal(height: 123), pricePosition: .leading, additionalTextTopRight: "500m", showSpaceStatus: true)
             }
             .padding()
         }

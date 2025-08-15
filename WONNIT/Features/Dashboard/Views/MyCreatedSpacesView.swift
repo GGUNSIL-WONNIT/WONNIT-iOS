@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct MyCreatedSpacesView: View {
+    let selectedDashboardTab: DashboardTab = .myCreatedSpaces
+    
+    @State var spacesToShow: [Space] = Space.mockList
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        DashboardSpaceListView(selectedDashboardTab: selectedDashboardTab, spacesToShow: $spacesToShow)
     }
 }
 

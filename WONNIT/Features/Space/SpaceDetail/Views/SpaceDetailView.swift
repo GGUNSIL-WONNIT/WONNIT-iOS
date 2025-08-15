@@ -9,6 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct SpaceDetailView: View {
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+    
     let space: Space
     let namespace: Namespace.ID?
     
@@ -21,32 +23,50 @@ struct SpaceDetailView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 8) {
-                spaceImagesCarousel
-                
-                spaceInfoFromPreview
-                
-                Divider()
-                    .padding(.vertical, 24)
-                
-                spaceInfoSection
-                
-                Divider()
-                    .padding(.vertical, 24)
-                
-                spaceScannerSection
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 26) {
+                    spaceImagesCarousel
+                        .padding(.horizontal)
+                    
+                    spaceInfoFromPreview
+                        .padding(.horizontal)
+                    
+                    RentSpaceActionButtonView(spaceId: space.id, isAvailable: space.status == .available)
+                        .padding(.horizontal)
+                    
+                    Rectangle()
+                        .fill(Color.grey100)
+                        .frame(height: 8)
+                    
+                    spaceInfoSection
+                        .padding(.horizontal)
+                    
+                    Rectangle()
+                        .fill(Color.grey100)
+                        .frame(height: 8)
+                    
+                    spaceScannerSection
+                        .padding(.horizontal)
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 120)
             }
-            .padding(.top)
-            .padding(.bottom, 120)
+            .padding(.top, safeAreaInsets.top + 44)
+            
+            Color.white
+                .frame(height: safeAreaInsets.top + 44)
         }
+        .ignoresSafeArea(.all, edges: .top)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar {
             if isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showEditSpaceForm = true
                     } label: {
-                        Image(systemName: "ellipsis")
+                        Text("수정하기")
+                            .body_04(.grey900)
                             .contentShape(Rectangle())
                     }
                     .foregroundStyle(Color.grey900)
@@ -194,7 +214,6 @@ struct SpaceDetailView: View {
 #Preview {
     NavigationView {
         SpaceDetailView(space: .placeholder)
-            .padding()
-            .frame(maxWidth: .infinity)
+            .withBackButtonToolbar()
     }
 }
