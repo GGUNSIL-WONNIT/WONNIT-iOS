@@ -26,7 +26,7 @@ struct LaunchScreenAnimatedView: View {
             
             LottieSymbolView(fileName: "wonnitSymbol", loopMode: .loop)
         }
-        .ignoresSafeArea(.all, edges: .vertical)
+        .ignoresSafeArea()
         .onAppear {
             typedLogoVisible = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -45,7 +45,9 @@ struct LottieSymbolView: UIViewRepresentable {
     func makeUIView(context: Context) -> Lottie.LottieAnimationView {
         let v = LottieAnimationView(name: fileName)
         v.loopMode = loopMode
-        v.play()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            v.play()
+        }
         return v
     }
     
