@@ -89,3 +89,5 @@ playground.xcworkspace
 
 .env
 .env.*
+
+**/Secrets.xcconfig

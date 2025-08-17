@@ -189,9 +189,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -334,7 +338,8 @@
 		};
 		9CE59C832E3CBBB70095C833 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 997DCF414593A6ACE269B198 /* Pods-WONNIT.debug.xcconfig */;
+			baseConfigurationReferenceAnchor = 9CE59C792E3CBBB60095C833 /* WONNIT */;
+			baseConfigurationReferenceRelativePath = Config/Debug.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -380,7 +385,8 @@
 		};
 		9CE59C842E3CBBB70095C833 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4ADBC9F5A0D3AA19364338F /* Pods-WONNIT.release.xcconfig */;
+			baseConfigurationReferenceAnchor = 9CE59C792E3CBBB60095C833 /* WONNIT */;
+			baseConfigurationReferenceRelativePath = Config/Release.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

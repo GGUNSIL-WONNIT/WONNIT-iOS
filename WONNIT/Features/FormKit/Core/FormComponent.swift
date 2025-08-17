@@ -23,6 +23,7 @@ enum FormComponent {
     case description(id: String, text: String)
     case tagSelector(config: FormFieldBaseConfig)
     case phoneNumberField(config: FormFieldBaseConfig)
+    case addressPicker(config: FormFieldBaseConfig)
 }
 
 enum ImageUploaderVariant {
@@ -88,6 +89,7 @@ extension FormComponent: Identifiable {
              .timeRangePicker(let config),
              .pricingField(let config),
              .roomScanner(let config),
+             .addressPicker(let config),
              .tagSelector(let config):
             return config.id
         case .description(let id, _):

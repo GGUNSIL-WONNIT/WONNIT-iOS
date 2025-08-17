@@ -8,6 +8,10 @@ target 'WONNIT' do
 
   pod 'Kingfisher', '~> 8.0'
 
+  pod 'Alamofire'
+
+  pod 'Moya', '~> 15.0'
+
 end
 
 post_install do |installer|

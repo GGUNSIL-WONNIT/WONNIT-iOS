@@ -1,4 +1,4 @@
-name: CI
+name: Deploy to TestFlight
 
 permissions:
   contents: write
@@ -45,6 +45,12 @@ jobs:
           known_hosts: ${{ secrets.CERT_SSH_KNOWN_HOSTS }}
           if_key_exists: replace
 
+      - name: Store env variables
+        run: |
+          cat <<EOF > WONNIT/Config/Secrets.xcconfig
+          KAKAO_REST_KEY = ${{ secrets.KAKAO_REST_KEY }}
+          EOF
+
       - name: Update build number
         run: |
           bundle exec fastlane set_build_number_from_git
@@ -54,7 +60,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add -u
-          git commit -m "chore: set build number to $(git rev-list --count HEAD) [skip ci]" || echo "No changes to commit"
+          git commit -m "chore: set build number to $(git rev-list --count HEAD)" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
 
       - name: Run Fastlane
