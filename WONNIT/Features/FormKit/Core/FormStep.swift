@@ -108,6 +108,11 @@ extension FormStep {
                 
             case .tagSelector(_):
                 continue
+                
+            case let .addressPicker(config):
+                guard let addressInfo = store.addressValues[config.id] else {
+                    return false
+                }
             }
         }
         return true

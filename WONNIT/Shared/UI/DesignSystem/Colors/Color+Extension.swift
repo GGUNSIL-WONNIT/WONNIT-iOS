@@ -12,7 +12,7 @@ extension Color {
     static let primaryPurple300 = Color(hex: 0xCFC3FF)
     static let primaryPurple100 = Color(hex: 0xE9E3FF)
     static let grey100 = Color(hex: 0xECEDEF)
-    static let grey200 = Color(hex: 0xECEDEF)
+    static let grey200 = Color(hex: 0xDBDDE2)
     static let grey300 = Color(hex: 0xC6C8D1)
     static let grey500 = Color(hex: 0x9EA4B4)
     static let grey700 = Color(hex: 0x767984)

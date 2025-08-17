@@ -46,10 +46,14 @@ enum CreateSpaceFormStep: FormStep {
         switch self {
         case .addressAndName:
             return [
-                .textField(config: .init(
+//                .textField(config: .init(
+//                    id: "address1",
+//                    title: "주소",
+//                    placeholder: "주소를 입력해주세요"
+//                )),
+                .addressPicker(config: .init(
                     id: "address1",
-                    title: "주소",
-                    placeholder: "주소를 입력해주세요"
+                    title: "주소"
                 )),
                 .textField(config: .init(
                     id: "address2",

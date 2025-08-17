@@ -61,6 +61,9 @@ struct FormRenderer {
                 roomData: store.roomDataBinding(for: config.id)
             )
             .environment(store)
+        case let .addressPicker(config):
+            AddressPickerComponentView(config: config)
+                .environment(store)
         default:
             Text("😭 곧")
         }

@@ -1,0 +1,10 @@
+//
+//  Debug.xcconfig
+//  WONNIT
+//
+//  Created by dohyeoplim on 8/17/25.
+//
+
+#include "Pods/Target Support Files/Pods-WONNIT/Pods-WONNIT.debug.xcconfig"
+
+#include "Secrets.xcconfig"

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 @Observable
 final class FormStateStore: NSObject {
@@ -26,4 +27,6 @@ final class FormStateStore: NSObject {
     var amountInfoValues: [String: AmountInfo] = [:]
     var imageValues: [String: [UIImage]] = [:]
     var roomDataValues: [String: RoomData?] = [:]
+    var addressValues: [String: KakaoAddress?] = [:]
+    var coordinateValues: [String: CLLocationCoordinate2D?] = [:]
 }

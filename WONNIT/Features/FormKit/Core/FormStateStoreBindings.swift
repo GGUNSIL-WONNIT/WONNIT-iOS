@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import CoreLocation
 
 extension FormStateStore {
     func stringBinding(for id: String, default defaultValue: String = "") -> Binding<String> {
@@ -99,6 +100,20 @@ extension FormStateStore {
         Binding(
             get: { self.roomDataValues[id, default: nil] },
             set: { self.roomDataValues[id] = $0 }
+        )
+    }
+
+    func addressBinding(for id: String) -> Binding<KakaoAddress?> {
+        Binding(
+            get: { self.addressValues[id, default: nil] },
+            set: { self.addressValues[id] = $0 }
+        )
+    }
+
+    func coordinatesBinding(for id: String) -> Binding<CLLocationCoordinate2D?> {
+        Binding(
+            get: { self.coordinateValues[id, default: nil] },
+            set: { self.coordinateValues[id] = $0 }
         )
     }
 }
