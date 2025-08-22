@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct SpaceDetailViewWithTransitions: View {
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+    
     let space: Space
-    let detent: DraggableSheetDetent
+    @Binding var detent: DraggableSheetDetent
     
     @Namespace private var namespace
     
@@ -20,11 +22,18 @@ struct SpaceDetailViewWithTransitions: View {
                 EmptyView()
             case .medium:
                 SpacePreviewCardView(space: space, layout: .horizontal(height: 98), additionalTextTopRight: "500m", namespace: namespace)
+                    .padding()
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                            detent = .large
+                        }
+                    }
             case .large:
                 SpaceDetailView(space: space, namespace: namespace)
+                    .padding(.top, -1 * safeAreaInsets.top - 44)
             }
         }
-        .padding()
         .frame(maxWidth: .infinity)
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: detent)
     }

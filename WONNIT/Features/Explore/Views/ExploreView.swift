@@ -25,11 +25,16 @@ struct ExploreView: View {
             selectedDetent: $sheetDetent
         ) {
             if let space = mapViewModel.selectedSpace, sheetDetent != .small {
-                SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
+                SpaceDetailViewWithTransitions(space: space, detent: $sheetDetent)
             } else {
-                SpaceNearbyView(mapViewModel: mapViewModel, detent: $sheetDetent)
-                    .padding()
-                    .padding(.top, -16)
+                if sheetDetent == .small {
+                    SpaceNearbyPeakView()
+                        .padding()
+                        .padding(.top, -16)
+                } else {
+                    SpaceNearbyView(mapViewModel: mapViewModel, detent: $sheetDetent)
+                        .padding()
+                }
             }
         }
         .onChange(of: mapViewModel.selection) { _, newSelection in

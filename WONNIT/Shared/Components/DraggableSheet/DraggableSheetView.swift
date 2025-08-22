@@ -23,7 +23,6 @@ struct SheetView<Content: View>: View {
                 content: content
             )
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color(.systemBackground))
         .cornerRadius(selectedDetent == .large ? 0 : 20)
         .offset(y: dragOffset)
@@ -69,10 +68,6 @@ struct SheetInternalView<Content: View>: View {
         VStack {
             if selectedDetent == .large {
                 HStack {
-//                    Button(action: collapseToMiddle) {
-//                        Image(systemName: "chevron.left.circle.fill")
-//                            .font(.title)
-//                    }
                     Button {
                         collapseToMiddle()
                     } label: {
@@ -82,7 +77,8 @@ struct SheetInternalView<Content: View>: View {
                             .contentShape(Rectangle())
                     }
                     Spacer()
-                }.padding(.horizontal)
+                }
+                .padding(.horizontal)
             } else {
                 Capsule().fill(Color.gray.opacity(0.5)).frame(width: 40, height: 5)
             }
