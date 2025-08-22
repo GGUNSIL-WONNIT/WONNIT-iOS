@@ -8,7 +8,7 @@
 import Foundation
 
 protocol FormStep: CaseIterable, Identifiable, Equatable where AllCases: RandomAccessCollection, Self.ID == String {
-    var sectionTitle: String { get }
+    var sectionTitle: String? { get }
     var isOptional: Bool { get }
     var components: [FormComponent] { get }
     
@@ -110,9 +110,12 @@ extension FormStep {
                 continue
                 
             case let .addressPicker(config):
-                guard let addressInfo = store.addressValues[config.id] else {
+                guard store.addressValues[config.id] != nil else {
                     return false
                 }
+                
+            case .imageComparison(_):
+                continue
             }
         }
         return true

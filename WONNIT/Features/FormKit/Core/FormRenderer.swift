@@ -64,6 +64,17 @@ struct FormRenderer {
         case let .addressPicker(config):
             AddressPickerComponentView(config: config)
                 .environment(store)
+        case let .imageComparison(config):
+            if let before = config.spaceImagesComparisonBeforeKey, let after = config.spaceImagesComparisonAfterKey {
+                ImageComparisonComponentView(
+                    config: config,
+                    beforeImage: store.imageBinding(for: before),
+                    afterImage: store.imageBinding(for: after)
+                )
+                .environment(store)
+            } else {
+                Text("⚠️ 이전/이후 이미지를 등록하세요.")
+            }
         default:
             Text("😭 곧")
         }

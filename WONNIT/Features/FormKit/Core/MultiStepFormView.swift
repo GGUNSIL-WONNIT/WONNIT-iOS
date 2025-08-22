@@ -194,10 +194,12 @@ struct MultiStepFormView<Step: FormStep>: View {
                             ForEach(Array(Step.allCases), id: \.id) { step in
                                 if step == currentStep {
                                     VStack(spacing: 24) {
-                                        HStack {
-                                            Text(step.sectionTitle)
-                                                .title_01(.grey900)
-                                            Spacer()
+                                        if let title = step.sectionTitle {
+                                            HStack {
+                                                Text(title)
+                                                    .title_01(.grey900)
+                                                Spacer()
+                                            }
                                         }
                                         
                                         VStack(spacing: 32) {

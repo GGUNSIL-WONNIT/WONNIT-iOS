@@ -13,14 +13,14 @@ enum ReturnSpaceStep: FormStep {
     case after
     case result
     
-    var sectionTitle: String {
+    var sectionTitle: String? {
         switch self {
         case .before:
             return"사용 전 공간 사진을\n등록해주세요"
         case .after:
             return"사용 후 공간 사진을\n등록해주세요"
         case .result:
-            return"AI 분석 결과"
+            return nil
         }
     }
     
@@ -42,7 +42,11 @@ enum ReturnSpaceStep: FormStep {
             
         case .result:
             return [
-                .description(id: "result", text: "결과")
+                .imageComparison(config: .init(
+                    id: "comparisonResult",
+                    spaceImagesComparisonBeforeKey: "before",
+                    spaceImagesComparisonAfterKey: "after"
+                ))
             ]
         }
     }
