@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct ColumnsView: View {
+    private let columns = Column.defaultList
+    
     var body: some View {
         VStack(spacing: 16) {
             HomeSectionHeaderView(homeSection: .columns)
             
             CarouselView(itemSpacing: 16, leadingPadding: 16) {
-                ForEach(1..<5) { _ in
-                    ColumnCardView(column: .placeholder)
+                ForEach(columns, id: \.id) { column in
+                    ColumnCardView(column: column)
                 }
             }
         }

@@ -55,6 +55,8 @@ struct ColumnCardView: View {
                 .resizable()
                 .cacheOriginalImage()
                 .scaledToFill()
+                .scaleEffect(1.35)
+                .clipped()
         } else {
             ImagePlaceholder(width: cardSize.width, height: cardSize.height)
         }

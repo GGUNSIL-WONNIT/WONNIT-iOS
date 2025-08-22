@@ -16,7 +16,7 @@ enum CreateSpaceFormStep: FormStep {
     case scanner
     case miscellaneous
     
-    var sectionTitle: String {
+    var sectionTitle: String? {
         switch self {
         case .addressAndName:
             return "공간 주소와 이름 정보를\n입력해주세요"

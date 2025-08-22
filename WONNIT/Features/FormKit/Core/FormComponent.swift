@@ -24,6 +24,7 @@ enum FormComponent {
     case tagSelector(config: FormFieldBaseConfig)
     case phoneNumberField(config: FormFieldBaseConfig)
     case addressPicker(config: FormFieldBaseConfig)
+    case imageComparison(config: FormFieldBaseConfig)
 }
 
 enum ImageUploaderVariant {
@@ -44,6 +45,8 @@ struct FormFieldBaseConfig {
     let isAIFeatured: Bool
     let spaceCategoryFormComponentKey: String?
     let spaceTagFormComponentKey: String?
+    let spaceImagesComparisonBeforeKey: String?
+    let spaceImagesComparisonAfterKey: String?
 
     init(
         id: String,
@@ -57,7 +60,9 @@ struct FormFieldBaseConfig {
         characterLimit: Int? = nil,
         isAIFeatured: Bool = false,
         spaceCategoryFormComponentKey: String? = nil,
-        spaceTagFormComponentKey: String? = nil
+        spaceTagFormComponentKey: String? = nil,
+        spaceImagesComparisonBeforeKey: String? = nil,
+        spaceImagesComparisonAfterKey: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -71,6 +76,8 @@ struct FormFieldBaseConfig {
         self.isAIFeatured = isAIFeatured
         self.spaceCategoryFormComponentKey = spaceCategoryFormComponentKey
         self.spaceTagFormComponentKey = spaceTagFormComponentKey
+        self.spaceImagesComparisonBeforeKey = spaceImagesComparisonBeforeKey
+        self.spaceImagesComparisonAfterKey = spaceImagesComparisonAfterKey
     }
 }
 
@@ -90,7 +97,8 @@ extension FormComponent: Identifiable {
              .pricingField(let config),
              .roomScanner(let config),
              .addressPicker(let config),
-             .tagSelector(let config):
+             .tagSelector(let config),
+             .imageComparison(let config):
             return config.id
         case .description(let id, _):
             return id
