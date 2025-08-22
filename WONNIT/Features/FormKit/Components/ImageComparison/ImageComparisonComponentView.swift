@@ -76,12 +76,12 @@ struct ImageComparisonComponentView: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 
-                if matchPct < 70 {
+                if matchPct < 80 {
                     TooltipView(pointerPlacement: .top, backgroundColor: .grey100) {
                         HStack(spacing: 0) {
                             Text("전후 일치도가")
                                 .body_05(.primaryPurple)
-                            Text(" 70%보다 낮아요")
+                            Text(" 80%보다 낮아요")
                                 .body_05(.grey900)
                         }
                         .padding(.horizontal, 5)
