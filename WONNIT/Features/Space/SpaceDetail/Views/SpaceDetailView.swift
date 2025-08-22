@@ -14,7 +14,7 @@ struct SpaceDetailView: View {
     let space: Space
     let namespace: Namespace.ID?
     
-    let isEditable = true // debug
+    let isEditable = false
     @State private var showEditSpaceForm = false
     
     @State private var isShowingUSDZPreview: Bool = false
