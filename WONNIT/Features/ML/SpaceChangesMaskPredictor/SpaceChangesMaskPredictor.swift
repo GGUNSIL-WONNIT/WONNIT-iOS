@@ -121,18 +121,27 @@ final class SpaceChangesMaskPredictor {
     private func imageFromMultiArray(multiArray: MLMultiArray) -> UIImage? {
         let height = multiArray.shape[2].intValue
         let width = multiArray.shape[3].intValue
-        
-        var buffer = [UInt8](repeating: 0, count: width * height)
+        let bytesPerPixel = 4 // RGBA
+        var buffer = [UInt8](repeating: 0, count: width * height * bytesPerPixel)
         
         let multiArrayPointer = UnsafeMutablePointer<Float16>(OpaquePointer(multiArray.dataPointer))
         
         for i in 0..<(width * height) {
             let value = multiArrayPointer[i]
-            buffer[i] = UInt8(max(0, min(255, Float(value) * 255.0)))
+            let offset = i * bytesPerPixel
+            
+            if value > 0.5 {
+                buffer[offset] = 138 // R
+                buffer[offset + 1] = 43  // G
+                buffer[offset + 2] = 226 // B
+                buffer[offset + 3] = 150 // A
+            } else {
+                buffer[offset + 3] = 0
+            }
         }
         
-        let colorSpace = CGColorSpaceCreateDeviceGray()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         guard let provider = CGDataProvider(data: Data(buffer) as CFData) else {
             return nil
         }
@@ -141,8 +150,8 @@ final class SpaceChangesMaskPredictor {
             width: width,
             height: height,
             bitsPerComponent: 8,
-            bitsPerPixel: 8,
-            bytesPerRow: width,
+            bitsPerPixel: 32,
+            bytesPerRow: width * bytesPerPixel,
             space: colorSpace,
             bitmapInfo: bitmapInfo,
             provider: provider,

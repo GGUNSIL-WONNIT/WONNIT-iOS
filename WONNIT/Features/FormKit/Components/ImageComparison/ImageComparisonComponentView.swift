@@ -63,12 +63,18 @@ struct ImageComparisonComponentView: View {
     
     @ViewBuilder
     private var resultsSection: some View {
-        if let maskedImage = maskedImage, let matchPct = matchPct {
+        if let maskedImage = maskedImage, let matchPct = matchPct, let after = afterImage.first {
             VStack(spacing: 8) {
-                Image(uiImage: maskedImage)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                ZStack {
+                    Image(uiImage: after)
+                        .resizable()
+                        .scaledToFit()
+                    
+                    Image(uiImage: maskedImage)
+                        .resizable()
+                        .scaledToFit()
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 8))
                 
                 if matchPct < 70 {
                     TooltipView(pointerPlacement: .top, backgroundColor: .grey100) {
