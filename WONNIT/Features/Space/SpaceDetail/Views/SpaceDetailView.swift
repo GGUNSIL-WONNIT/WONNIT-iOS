@@ -93,6 +93,8 @@ struct SpaceDetailView: View {
                 .padding(16)
                 
                 USDZPreviewView(url: URL(string: "https://github.com/GGUNGSIL-WONNIT/testing-USDZ-file-downloads/raw/refs/heads/main/Room.usdz")!)
+                
+                Spacer()
             }
             .ignoresSafeArea()
         }

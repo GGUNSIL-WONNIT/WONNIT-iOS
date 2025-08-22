@@ -23,13 +23,6 @@ struct DraggableContentSheet<SheetContent: View>: ViewModifier {
         ZStack {
             content
             if showSheet {
-//                Color.clear.contentShape(Rectangle()).ignoresSafeArea().onTapGesture { isPresented = false }
-                if selectedDetent == .large { // space nearby 표시 추가 -> isPresented will always be true
-                    Color.clear
-                        .contentShape(Rectangle())
-                        .ignoresSafeArea()
-                        .onTapGesture { isPresented = false }
-                }
                 SheetView(
                     isPresented: $isPresented,
                     selectedDetent: $selectedDetent,
