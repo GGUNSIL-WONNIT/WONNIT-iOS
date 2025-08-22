@@ -17,6 +17,8 @@ struct SpaceDetailView: View {
     let isEditable = true // debug
     @State private var showEditSpaceForm = false
     
+    @State private var isShowingUSDZPreview: Bool = false
+    
     init(space: Space, namespace: Namespace.ID? = nil) {
         self.space = space
         self.namespace = namespace
@@ -76,6 +78,23 @@ struct SpaceDetailView: View {
         }
         .fullScreenCover(isPresented: $showEditSpaceForm) {
             EditSpaceView(spaceData: space)
+        }
+        .sheet(isPresented: $isShowingUSDZPreview) {
+            VStack(spacing: 0) {
+                HStack {
+                    Spacer()
+                    Button {
+                        isShowingUSDZPreview = false
+                    } label: {
+                        Text("완료")
+                            .body_03(.grey900)
+                    }
+                }
+                .padding(16)
+                
+                USDZPreviewView(url: URL(string: "https://github.com/GGUNGSIL-WONNIT/testing-USDZ-file-downloads/raw/refs/heads/main/Room.usdz")!)
+            }
+            .ignoresSafeArea()
         }
     }
     
@@ -174,6 +193,9 @@ struct SpaceDetailView: View {
                     .scaledToFill()
                     .frame(height: 280)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .onTapGesture {
+                        isShowingUSDZPreview = true
+                    }
                 
                 HStack(spacing: 2) {
                     TooltipView(pointerPlacement: .trailing) {
@@ -182,7 +204,7 @@ struct SpaceDetailView: View {
                     }
                     
                     Button {
-                        
+                        isShowingUSDZPreview = true
                     } label: {
                         Image(systemName: "viewfinder")
                             .foregroundStyle(Color.grey700)
