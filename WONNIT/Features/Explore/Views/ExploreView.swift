@@ -25,7 +25,7 @@ struct ExploreView: View {
             selectedDetent: $sheetDetent
         ) {
             if let space = mapViewModel.selectedSpace, sheetDetent != .small {
-                SpaceDetailViewWithTransitions(space: space, detent: sheetDetent)
+                SpaceDetailViewWithTransitions(space: space, detent: $sheetDetent)
             } else {
                 if sheetDetent == .small {
                     SpaceNearbyPeakView()
