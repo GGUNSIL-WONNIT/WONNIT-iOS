@@ -72,7 +72,7 @@ struct MultiStepFormView<Step: FormStep>: View {
         HStack {
             backButton
             Spacer()
-            debugPlaceholderButton()
+//            debugPlaceholderButton()
         }
         .background(
             Color.clear
@@ -100,15 +100,15 @@ struct MultiStepFormView<Step: FormStep>: View {
         .font(.system(size: 18))
     }
     
-    @ViewBuilder
-    private func debugPlaceholderButton() -> some View {
-        Button {
-            formStore.fillWithDebugPlaceholderData()
-        } label: {
-            Image(systemName: "ladybug")
-                .contentShape(Rectangle())
-        }
-    }
+//    @ViewBuilder
+//    private func debugPlaceholderButton() -> some View {
+//        Button {
+//            formStore.fillWithDebugPlaceholderData()
+//        } label: {
+//            Image(systemName: "ladybug")
+//                .contentShape(Rectangle())
+//        }
+//    }
     
     private var bottomButtons: some View {
         let isValid = currentStep.isStepValid(store: formStore)
