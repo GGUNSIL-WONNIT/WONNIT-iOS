@@ -72,28 +72,10 @@ extension Components.Schemas.AmountInfo.timeUnitPayload {
 
 extension Components.Schemas.OperationalInfo {
     init(from opInfo: OperationalInfo) {
-        func iso8601String(from components: DateComponents) -> String {
-            guard let hour = components.hour, let minute = components.minute else { return "" }
-            
-            let calendar = Calendar.current
-            let now = Date()
-            guard let date = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: now) else {
-                return ""
-            }
-            
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            return formatter.string(from: date)
-        }
-        
-        let startAtString = iso8601String(from: opInfo.startAt)
-        let endAtString = iso8601String(from: opInfo.endAt)
-        
         self.init(
             dayOfWeeks: opInfo.dayOfWeeks.map { .init(from: $0) },
-            startAt: startAtString,
-            endAt: endAtString
+            startAt: Calendar.current.date(from: opInfo.startAt) ?? Date(),
+            endAt: Calendar.current.date(from: opInfo.endAt) ?? Date()
         )
     }
 }

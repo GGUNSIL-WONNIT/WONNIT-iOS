@@ -40,7 +40,7 @@ struct SpaceDetailView: View {
             }
         }) {
             if let space = vm.space {
-                EditSpaceView(spaceData: space)
+                EditSpaceView(spaceId: space.id)
             }
         }
         .sheet(isPresented: $vm.showUSDZPreview) {

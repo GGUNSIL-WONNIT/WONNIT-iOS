@@ -25,13 +25,17 @@ extension Space {
         self.phoneNumber = .init(from: generated.phoneNumber)
         self.precautions = generated.precautions
         self.status = .init(from: generated.status)
+        self.beforeImgUrl = nil
+        self.afterImgUrl = nil
+        self.resultImgUrl = nil
+        self.similarity = nil
     }
     
     init(from generated: Components.Schemas.RecentSpaceResponse) {
         self.id = generated.spaceId
         self.name = generated.name
         self.address = .init(from: generated.addressInfo)
-        self.mainImageURL = nil
+        self.mainImageURL = generated.mainImgUrl
         self.subImageURLs = nil
         self.category = .init(from: generated.category)
         self.spaceTags = nil
@@ -43,6 +47,10 @@ extension Space {
         self.phoneNumber = nil
         self.precautions = nil
         self.status = nil
+        self.beforeImgUrl = nil
+        self.afterImgUrl = nil
+        self.resultImgUrl = nil
+        self.similarity = nil
     }
     
     init(from generated: Components.Schemas.MySpaceResponse) {
@@ -61,6 +69,10 @@ extension Space {
         self.phoneNumber = nil
         self.precautions = nil
         self.status = .init(from: generated.status)
+        self.beforeImgUrl = generated.beforeImgUrl
+        self.afterImgUrl = generated.afterImgUrl
+        self.resultImgUrl = generated.resultImgUrl
+        self.similarity = generated.similarity
     }
     
     init(from generated: Components.Schemas.MyRentalSpaceResponse) {
@@ -79,6 +91,10 @@ extension Space {
         self.phoneNumber = nil
         self.precautions = nil
         self.status = .init(from: generated.status)
+        self.beforeImgUrl = generated.beforeImgUrl
+        self.afterImgUrl = generated.afterImgUrl
+        self.resultImgUrl = generated.resultImgUrl
+        self.similarity = generated.similarity
     }
     
     init(from generated: Components.Schemas.SpaceSearchResponse) {
@@ -97,6 +113,10 @@ extension Space {
         self.phoneNumber = nil
         self.precautions = nil
         self.status = .init(from: generated.status)
+        self.beforeImgUrl = nil
+        self.afterImgUrl = nil
+        self.resultImgUrl = nil
+        self.similarity = nil
     }
 }
 
@@ -131,29 +151,11 @@ extension OperationalInfo {
     init(from generated: Components.Schemas.OperationalInfo) {
         self.dayOfWeeks = generated.dayOfWeeks.map { .init(from: $0) }
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        
-        let fallbackFormatter = DateFormatter()
-        fallbackFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        fallbackFormatter.locale = Locale(identifier: "en_US_POSIX")
-        fallbackFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        
         let calendar = Calendar.current
         
-        if let startDate = formatter.date(from: generated.startAt) ?? fallbackFormatter.date(from: generated.startAt) {
-            self.startAt = calendar.dateComponents([.hour, .minute], from: startDate)
-        } else {
-            self.startAt = DateComponents()
-        }
+        self.startAt = calendar.dateComponents([.hour, .minute], from: generated.startAt)
         
-        if let endDate = formatter.date(from: generated.endAt) ?? fallbackFormatter.date(from: generated.endAt) {
-            self.endAt = calendar.dateComponents([.hour, .minute], from: endDate)
-        } else {
-            self.endAt = DateComponents()
-        }
+        self.endAt = calendar.dateComponents([.hour, .minute], from: generated.endAt)
     }
 }
 

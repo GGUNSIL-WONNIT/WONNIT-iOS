@@ -43,7 +43,7 @@ enum ReturnSpaceStep: FormStep {
         case .result:
             return [
                 .imageComparison(config: .init(
-                    id: "comparisonResult",
+                    id: "result",
                     spaceImagesComparisonBeforeKey: "before",
                     spaceImagesComparisonAfterKey: "after"
                 ))
@@ -54,11 +54,18 @@ enum ReturnSpaceStep: FormStep {
     var buttons: [FormStepButton]? {
         switch self {
         case .result:
-            return [.init(label: "다시 등록하기", style: .outlined), .init(label: "마치기")]
+            return [.init(label: "다시 등록하기", style: .outlined)]
         default:
             return nil
         }
     }
     
     var submitButtonTitle: String { "마치기" }
+    
+    var hideDefaultButton: Bool {
+        switch self {
+        default:
+            return false
+        }
+    }
 }

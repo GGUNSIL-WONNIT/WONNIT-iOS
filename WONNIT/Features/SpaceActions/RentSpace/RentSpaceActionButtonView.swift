@@ -62,6 +62,10 @@ struct RentSpaceActionButtonView: View {
                     isRenting = false
                     errorMessage = "오류 코드 \(statusCode)"
                     showErrorSheet = true
+                case .notFound(_):
+                    isRenting = false
+                    errorMessage = "공간 정보를 찾을 수 없습니다."
+                    showErrorSheet = true
                 }
             } catch {
                 isRenting = false

@@ -47,7 +47,7 @@ struct CreateSpaceView: View {
             guard let mainImage = (formStore.imageValues["mainImage"] ?? []).first else { throw MappingError.missingRequiredData(field: "대표 사진") }
             guard let kakaoAddress = formStore.addressValues["address1"] as? KakaoAddress else { throw MappingError.missingRequiredData(field: "주소") }
             guard let coordinates = formStore.coordinateValues["address1"] as? CLLocationCoordinate2D else { throw MappingError.missingRequiredData(field: "좌표") }
-            guard let timeRange = formStore.timeRangeValues["openTime"] else { throw MappingError.missingRequiredData(field: "운영 시간") }
+            let timeRange = formStore.timeRangeValues["openTime"] ?? TimeRange(startAt: DateComponents(hour: 9, minute: 00), endAt: DateComponents(hour: 18, minute: 0))
             guard let operationDays = formStore.daySetValues["openDay"], !operationDays.isEmpty else { throw MappingError.missingRequiredData(field: "운영 요일") }
             guard let name = formStore.textValues["name"], !name.isEmpty else { throw MappingError.missingRequiredData(field: "공간 이름") }
             guard let area = formStore.doubleValues["area"] as? Double else { throw MappingError.missingRequiredData(field: "공간 크기") }
@@ -59,7 +59,7 @@ struct CreateSpaceView: View {
                 throw MappingError.invalidData(field: "카테고리", value: categoryLabel)
             }
             
-            guard let pricing = formStore.amountInfoValues["pricing"] else { throw MappingError.missingRequiredData(field: "금액 정보") }
+            let pricing = formStore.amountInfoValues["pricing"] ?? AmountInfo(timeUnit: .perDay, amount: 0)
             guard let contact = formStore.textValues["contact"], !contact.isEmpty else { throw MappingError.missingRequiredData(field: "담당자 연락처") }
             
             let subImages = formStore.imageValues["subImages"] ?? []

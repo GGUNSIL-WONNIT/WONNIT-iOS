@@ -10,6 +10,7 @@ import SwiftUI
 
 enum FormComponent {
     case textField(config: FormFieldBaseConfig)
+    case optionalTextField(config: FormFieldBaseConfig)
     case multiLineTextField(config: FormFieldBaseConfig, characterLimit: Int? = nil)
     case doubleField(config: FormFieldBaseConfig)
     case integerField(config: FormFieldBaseConfig)
@@ -47,7 +48,7 @@ struct FormFieldBaseConfig {
     let spaceTagFormComponentKey: String?
     let spaceImagesComparisonBeforeKey: String?
     let spaceImagesComparisonAfterKey: String?
-
+    
     init(
         id: String,
         title: String? = nil,
@@ -85,20 +86,21 @@ extension FormComponent: Identifiable {
     var id: String {
         switch self {
         case .textField(let config),
-             .phoneNumberField(let config),
-             .multiLineTextField(let config, _),
-             .doubleField(let config),
-             .integerField(let config),
-             .select(let config, _),
-             .imageUploaderSimple(let config),
-             .imageUploaderWithML(let config, _),
-             .dayPicker(let config),
-             .timeRangePicker(let config),
-             .pricingField(let config),
-             .roomScanner(let config),
-             .addressPicker(let config),
-             .tagSelector(let config),
-             .imageComparison(let config):
+                .optionalTextField(let config),
+                .phoneNumberField(let config),
+                .multiLineTextField(let config, _),
+                .doubleField(let config),
+                .integerField(let config),
+                .select(let config, _),
+                .imageUploaderSimple(let config),
+                .imageUploaderWithML(let config, _),
+                .dayPicker(let config),
+                .timeRangePicker(let config),
+                .pricingField(let config),
+                .roomScanner(let config),
+                .addressPicker(let config),
+                .tagSelector(let config),
+                .imageComparison(let config):
             return config.id
         case .description(let id, _):
             return id

@@ -14,9 +14,10 @@ struct ImageComparisonComponentView: View {
     
     @Binding var beforeImage: [UIImage]
     @Binding var afterImage: [UIImage]
+    @Binding var resultImage: [UIImage]
+    @Binding var matchPct: Double?
     
-    @State private var matchPct: Double? = nil
-    @State private var maskedImage: UIImage? = nil
+//    @State private var maskedImage: UIImage? = nil
     @State private var running = true
     @State private var errorText: String?
     
@@ -63,20 +64,20 @@ struct ImageComparisonComponentView: View {
     
     @ViewBuilder
     private var resultsSection: some View {
-        if let maskedImage = maskedImage, let matchPct = matchPct, let after = afterImage.first {
+        if let resultImage = resultImage.first, let after = afterImage.first {
             VStack(spacing: 8) {
                 ZStack {
                     Image(uiImage: after)
                         .resizable()
                         .scaledToFit()
                     
-                    Image(uiImage: maskedImage)
+                    Image(uiImage: resultImage)
                         .resizable()
                         .scaledToFit()
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 
-                if matchPct < 80 {
+                if let matchPct, matchPct < 80 {
                     TooltipView(pointerPlacement: .top, backgroundColor: .grey100) {
                         HStack(spacing: 0) {
                             Text("전후 일치도가")
@@ -101,26 +102,13 @@ struct ImageComparisonComponentView: View {
         DispatchQueue.global(qos: .userInitiated).async {
             detector.detectChanges(beforeImage: b, afterImage: a) { pct, mask in
                 DispatchQueue.main.async {
-                    self.maskedImage = mask
+                    if let mask {
+                        self.resultImage.append(mask)
+                    }
                     self.matchPct = pct
                     self.running = false
                 }
             }
         }
     }
-}
-
-#Preview {
-//    @Previewable @State var store = FormStateStore()
-    
-    @Previewable @State var beforeImage: [UIImage] = [
-        UIImage(named: "testing/before") ?? UIImage()
-    ]
-    
-    @Previewable @State var afterImage: [UIImage] = [
-        UIImage(named: "testing/after") ?? UIImage()
-    ]
-    
-    ImageComparisonComponentView(config: .init(id: "imageComparison"), beforeImage: $beforeImage, afterImage: $afterImage)
-//        .environment(store)
 }

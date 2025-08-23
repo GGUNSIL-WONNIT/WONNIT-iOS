@@ -132,7 +132,7 @@ struct DashboardSpaceListView: View {
                     switch selectedDashboardTab {
                     case .myCreatedSpaces:
                         if let status = space.status, status == .returnRequest {
-                            ReviewReturnSpaceActionButtonView(spaceId: space.id, refetch: refetch)
+                            ReviewReturnSpaceActionButtonView(space: space, refetch: refetch)
                         }
                     case .myRentedSpaces:
                         if let status = space.status, status == .occupied {

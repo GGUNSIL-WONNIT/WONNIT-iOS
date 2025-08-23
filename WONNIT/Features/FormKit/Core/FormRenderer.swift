@@ -18,6 +18,9 @@ struct FormRenderer {
         case let .textField(config):
             TextFieldComponentView(config: config)
                 .environment(store)
+        case let .optionalTextField(config):
+            TextFieldComponentView(config: config)
+                .environment(store)
         case let .doubleField(config):
             DoubleFieldComponentView(config: config)
                 .environment(store)
@@ -69,7 +72,9 @@ struct FormRenderer {
                 ImageComparisonComponentView(
                     config: config,
                     beforeImage: store.imageBinding(for: before),
-                    afterImage: store.imageBinding(for: after)
+                    afterImage: store.imageBinding(for: after),
+                    resultImage: store.imageBinding(for: config.id),
+                    matchPct: store.doubleBinding(for: config.id)
                 )
                 .environment(store)
             } else {

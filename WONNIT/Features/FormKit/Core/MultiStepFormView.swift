@@ -114,7 +114,7 @@ struct MultiStepFormView<Step: FormStep>: View {
         let isValid = currentStep.isStepValid(store: formStore)
         let isOptional = currentStep.isOptional
         
-        return Group {
+        return VStack(spacing: 12) {
             if let customButtons = currentStep.buttons, onCustomButtonTap != nil {
                 VStack(spacing: 12) {
                     ForEach(customButtons, id: \.label) { buttonConfig in
@@ -141,28 +141,28 @@ struct MultiStepFormView<Step: FormStep>: View {
                     }
                 }
                 .padding(.horizontal, 16)
-            } else {
-                Button {
-                    if isValid || isOptional {
-                        if let next = currentStep.next {
-                            goToStep(next)
-                        } else {
-                            submitForm()
-                        }
-                    }
-                } label: {
-                    Text(currentStep.next == nil ? currentStep.submitButtonTitle : (isOptional ? "건너뛰기" : "다음으로"))
-                        .body_01((isValid || isOptional) ? .white : .grey300)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill((isValid || isOptional) ? Color.primaryPurple : .grey100)
-                        )
-                        .padding(.horizontal, 16)
-                }
-                .disabled(!isValid && !isOptional)
             }
+            
+            Button {
+                if isValid || isOptional {
+                    if let next = currentStep.next {
+                        goToStep(next)
+                    } else {
+                        submitForm()
+                    }
+                }
+            } label: {
+                Text(currentStep.next == nil ? currentStep.submitButtonTitle : (isOptional ? "건너뛰기" : "다음으로"))
+                    .body_01((isValid || isOptional) ? .white : .grey300)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill((isValid || isOptional) ? Color.primaryPurple : .grey100)
+                    )
+                    .padding(.horizontal, 16)
+            }
+            .disabled(!isValid && !isOptional)
         }
     }
     

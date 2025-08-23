@@ -39,7 +39,7 @@ final class FormStateStore: NSObject {
         doubleValues["area"] = 77.7
         imageValues["mainImage"] = [UIImage(systemName: "photo.artframe")!]
         imageValues["subImages"] = [UIImage(systemName: "photo.on.rectangle")!]
-        selectValues["category"] = "스터디룸"
+        selectValues["category"] = "STUDY_ROOM"
         tagsValues["tags"] = ["책상", "의자"]
         daySetValues["openDay"] = [.MONDAY, .TUESDAY, .WEDNESDAY, .THURSDAY, .FRIDAY]
         timeRangeValues["openTime"] = TimeRange(startAt: DateComponents(hour: 9, minute: 30), endAt: DateComponents(hour: 22, minute: 0))

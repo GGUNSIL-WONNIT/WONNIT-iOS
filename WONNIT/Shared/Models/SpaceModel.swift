@@ -19,10 +19,14 @@ struct Space: Identifiable, Codable, Equatable, Hashable {
     let phoneNumber: PhoneNumber?
     let precautions: String?
     let status: SpaceStatus?
+    let beforeImgUrl: String?
+    let afterImgUrl: String?
+    let resultImgUrl: String?
+    let similarity: Double?
     
     enum CodingKeys: String, CodingKey {
         case id, spaceId
-        case name, address, category, size, operationInfo, amountInfo, phoneNumber, precautions, status
+        case name, address, category, size, operationInfo, amountInfo, phoneNumber, precautions, status, beforeImgUrl, afterImgUrl, resultImgUrl, similarity
         case mainImageURL = "mainImgUrl"
         case subImageURLs = "subImgUrls"
         case spaceTags = "tags"
@@ -53,6 +57,10 @@ struct Space: Identifiable, Codable, Equatable, Hashable {
         self.phoneNumber = try container.decodeIfPresent(PhoneNumber.self, forKey: .phoneNumber)
         self.precautions = try container.decodeIfPresent(String.self, forKey: .precautions)
         self.status = try container.decodeIfPresent(SpaceStatus.self, forKey: .status)
+        self.beforeImgUrl = try container.decodeIfPresent(String.self, forKey: .beforeImgUrl)
+        self.afterImgUrl = try container.decodeIfPresent(String.self, forKey: .afterImgUrl)
+        self.resultImgUrl = try container.decodeIfPresent(String.self, forKey: .resultImgUrl)
+        self.similarity = try container.decodeIfPresent(Double.self, forKey: .similarity)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -74,7 +82,7 @@ struct Space: Identifiable, Codable, Equatable, Hashable {
         try container.encodeIfPresent(status, forKey: .status)
     }
     
-    init(id: String, name: String?, address: AddressInfo?, mainImageURL: String?, subImageURLs: [String]?, category: SpaceCategory?, spaceTags: [String]?, size: Double?, operationInfo: OperationalInfo?, amountInfo: AmountInfo?, spaceModelURL: String?, modelThumbnailUrl: String?, phoneNumber: PhoneNumber?, precautions: String?, status: SpaceStatus?) {
+    init(id: String, name: String?, address: AddressInfo?, mainImageURL: String?, subImageURLs: [String]?, category: SpaceCategory?, spaceTags: [String]?, size: Double?, operationInfo: OperationalInfo?, amountInfo: AmountInfo?, spaceModelURL: String?, modelThumbnailUrl: String?, phoneNumber: PhoneNumber?, precautions: String?, status: SpaceStatus?, beforeImgUrl: String? = nil, afterImgUrl: String? = nil, resultImgUrl: String? = nil, similarity: Double? = nil) {
         self.id = id
         self.name = name
         self.address = address
@@ -90,6 +98,10 @@ struct Space: Identifiable, Codable, Equatable, Hashable {
         self.phoneNumber = phoneNumber
         self.precautions = precautions
         self.status = status
+        self.beforeImgUrl = beforeImgUrl
+        self.afterImgUrl = afterImgUrl
+        self.resultImgUrl = resultImgUrl
+        self.similarity = similarity
     }
     
     var coordinate: CLLocationCoordinate2D? {

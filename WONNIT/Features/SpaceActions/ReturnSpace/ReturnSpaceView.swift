@@ -45,11 +45,14 @@ struct ReturnSpaceView: View {
         do {
             guard let beforeImage = (formStore.imageValues["before"] ?? []).first else { throw MappingError.missingRequiredData(field: "이전 사진") }
             guard let afterImage = (formStore.imageValues["after"] ?? []).first else { throw MappingError.missingRequiredData(field: "이후 사진") }
+            guard let resultImage = (formStore.imageValues["result"] ?? []).first else { throw MappingError.missingRequiredData(field: "분석 결과 사진") }
+            guard let matchPct = formStore.doubleValues["result"] as? Double else { throw MappingError.missingRequiredData(field: "유사도") }
            
             let beforeImageURL = try await ImageUploaderService.shared.uploadImage(beforeImage)
             let afterImageURL = try await ImageUploaderService.shared.uploadImage(afterImage)
+            let resultImageURL = try await ImageUploaderService.shared.uploadImage(resultImage)
             
-            try await requestReturn()
+            try await requestReturn(beforeImageURL: beforeImageURL, afterImageURL: afterImageURL, resultImageURL: resultImageURL, matchPct: matchPct)
             
         } catch {
             errorMessage = "오류: \(error.localizedDescription)"
@@ -59,14 +62,25 @@ struct ReturnSpaceView: View {
     }
     
     @MainActor
-    private func requestReturn() async throws {
+    private func requestReturn(beforeImageURL: String, afterImageURL: String, resultImageURL: String, matchPct: Double) async throws {
         let client = try await WONNITClientAPIService.shared.client()
-//        let requestBody = try Components.Schemas.SpaceSaveRequest        
-        let response = try await client.returnRequest(path: .init(spaceId: spaceId), query: .init(userId: appSettings.selectedTestUserID))
+        let response = try await client.returnRequest(
+            path: .init(spaceId: spaceId),
+            query: .init(userId: appSettings.selectedTestUserID),
+            body: .json(.init(
+                beforeImgUrl: beforeImageURL,
+                afterImgUrl: afterImageURL,
+                resultImgUrl: resultImageURL,
+                similarity: Double(round(matchPct * 100) / 100))
+            )
+        )
+
         
         switch response {
         case .noContent:
             errorMessage = nil
+        case let .undocumented(statusCode, _):
+            errorMessage = "오류 \(statusCode)"
         default:
             throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "\(response)"])
         }

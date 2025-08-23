@@ -42,18 +42,18 @@ paths:
             type: string
             format: uuid
       responses:
-        "404":
-          description: Space Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
         "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SpaceDetailResponse'
+        "404":
+          description: Space Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     put:
       tags:
         - Space
@@ -80,16 +80,16 @@ paths:
               $ref: '#/components/schemas/SpaceSaveRequest'
         required: true
       responses:
-        "403":
-          description: Access Denied
+        "200":
+          description: OK
+        "400":
+          description: Invalid Category
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-        "200":
-          description: OK
-        "404":
-          description: Space Not Found
+        "403":
+          description: Access Denied
           content:
             application/json:
               schema:
@@ -100,8 +100,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-        "400":
-          description: Invalid Category
+        "404":
+          description: Space Not Found
           content:
             application/json:
               schema:
@@ -127,22 +127,22 @@ paths:
               $ref: '#/components/schemas/SpaceSaveRequest'
         required: true
       responses:
+        "400":
+          description: Invalid Category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-        "404":
-          description: User Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
         "201":
           description: Created
-        "400":
-          description: Invalid Category
+        "404":
+          description: User Not Found
           content:
             application/json:
               schema:
@@ -169,14 +169,10 @@ paths:
           schema:
             type: string
       responses:
+        "204":
+          description: No Content
         "403":
           description: Access Denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
-        "404":
-          description: Space Not Found
           content:
             application/json:
               schema:
@@ -187,8 +183,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-        "204":
-          description: No Content
+        "404":
+          description: Space Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /api/v1/space/{spaceId}/rentals:
     post:
       tags:
@@ -978,6 +978,19 @@ components:
             - OCCUPIED
             - RETURN_REQUEST
             - RETURN_REJECTED
+        beforeImgUrl:
+          type: string
+          description: 사용 전 이미지
+        afterImgUrl:
+          type: string
+          description: 사용 후 이미지
+        resultImgUrl:
+          type: string
+          description: 비교 분석 결과 이미지
+        similarity:
+          type: number
+          description: 비교 분석 결과 퍼센티지
+          format: double
       description: 내가 등록한 공간 응답
     MyRentalSpacePageResponse:
       required:
