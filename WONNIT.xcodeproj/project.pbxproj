@@ -115,7 +115,7 @@
 				9CE59C732E3CBBB60095C833 /* Sources */,
 				9CE59C742E3CBBB60095C833 /* Frameworks */,
 				9CE59C752E3CBBB60095C833 /* Resources */,
-				DAA2064285F4B513F851CE55 /* [CP] Embed Pods Frameworks */,
+				4EF6C30DE71A9AEE21E4F0A1 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -181,6 +181,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4EF6C30DE71A9AEE21E4F0A1 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		64D86F8E62CD5948E7B10C9D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -203,27 +220,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DAA2064285F4B513F851CE55 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -239,7 +235,7 @@
 /* Begin PBXTargetDependency section */
 		9CED85872E596D5D00AD70BF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 9CED85862E596D5D00AD70BF /* OpenAPIGenerator */;
+			productRef = 9CED85862E596D5D00AD70BF /* plugin:OpenAPIGenerator */;
 		};
 /* End PBXTargetDependency section */
 
@@ -518,7 +514,7 @@
 			package = 9CED85832E596D5200AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */;
 			productName = OpenAPIURLSession;
 		};
-		9CED85862E596D5D00AD70BF /* OpenAPIGenerator */ = {
+		9CED85862E596D5D00AD70BF /* plugin:OpenAPIGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9CED857B2E596D1900AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-generator" */;
 			productName = "plugin:OpenAPIGenerator";
