@@ -41,17 +41,6 @@ struct SpaceListView: View {
             .navigationTitle(category?.label ?? "최근 추가된 공간")
             .navigationBarTitleDisplayMode(.large)
             .withBackButtonToolbar()
-//            .navigationDestination(for: UUID.self) { id in
-//                if let space = spacesToShow.first(where: { $0.id == id }) {
-//                    SpaceDetailView(space: space)
-//                        .padding(.bottom, -24)
-//                        .withBackButtonToolbar()
-//                } else {
-//                    ZStack {
-//                        NotFoundView(label: "해당 공간을 찾을 수 없습니다.")
-//                    }
-//                }
-//            }
         }
     }
 }

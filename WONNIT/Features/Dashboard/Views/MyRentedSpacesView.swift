@@ -18,15 +18,27 @@ struct MyRentedSpacesView: View {
         DashboardSpaceListView(selectedDashboardTab: selectedDashboardTab, spacesToShow: $spacesToShow)
             .task {
                 do {
-                    let client = try await WONNITClientAPIService.shared.client()
-                    let response = try await client.getRentalSpaces(query: .init(userId: appSettings.selectedTestUserID))
-                    let mySpaces = try response.ok.body.json
-                    
-                    self.spacesToShow = mySpaces.spaces.map { Space(from: $0) }
+                    self.spacesToShow = try await fetchSpaces()
                 } catch {
                     print(error.localizedDescription)
                 }
             }
+            .onChange(of: appSettings.selectedTestUserID) {
+                Task {
+                    do {
+                        self.spacesToShow = try await fetchSpaces()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+    }
+    
+    private func fetchSpaces() async throws -> [Space] {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.getRentalSpaces(query: .init(userId: appSettings.selectedTestUserID))
+        let mySpaces = try response.ok.body.json
+        return mySpaces.spaces.map { Space(from: $0) }
     }
 }
 
