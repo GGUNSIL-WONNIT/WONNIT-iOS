@@ -29,7 +29,14 @@ final class SpaceDetailViewModel {
     }
     
     @MainActor
-    private func fetchSpaceDetails(spaceId: String) async {
+    func forceRevalidate() async {
+        if let id = spaceId {
+            await fetchSpaceDetails(spaceId: id)
+        }
+    }
+    
+    @MainActor
+    func fetchSpaceDetails(spaceId: String) async {
         do {
             let client = try await WONNITClientAPIService.shared.client()
             let response = try await client.getSpaceDetail(path: .init(spaceId: spaceId))

@@ -12,6 +12,7 @@ struct DashboardSpaceListView: View {
     @Environment(AppSettings.self) private var appSettings
     
     let selectedDashboardTab: DashboardTab
+    let refetch: () -> Void
     
     @Binding var spacesToShow: [Space]
     @State private var selectedSpaceIDs: Set<String> = []
@@ -131,11 +132,11 @@ struct DashboardSpaceListView: View {
                     switch selectedDashboardTab {
                     case .myCreatedSpaces:
                         if let status = space.status, status == .returnRequest {
-                            ReviewReturnSpaceActionButtonView(spaceId: space.id)
+                            ReviewReturnSpaceActionButtonView(spaceId: space.id, refetch: refetch)
                         }
                     case .myRentedSpaces:
                         if let status = space.status, status == .occupied {
-                            ReturnSpaceActionButtonView(spaceId: space.id)
+                            ReturnSpaceActionButtonView(spaceId: space.id, refetch: refetch)
                         }
                     }
                 }
@@ -184,8 +185,8 @@ struct DashboardSpaceListView: View {
                 return
             }
             
+            refetch()
             withAnimation {
-                spacesToShow.removeAll { selectedSpaceIDs.contains($0.id) }
                 selectedSpaceIDs.removeAll()
                 isEditMode = false
             }

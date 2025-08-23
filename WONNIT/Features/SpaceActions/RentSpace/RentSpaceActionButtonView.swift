@@ -17,6 +17,7 @@ struct RentSpaceActionButtonView: View {
     
     let spaceId: String
     let isAvailable: Bool
+    var refetch: (() -> Void)?
     
     var body: some View {
         Button {
@@ -31,7 +32,9 @@ struct RentSpaceActionButtonView: View {
                         .fill(isAvailable ? Color.primaryPurple : .grey100)
                 )
         }
-        .fullScreenCover(isPresented: $isShowingRentSpaceView) {
+        .fullScreenCover(isPresented: $isShowingRentSpaceView, onDismiss: {
+            refetch?()
+        }) {
             RentSpaceView(spaceId: spaceId)
         }
         .buttonStyle(.plain)

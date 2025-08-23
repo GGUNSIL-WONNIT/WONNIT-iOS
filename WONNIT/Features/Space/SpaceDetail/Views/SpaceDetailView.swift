@@ -34,7 +34,11 @@ struct SpaceDetailView: View {
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar { editToolbar }
         .task { await vm.fetchIfNeeded() }
-        .fullScreenCover(isPresented: $vm.showEditSpaceForm) {
+        .fullScreenCover(isPresented: $vm.showEditSpaceForm, onDismiss: {
+            Task {
+                await vm.forceRevalidate()
+            }
+        }) {
             if let space = vm.space {
                 EditSpaceView(spaceData: space)
             }
@@ -53,6 +57,7 @@ private extension SpaceDetailView {
             DetailBody(
                 space: space,
                 namespace: namespace,
+                refetch: vm.forceRevalidate,
                 showUSDZPreview: $vm.showUSDZPreview
             )
         case (nil, .some(let message)):
@@ -81,6 +86,7 @@ private extension SpaceDetailView {
 private struct DetailBody: View {
     let space: Space
     let namespace: Namespace.ID?
+    let refetch: () async -> Void
     
     @Binding var showUSDZPreview: Bool
     @Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -95,7 +101,11 @@ private struct DetailBody: View {
                     SpaceInfoPreview(space: space)
                         .padding(.horizontal)
                     
-                    RentSpaceActionButtonView(spaceId: space.id, isAvailable: space.status == .available)
+                    RentSpaceActionButtonView(spaceId: space.id, isAvailable: space.status == .available, refetch: {
+                        Task {
+                            await refetch()
+                        }
+                    })
                         .padding(.horizontal)
                     
                     SectionDivider()

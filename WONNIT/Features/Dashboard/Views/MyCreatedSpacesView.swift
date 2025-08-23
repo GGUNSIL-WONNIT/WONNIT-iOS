@@ -12,33 +12,29 @@ struct MyCreatedSpacesView: View {
     
     let selectedDashboardTab: DashboardTab = .myCreatedSpaces
     
-    @State var spacesToShow: [Space] = Space.mockList
+    @State var spacesToShow: [Space] = []
     
     var body: some View {
-        DashboardSpaceListView(selectedDashboardTab: selectedDashboardTab, spacesToShow: $spacesToShow)
+        DashboardSpaceListView(selectedDashboardTab: selectedDashboardTab, refetch: fetchSpaces, spacesToShow: $spacesToShow)
             .task {
-                do {
-                    self.spacesToShow = try await fetchSpaces()
-                } catch {
-                    print(error.localizedDescription)
-                }
+                fetchSpaces()
             }
             .onChange(of: appSettings.selectedTestUserID) {
-                Task {
-                    do {
-                        self.spacesToShow = try await fetchSpaces()
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                }
+                fetchSpaces()
             }
     }
     
-    private func fetchSpaces() async throws -> [Space] {
-        let client = try await WONNITClientAPIService.shared.client()
-        let response = try await client.getMySpaces(query: .init(userId: appSettings.selectedTestUserID))
-        let mySpaces = try response.ok.body.json
-        return mySpaces.spaces.map { Space(from: $0) }
+    private func fetchSpaces() {
+        Task {
+            do {
+                let client = try await WONNITClientAPIService.shared.client()
+                let response = try await client.getMySpaces(query: .init(userId: appSettings.selectedTestUserID))
+                let mySpaces = try response.ok.body.json
+                self.spacesToShow = mySpaces.spaces.map { Space(from: $0) }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
