@@ -27,6 +27,9 @@
 		9CE59CA12E3CFC5D0095C833 /* Exceptions for "WONNIT" folder in "WONNIT" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Config/Debug.xcconfig,
+				Config/Release.xcconfig,
+				Config/Secrets.xcconfig,
 				Info.plist,
 			);
 			target = 9CE59C762E3CBBB60095C833 /* WONNIT */;
@@ -189,9 +192,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -235,7 +242,7 @@
 /* Begin PBXTargetDependency section */
 		9CED85872E596D5D00AD70BF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 9CED85862E596D5D00AD70BF /* plugin:OpenAPIGenerator */;
+			productRef = 9CED85862E596D5D00AD70BF /* OpenAPIGenerator */;
 		};
 /* End PBXTargetDependency section */
 
@@ -368,11 +375,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 243;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3X4434LYHD;
+				DEVELOPMENT_TEAM = 3X4434LYHD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WONNIT/Info.plist;
@@ -396,7 +402,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.dohyeoplim.WONNIT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.dohyeoplim.WONNIT 1754243294";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -414,11 +419,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 243;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3X4434LYHD;
+				DEVELOPMENT_TEAM = 3X4434LYHD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WONNIT/Info.plist;
@@ -442,7 +446,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.dohyeoplim.WONNIT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.dohyeoplim.WONNIT 1754243294";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -514,7 +517,7 @@
 			package = 9CED85832E596D5200AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */;
 			productName = OpenAPIURLSession;
 		};
-		9CED85862E596D5D00AD70BF /* plugin:OpenAPIGenerator */ = {
+		9CED85862E596D5D00AD70BF /* OpenAPIGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9CED857B2E596D1900AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-generator" */;
 			productName = "plugin:OpenAPIGenerator";
