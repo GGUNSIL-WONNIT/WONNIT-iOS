@@ -7,7 +7,7 @@
 ## Highlights
 
 - **Automatic API Client Generation**<br />
-  Built with [Swift OpenAPI Generator](https://github.com/apple/swift-openapi-generator) for type-safe, maintainable networking
+  Built with [Swift OpenAPI Generator](https://github.com/apple/swift-openapi-generator) for type-safe, maintainable networking.
 
 - **3D Space Scanning**<br />
   Powered by ARKit and RoomPlan, leveraging camera and LiDAR for accurate space capture.
