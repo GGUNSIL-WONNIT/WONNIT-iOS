@@ -23,11 +23,9 @@ struct OperationalInfo: Equatable, Hashable, Codable {
         let endAtString = try container.decode(String.self, forKey: .endAt)
 
         let formatter = ISO8601DateFormatter()
-        // Handles formats like "2023-01-01T10:00:00.123Z"
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         
         let alternativeFormatter = ISO8601DateFormatter()
-        // Handles formats like "2023-01-01T10:00:00Z"
         alternativeFormatter.formatOptions = [.withInternetDateTime]
 
         guard let startDate = formatter.date(from: startAtString) ?? alternativeFormatter.date(from: startAtString) else {

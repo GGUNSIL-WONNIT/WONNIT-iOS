@@ -10,7 +10,9 @@ import SwiftUI
 struct MultiStepFormView<Step: FormStep>: View {
     @Environment(\.dismiss) private var dismiss
     @State private var currentStep: Step
-    @State private var formStore = FormStateStore()
+    
+    @State private var formStore: FormStateStore
+    
     @State private var transitionDirection: Edge = .trailing
     @State private var showDonePage = false
     
@@ -27,12 +29,14 @@ struct MultiStepFormView<Step: FormStep>: View {
     init(
         initialStep: Step,
         donePageView: some View,
+        store: FormStateStore,
         onSubmit: @escaping (FormStateStore) -> Void,
         onCustomButtonTap: ((String, FormStateStore, FormActions) -> Void)? = nil
     ) {
         self._currentStep = State(initialValue: initialStep)
         self.initialStep = initialStep
         self.donePageView = AnyView(donePageView)
+        self.formStore = store
         self.onSubmit = onSubmit
         self.onCustomButtonTap = onCustomButtonTap
     }
@@ -60,6 +64,7 @@ struct MultiStepFormView<Step: FormStep>: View {
                 donePageView
             }
         }
+        .environment(formStore)
     }
     
     @ViewBuilder
@@ -67,6 +72,7 @@ struct MultiStepFormView<Step: FormStep>: View {
         HStack {
             backButton
             Spacer()
+            debugPlaceholderButton()
         }
         .background(
             Color.clear
@@ -92,6 +98,16 @@ struct MultiStepFormView<Step: FormStep>: View {
         }
         .foregroundStyle(Color.grey900)
         .font(.system(size: 18))
+    }
+    
+    @ViewBuilder
+    private func debugPlaceholderButton() -> some View {
+        Button {
+            formStore.fillWithDebugPlaceholderData()
+        } label: {
+            Image(systemName: "ladybug")
+                .contentShape(Rectangle())
+        }
     }
     
     private var bottomButtons: some View {
@@ -260,10 +276,6 @@ struct MultiStepFormView<Step: FormStep>: View {
         onSubmit(formStore)
         withAnimation {
             showDonePage = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            dismiss()
         }
     }
 }

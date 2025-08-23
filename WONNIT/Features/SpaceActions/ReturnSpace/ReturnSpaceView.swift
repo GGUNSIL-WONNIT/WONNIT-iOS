@@ -10,10 +10,13 @@ import SwiftUI
 struct ReturnSpaceView: View {
     let spaceId: String
     
+    @State private var formStore = FormStateStore()
+    
     var body: some View {
         MultiStepFormView(
             initialStep: ReturnSpaceStep.before,
             donePageView: DonePageView(message: "반납이 요청되었습니다!", imageName: "paperplane"),
+            store: formStore,
             onSubmit: { formStore in
                 print("Submit\nspaceId: \(spaceId)\nstore: \(formStore)")
             },

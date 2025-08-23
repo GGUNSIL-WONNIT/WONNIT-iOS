@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 struct ErrorMessageView: View {
     let title: String
     let message: String
-    var collapsedLines: Int = 2
+    var collapsedLines: Int = 1
     var maxExpandedHeight: CGFloat = 120
     
     @State private var expanded = false

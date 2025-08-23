@@ -112,25 +112,25 @@ paths:
         "201":
           description: Created
           content:
-            application/json:
+            application/*:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
         "404":
           description: User Not Found
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         "400":
           description: Invalid Category
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         "500":
           description: Internal Server Error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
     delete:
@@ -155,25 +155,25 @@ paths:
         "204":
           description: No Content
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
         "403":
           description: Access Denied
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         "404":
           description: Space Not Found
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         "500":
           description: Internal Server Error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
   /api/v1/space/{spaceId}/rentals:

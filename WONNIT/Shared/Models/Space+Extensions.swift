@@ -42,7 +42,7 @@ extension Space {
             amountInfo: .init(timeUnit: .perDay, amount: 1000),
             spaceModelURL: nil,
             modelThumbnailUrl: nil,
-            phoneNumber: .init(value: "02-970-6114"),
+            phoneNumber: .init(value: "021-970-6114"),
             precautions: "주의사항",
             status: sampleSpaceStatus
         )
