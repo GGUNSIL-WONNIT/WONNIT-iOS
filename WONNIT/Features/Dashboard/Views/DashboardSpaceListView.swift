@@ -54,6 +54,9 @@ struct DashboardSpaceListView: View {
         } message: {
             Text(errorMessage ?? "오류가 발생했습니다.")
         }
+        .refreshable {
+            refetch()
+        }
     }
     
     private var dashboardTabHeaderView: some View {
