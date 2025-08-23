@@ -30,7 +30,7 @@ struct SpaceDetailViewWithTransitions: View {
                         }
                     }
             case .large:
-                SpaceDetailView(space: space, namespace: namespace)
+                SpaceDetailView(spaceId: space.id, namespace: namespace)
                     .padding(.top, -1 * safeAreaInsets.top - 44)
             }
         }

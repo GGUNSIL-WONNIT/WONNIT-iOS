@@ -25,7 +25,7 @@ struct SpaceListView: View {
                         .frame(maxWidth: .infinity)
                 } else {
                     ForEach(spacesToShow) { space in
-                        NavigationLink(value: Route.spaceDetailByModel(space: space)) {
+                        NavigationLink(value: Route.spaceDetailById(space.id)) {
                             SpacePreviewCardView(
                                 space: space,
                                 layout: .horizontal(height: 123),

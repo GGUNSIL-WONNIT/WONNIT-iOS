@@ -10,7 +10,7 @@ import SwiftUI
 struct RentSpaceActionButtonView: View {
     @State private var isShowingRentSpaceView: Bool = false
     
-    let spaceId: UUID
+    let spaceId: String
     let isAvailable: Bool
     
     var body: some View {

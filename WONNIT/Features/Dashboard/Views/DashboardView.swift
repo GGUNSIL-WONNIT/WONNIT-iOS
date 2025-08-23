@@ -31,8 +31,8 @@ struct DashboardView: View {
             .toolbarBackground(Color.white)
             .navigationDestination(for: Route.self) { route in
                 switch route {
-                case .spaceDetailByModel(let space):
-                    SpaceDetailView(space: space)
+                case .spaceDetailById(let spaceId):
+                    SpaceDetailView(spaceId: spaceId)
                         .padding(.bottom, -40)
                         .withBackButtonToolbar()
                 default:

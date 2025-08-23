@@ -12,7 +12,7 @@ struct ReviewReturnSpaceActionButtonView: View {
     
     @State private var isShowingReviewReturnSpaceView: Bool = false
     
-    let spaceId: UUID
+    let spaceId: String
     
     var body: some View {
         Button {

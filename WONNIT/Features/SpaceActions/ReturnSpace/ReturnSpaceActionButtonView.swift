@@ -10,7 +10,7 @@ import SwiftUI
 struct ReturnSpaceActionButtonView: View {
     @State private var isShowingReturnSpaceView: Bool = false
     
-    let spaceId: UUID
+    let spaceId: String
     
     var body: some View {
         Button {

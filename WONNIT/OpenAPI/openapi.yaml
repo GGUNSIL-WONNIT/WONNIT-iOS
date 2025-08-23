@@ -1,0 +1,964 @@
+openapi: 3.0.1
+info:
+  title: WONNIT API
+  description: 'API Docs (Swagger UI: /swagger-ui/index.html)'
+  version: v1
+servers:
+  - url: http://43.201.251.218:8080
+    description: Generated server url
+tags:
+  - name: Category
+    description: 카테고리 API
+  - name: Profile
+    description: 프로필 API
+  - name: Space Rent
+    description: 공간 대여 API
+  - name: Recent Space
+    description: 최근 공간 API
+  - name: Search
+    description: 검색 API
+paths:
+  /api/v1/spaces/{spaceId}:
+    get:
+      tags:
+        - space-controller
+      operationId: getSpaceDetail
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceDetailResponse'
+    put:
+      tags:
+        - space-controller
+      summary: 공간 수정
+      operationId: updateSpace
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceSaveRequest'
+        required: true
+      responses:
+        "403":
+          description: Access Denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "400":
+          description: Invalid Category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        "404":
+          description: Space Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /api/v1/spaces:
+    post:
+      tags:
+        - space-controller
+      summary: 새로운 공간 등록
+      operationId: createSpace
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceSaveRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "404":
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        "400":
+          description: Invalid Category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      tags:
+        - space-controller
+      summary: 공간 일괄 삭제
+      operationId: deleteSpaces
+      parameters:
+        - name: spaceIds
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "403":
+          description: Access Denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        "404":
+          description: Space Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /api/v1/space/{spaceId}/rentals:
+    post:
+      tags:
+        - Space Rent
+      summary: 공간 대여
+      description: 공간을 대여합니다.
+      operationId: rentSpace
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Created
+  /api/v1/models:
+    post:
+      tags:
+        - space-3-d-model-controller
+      summary: 모델 업로드 Presigned URL 발급
+      description: "\n        클라이언트가 S3에 직접 업로드할 수 있도록 Presigned URL을 발급  \n        - 요청: 업로드할 파일명(필수)\n        - 응답: Presigned URL, key  \n        "
+      operationId: uploadModel
+      parameters:
+        - name: modelName
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Presigned URL 발급 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignUploadResponse'
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignUploadResponse'
+  /api/v1/images:
+    post:
+      tags:
+        - space-image-controller
+      summary: 이미지 업로드 Presigned URL 발급
+      description: "\n        클라이언트가 S3에 직접 업로드할 수 있도록 Presigned URL을 발급  \n        - 요청: 업로드할 파일명(필수)\n        - 응답: Presigned URL, key  \n        "
+      operationId: uploadImage
+      parameters:
+        - name: imageName
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Presigned URL 발급 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignUploadResponse'
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignUploadResponse'
+    delete:
+      tags:
+        - space-image-controller
+      summary: 이미지 삭제
+      description: 업로드 시 발급받은 key를 전달하면 해당 이미지를 S3에서 삭제
+      operationId: deleteImage
+      parameters:
+        - name: imageKey
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "404":
+          description: 파일을 찾을 수 없음
+  /api/v1/space/{spaceId}/rentals/return-request:
+    patch:
+      tags:
+        - Space Rent
+      summary: 공간 반납 요청
+      description: 공간 반납을 요청합니다.
+      operationId: returnRequest
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+  /api/v1/space/{spaceId}/rentals/return-reject:
+    patch:
+      tags:
+        - Space Rent
+      summary: 공간 반납 거절
+      description: 공간 반납을 거절합니다.
+      operationId: returnReject
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+  /api/v1/space/{spaceId}/rentals/return-approve:
+    patch:
+      tags:
+        - Space Rent
+      summary: 공간 반납 승인
+      description: 공간 반납을 승인합니다.
+      operationId: returnApprove
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+  /api/v1/search:
+    get:
+      tags:
+        - Search
+      summary: 내 주변 공간 검색
+      description: 내 주변 공간을 검색합니다.
+      operationId: getNearBySpaces
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: lon
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpaceSearchResponse'
+  /api/v1/recent-spaces:
+    get:
+      tags:
+        - Recent Space
+      summary: 최근 등록된 공간 목록 조회
+      description: 최근 등록된 공간 목록을 조회합니다.
+      operationId: getRecentSpaces
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecentSpaceResponse'
+  /api/v1/my/spaces:
+    get:
+      tags:
+        - Profile
+      summary: 내가 등록한 공간 목록 조회
+      description: 내가 등록한 공간 목록을 조회합니다.
+      operationId: getMySpaces
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MySpacePageResponse'
+  /api/v1/my/rental-spaces:
+    get:
+      tags:
+        - Profile
+      summary: 내가 대여한 공간 목록 조회
+      description: 내가 대여한 공간 목록을 조회합니다.
+      operationId: getRentalSpaces
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyRentalSpacePageResponse'
+  /api/v1/columns:
+    get:
+      tags:
+        - column-controller
+      summary: 칼럼 조회
+      description: 칼럼을 조회합니다.
+      operationId: getColumns
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ColumnResponse'
+  /api/v1/categories:
+    get:
+      tags:
+        - Category
+      summary: 카테고리 목록 조회
+      description: 카테고리 목록을 조회합니다.
+      operationId: getSpaceCategories
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: 공간 카테고리
+                  enum:
+                    - SMALL_THEATER
+                    - MAKER_SPACE
+                    - MUSIC_PRACTICE_ROOM
+                    - DANCE_STUDIO
+                    - STUDY_ROOM
+components:
+  schemas:
+    AddressInfo:
+      required:
+        - address1
+        - lat
+        - lon
+      type: object
+      properties:
+        address1:
+          type: string
+          description: 주소
+        address2:
+          type: string
+          description: 상세 주소
+        lat:
+          type: number
+          description: 위도
+          format: double
+        lon:
+          type: number
+          description: 경도
+          format: double
+      description: 주소 정보
+    AmountInfo:
+      required:
+        - amount
+        - timeUnit
+      type: object
+      properties:
+        timeUnit:
+          type: string
+          description: 시간 단위
+          enum:
+            - PER_HOUR
+            - PER_DAY
+        amount:
+          type: integer
+          description: 가격
+          format: int64
+      description: 가격 정보
+    OperationalInfo:
+      required:
+        - dayOfWeeks
+        - endAt
+        - startAt
+      type: object
+      properties:
+        dayOfWeeks:
+          type: array
+          description: 운영 요일
+          items:
+            type: string
+            description: 운영 요일
+            enum:
+              - MONDAY
+              - TUESDAY
+              - WEDNESDAY
+              - THURSDAY
+              - FRIDAY
+              - SATURDAY
+              - SUNDAY
+        startAt:
+          type: string
+          description: 시작 시간
+        endAt:
+          type: string
+          description: 종료 시간
+      description: 운영 정보
+    SpaceSaveRequest:
+      required:
+        - address
+        - amountInfo
+        - category
+        - mainImgUrl
+        - name
+        - operationInfo
+        - phoneNumber
+        - size
+        - subImgUrls
+        - tags
+      type: object
+      properties:
+        category:
+          type: string
+          description: 공간 카테고리
+          example: DANCE_STUDIO
+          enum:
+            - SMALL_THEATER
+            - MAKER_SPACE
+            - MUSIC_PRACTICE_ROOM
+            - DANCE_STUDIO
+            - STUDY_ROOM
+        name:
+          type: string
+          description: 공간 이름
+          example: 홍대 스튜디오
+        phoneNumber:
+          type: string
+          description: 전화번호
+          example: 010-1234-5678
+        mainImgUrl:
+          type: string
+          description: 대표 이미지 URL
+          example: https://wonnit.s3.ap-northeast-2.amazonaws.com/main.jpg
+        subImgUrls:
+          type: array
+          description: 서브 이미지 URL 목록
+          example:
+            - https://wonnit.s3.ap-northeast-2.amazonaws.com/sub1.jpg
+            - https://wonnit.s3.ap-northeast-2.amazonaws.com/sub2.jpg
+          items:
+            type: string
+            description: 서브 이미지 URL 목록
+            example: '["https://wonnit.s3.ap-northeast-2.amazonaws.com/sub1.jpg","https://wonnit.s3.ap-northeast-2.amazonaws.com/sub2.jpg"]'
+        address:
+          $ref: '#/components/schemas/AddressInfo'
+        amountInfo:
+          $ref: '#/components/schemas/AmountInfo'
+        size:
+          type: number
+          description: 공간 크기(m²)
+          format: double
+          example: 45
+        operationInfo:
+          $ref: '#/components/schemas/OperationalInfo'
+        spaceModelUrl:
+          type: string
+          description: 3D 공간 모델 URL
+          example: https://wonnit.com/model.glb
+        precautions:
+          type: string
+          description: 유의사항
+          example: 애완동물 출입 금지
+        modelThumbnailUrl:
+          type: string
+          description: 모델 스캔 대표 이미지 URL
+          example: https://wonnit.com/model-thumbnail.jpg
+        tags:
+          type: array
+          description: ai 공간 태그 리스트
+          example: '[화이트보드]'
+          items:
+            type: string
+            description: ai 공간 태그 리스트
+            example: '[화이트보드]'
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+    ApiResponse:
+      type: object
+    PresignUploadResponse:
+      required:
+        - uploadUrl
+        - url
+      type: object
+      properties:
+        uploadUrl:
+          type: string
+          description: presigned URL
+          example: https://example.amazon.aws.com
+        url:
+          type: string
+          description: 이미지 url
+          example: https://wonnit.s3.ap-northeast-2.amazonaws.com/d2e1ec9b-6191-4769-9f22-ca673f24c1a3-%25EB%25A7%2588%25EB%25A6%25B0.jpg
+    PhoneNumber:
+      required:
+        - value
+      type: object
+      properties:
+        value:
+          type: string
+      description: 전화번호
+      example: 010-1234-5678
+    SpaceDetailResponse:
+      required:
+        - address
+        - amountInfo
+        - category
+        - id
+        - mainImgUrl
+        - name
+        - operationInfo
+        - phoneNumber
+        - size
+        - status
+        - subImgUrls
+        - tags
+      type: object
+      properties:
+        id:
+          type: string
+          description: 공간 ID
+          format: uuid
+          example: 028195e0-6999-137d-a747-0a02b343a12e
+        category:
+          type: string
+          description: 공간 카테고리
+          example: STUDIO
+          enum:
+            - SMALL_THEATER
+            - MAKER_SPACE
+            - MUSIC_PRACTICE_ROOM
+            - DANCE_STUDIO
+            - STUDY_ROOM
+        name:
+          type: string
+          description: 공간 이름
+          example: 홍대 스튜디오
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        mainImgUrl:
+          type: string
+          description: 대표 이미지 URL
+          example: https://wonnit.com/main.jpg
+        subImgUrls:
+          type: array
+          description: 서브 이미지 URL 목록
+          example:
+            - https://wonnit.com/sub1.jpg
+            - https://wonnit.com/sub2.jpg
+          items:
+            type: string
+            description: 서브 이미지 URL 목록
+            example: '["https://wonnit.com/sub1.jpg","https://wonnit.com/sub2.jpg"]'
+        address:
+          $ref: '#/components/schemas/AddressInfo'
+        amountInfo:
+          $ref: '#/components/schemas/AmountInfo'
+        size:
+          type: number
+          description: 공간 크기(m²)
+          format: double
+          example: 45
+        operationInfo:
+          $ref: '#/components/schemas/OperationalInfo'
+        spaceModelUrl:
+          type: string
+          description: 3D 공간 모델 URL
+          example: https://wonnit.com/model.glb
+        modelThumbnailUrl:
+          type: string
+          description: 모델 스캔 대표 이미지 URL
+          example: https://wonnit.com/model-thumbnail.jpg
+        precautions:
+          type: string
+          description: 유의사항
+          example: 애완동물 출입 금지
+        tags:
+          type: array
+          description: ai 공간 태그
+          example: 화이트보드
+          items:
+            type: string
+            description: ai 공간 태그
+            example: 화이트보드
+        status:
+          type: string
+          description: 공간 상태
+          example: AVAILABLE
+          enum:
+            - AVAILABLE
+            - OCCUPIED
+            - RETURN_REQUEST
+            - RETURN_REJECTED
+    SpaceSearchResponse:
+      required:
+        - addressInfo
+        - amountInfo
+        - category
+        - mainImgUrl
+        - name
+        - spaceId
+        - status
+      type: object
+      properties:
+        spaceId:
+          type: string
+          description: 공간 ID
+        category:
+          type: string
+          description: 공간 카테고리
+          enum:
+            - SMALL_THEATER
+            - MAKER_SPACE
+            - MUSIC_PRACTICE_ROOM
+            - DANCE_STUDIO
+            - STUDY_ROOM
+        name:
+          type: string
+          description: 공간 이름
+        addressInfo:
+          $ref: '#/components/schemas/AddressInfo'
+        mainImgUrl:
+          type: string
+          description: 메인 이미지 URL
+        amountInfo:
+          $ref: '#/components/schemas/AmountInfo'
+        status:
+          type: string
+          description: 공간 상태
+          enum:
+            - AVAILABLE
+            - OCCUPIED
+            - RETURN_REQUEST
+            - RETURN_REJECTED
+      description: 탐색된 공간 응답
+    RecentSpaceResponse:
+      required:
+        - addressInfo
+        - category
+        - name
+        - spaceId
+      type: object
+      properties:
+        spaceId:
+          type: string
+          description: 공간 ID
+        category:
+          type: string
+          description: 공간 카테고리
+          enum:
+            - SMALL_THEATER
+            - MAKER_SPACE
+            - MUSIC_PRACTICE_ROOM
+            - DANCE_STUDIO
+            - STUDY_ROOM
+        name:
+          type: string
+          description: 공간 이름
+        addressInfo:
+          $ref: '#/components/schemas/AddressInfo'
+      description: 최근 추가된 공간 응답
+    MySpacePageResponse:
+      required:
+        - spaces
+        - totalCount
+      type: object
+      properties:
+        spaces:
+          type: array
+          description: 내가 등록한 공간 목록
+          items:
+            $ref: '#/components/schemas/MySpaceResponse'
+        totalCount:
+          type: integer
+          description: 총 개수
+          format: int64
+      description: 내가 등록한 공간 페이징 응답
+    MySpaceResponse:
+      required:
+        - addressInfo
+        - amountInfo
+        - category
+        - mainImgUrl
+        - name
+        - spaceId
+        - status
+      type: object
+      properties:
+        spaceId:
+          type: string
+          description: 공간 ID
+        category:
+          type: string
+          description: 공간 카테고리
+          enum:
+            - SMALL_THEATER
+            - MAKER_SPACE
+            - MUSIC_PRACTICE_ROOM
+            - DANCE_STUDIO
+            - STUDY_ROOM
+        name:
+          type: string
+          description: 공간 이름
+        addressInfo:
+          $ref: '#/components/schemas/AddressInfo'
+        mainImgUrl:
+          type: string
+          description: 메인 이미지 URL
+        amountInfo:
+          $ref: '#/components/schemas/AmountInfo'
+        status:
+          type: string
+          description: 공간 상태
+          enum:
+            - AVAILABLE
+            - OCCUPIED
+            - RETURN_REQUEST
+            - RETURN_REJECTED
+      description: 내가 등록한 공간 응답
+    MyRentalSpacePageResponse:
+      required:
+        - spaces
+        - totalCount
+      type: object
+      properties:
+        spaces:
+          type: array
+          description: 내가 대여한 공간 목록
+          items:
+            $ref: '#/components/schemas/MyRentalSpaceResponse'
+        totalCount:
+          type: integer
+          description: 총 개수
+          format: int64
+      description: 내가 대여한 공간 페이징 응답
+    MyRentalSpaceResponse:
+      required:
+        - addressInfo
+        - amountInfo
+        - category
+        - mainImgUrl
+        - name
+        - spaceId
+        - status
+      type: object
+      properties:
+        spaceId:
+          type: string
+          description: 공간 ID
+        category:
+          type: string
+          description: 공간 카테고리
+          enum:
+            - SMALL_THEATER
+            - MAKER_SPACE
+            - MUSIC_PRACTICE_ROOM
+            - DANCE_STUDIO
+            - STUDY_ROOM
+        name:
+          type: string
+          description: 공간 이름
+        addressInfo:
+          $ref: '#/components/schemas/AddressInfo'
+        mainImgUrl:
+          type: string
+          description: 메인 이미지 URL
+        amountInfo:
+          $ref: '#/components/schemas/AmountInfo'
+        status:
+          type: string
+          description: 공간 상태
+          enum:
+            - AVAILABLE
+            - OCCUPIED
+            - RETURN_REQUEST
+            - RETURN_REJECTED
+      description: 내가 대여한 공간 응답
+    ColumnResponse:
+      required:
+        - columnId
+        - subtitle
+        - thumbnailUrl
+        - title
+        - url
+      type: object
+      properties:
+        columnId:
+          type: string
+          description: 칼럼 ID
+        title:
+          type: string
+          description: 제목
+        subtitle:
+          type: string
+          description: 소제목
+        url:
+          type: string
+          description: 칼럼 주소
+        thumbnailUrl:
+          type: string
+          description: 썸네일 경로
+      description: 칼럼 응답

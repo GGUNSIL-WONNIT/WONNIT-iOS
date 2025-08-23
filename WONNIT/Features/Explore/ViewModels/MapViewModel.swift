@@ -14,7 +14,7 @@ final class MapViewModel {
     let locationService: LocationService
     
     var spaces: [Space]
-    var selection: UUID?
+    var selection: String?
     var selectedSpace: Space? {
         spaces.first { $0.id == selection }
     }

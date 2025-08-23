@@ -46,9 +46,7 @@ extension DateComponents {
     var dateValue: Date? {
         Calendar.current.date(from: self)
     }
-}
-
-extension DateComponents {
+    
     var formattedHourMinute: String? {
         guard let hour = hour, let minute = minute else { return nil }
         return String(format: "%02d:%02d", hour, minute)
@@ -57,12 +55,18 @@ extension DateComponents {
 
 extension Array where Element == DayOfWeek {
     var formattedDayRange: String {
-        let sortedDays = self.sorted(by: { $0.rawValue < $1.rawValue })
+        // Sort chronologically based on the declaration order in allCases
+        let sortedDays = self.sorted {
+            DayOfWeek.allCases.firstIndex(of: $0)! < DayOfWeek.allCases.firstIndex(of: $1)!
+        }
 
         if sortedDays.count > 1,
            let first = sortedDays.first,
            let last = sortedDays.last,
-           sortedDays == Array(DayOfWeek.allCases[first.rawValue...last.rawValue]) {
+           let firstIndex = DayOfWeek.allCases.firstIndex(of: first),
+           let lastIndex = DayOfWeek.allCases.firstIndex(of: last),
+           // Check if the sorted days form a contiguous block in the week
+           sortedDays.count == (lastIndex - firstIndex + 1) {
             return "\(first.localizedLabel)–\(last.localizedLabel)"
         } else {
             return sortedDays.map { $0.localizedLabel }.joined(separator: ", ")

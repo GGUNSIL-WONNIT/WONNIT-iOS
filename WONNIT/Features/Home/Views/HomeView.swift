@@ -63,9 +63,7 @@ struct HomeView: View {
                         case .spaceListByRecent:
                             SpaceListView(category: nil)
                         case .spaceDetailById(let spaceId):
-                            Text("Space Detail (\(spaceId))")
-                        case .spaceDetailByModel(space: let space):
-                            SpaceDetailView(space: space)
+                            SpaceDetailView(spaceId: spaceId)
                                 .padding(.bottom, -40)
                                 .withBackButtonToolbar()
                         }

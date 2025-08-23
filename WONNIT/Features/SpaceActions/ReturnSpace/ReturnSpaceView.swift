@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReturnSpaceView: View {
-    let spaceId: UUID
+    let spaceId: String
     
     var body: some View {
         MultiStepFormView(

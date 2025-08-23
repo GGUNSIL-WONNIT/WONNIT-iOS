@@ -13,7 +13,7 @@ struct DashboardSpaceListView: View {
     let selectedDashboardTab: DashboardTab
     
     @Binding var spacesToShow: [Space]
-    @State var selectedSpaceIDs: Set<UUID> = []
+    @State var selectedSpaceIDs: Set<String> = []
     @State var isEditMode: Bool = false
     @State private var showDeleteConfirmation = false
     
@@ -118,7 +118,7 @@ struct DashboardSpaceListView: View {
                         if isEditMode {
                             toggleSelection(for: space.id)
                         } else {
-                            nav.push(Route.spaceDetailByModel(space: space))
+                            nav.push(Route.spaceDetailById(space.id))
                         }
                     }
                     switch selectedDashboardTab {
@@ -140,7 +140,7 @@ struct DashboardSpaceListView: View {
         }
     }
     
-    private func toggleSelection(for id: UUID) {
+    private func toggleSelection(for id: String) {
         withAnimation {
             if selectedSpaceIDs.contains(id) {
                 selectedSpaceIDs.remove(id)
