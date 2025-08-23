@@ -38,7 +38,7 @@ struct DashboardTabView<Selection>: View where Selection: Identifiable & Hashabl
                     Button {
                         appSettings.selectedTestUserID = user.rawValue
                     } label: {
-                        Label("User \(index + 1)", systemImage: "person.fill")
+                        Label("User \(index + 1)", systemImage: appSettings.selectedTestUserID == user.rawValue ? "person.fill.checkmark" : "person.fill")
                     }
                 }
             } label : {
