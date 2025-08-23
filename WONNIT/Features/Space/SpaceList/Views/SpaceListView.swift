@@ -49,6 +49,13 @@ struct SpaceListView: View {
                 print(error.localizedDescription)
             }
         }
+        .refreshable {
+            do {
+                self.spacesToShow = try await fetchSpaces()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     private func fetchSpaces() async throws -> [Space] {
