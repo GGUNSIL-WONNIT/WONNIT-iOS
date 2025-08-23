@@ -30,15 +30,18 @@ struct RecentlyAddedSpacesView: View {
         }
         .task {
             do {
-                let client = try await WONNITClientAPIService.shared.client()
-                let response = try await client.getRecentSpaces(.init())
-                let recentSpaces = try response.ok.body.json
-                
-                self.spacesToShow = recentSpaces.map { Space(from: $0) }
+                self.spacesToShow = try await fetchSpaces()
             } catch {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    private func fetchSpaces() async throws -> [Space] {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.getRecentSpaces()
+        let recentSpaces = try response.ok.body.json
+        return recentSpaces.map { Space(from: $0) }
     }
 }
 

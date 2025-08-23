@@ -11,7 +11,7 @@ struct SpaceListView: View {
     @Environment(\.dismiss) private var dismiss
     
     let category: SpaceCategory?
-    let spacesToShow: [Space] = Space.mockList
+    @State private var spacesToShow: [Space] = []
     
     var body: some View {
         ScrollView {
@@ -42,6 +42,29 @@ struct SpaceListView: View {
             .navigationBarTitleDisplayMode(.large)
             .withBackButtonToolbar()
         }
+        .task {
+            do {
+                self.spacesToShow = try await fetchSpaces()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func fetchSpaces() async throws -> [Space] {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.getRecentSpaces()
+        let recentSpaces = try response.ok.body.json
+        let mapped = recentSpaces.map { Space(from: $0) }
+        
+        if let category {
+            return mapped.filter { space in
+                space.category == category
+            }
+        } else {
+            return mapped
+        }
+
     }
 }
 

@@ -61,6 +61,7 @@ struct WONNITApp: App {
                     .environment(appSettings)
                     .fullScreenCover(isPresented: $showCreateSpaceSheet) {
                         CreateSpaceView()
+                            .environment(appSettings)
                     }
                 }
                 
