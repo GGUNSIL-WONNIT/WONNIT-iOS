@@ -75,10 +75,10 @@ struct SheetInternalView<Content: View>: View {
                             .font(.title2)
                             .foregroundStyle(Color.grey900)
                             .contentShape(Rectangle())
+                            .padding()
                     }
                     Spacer()
                 }
-                .padding(.horizontal)
             } else {
                 Capsule().fill(Color.gray.opacity(0.5)).frame(width: 40, height: 5)
             }
