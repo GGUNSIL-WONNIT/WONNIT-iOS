@@ -86,6 +86,7 @@ struct ErrorMessageView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 12)
+                .fill(.ultraThinMaterial)
                 .strokeBorder(.quaternary, lineWidth: 1)
         )
     }

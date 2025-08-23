@@ -80,6 +80,24 @@ extension Space {
         self.precautions = nil
         self.status = .init(from: generated.status)
     }
+    
+    init(from generated: Components.Schemas.SpaceSearchResponse) {
+        self.id = generated.spaceId
+        self.name = generated.name
+        self.address = .init(from: generated.addressInfo)
+        self.mainImageURL = generated.mainImgUrl
+        self.subImageURLs = nil
+        self.category = .init(from: generated.category)
+        self.spaceTags = nil
+        self.size = nil
+        self.operationInfo = nil
+        self.amountInfo = .init(from: generated.amountInfo)
+        self.spaceModelURL = nil
+        self.modelThumbnailUrl = nil
+        self.phoneNumber = nil
+        self.precautions = nil
+        self.status = .init(from: generated.status)
+    }
 }
 
 extension AddressInfo {
@@ -199,6 +217,16 @@ extension SpaceCategory {
         case .STUDY_ROOM: self = .studyRoom
         }
     }
+    
+    init(from generated: Components.Schemas.SpaceSearchResponse.categoryPayload) {
+        switch generated {
+        case .SMALL_THEATER: self = .smallTheater
+        case .MAKER_SPACE: self = .makerSpace
+        case .MUSIC_PRACTICE_ROOM: self = .musicPracticeRoom
+        case .DANCE_STUDIO: self = .danceStudio
+        case .STUDY_ROOM: self = .studyRoom
+        }
+    }
 }
 
 extension SpaceStatus {
@@ -221,6 +249,15 @@ extension SpaceStatus {
     }
     
     init(from generated: Components.Schemas.MyRentalSpaceResponse.statusPayload) {
+        switch generated {
+        case .AVAILABLE: self = .available
+        case .OCCUPIED: self = .occupied
+        case .RETURN_REQUEST: self = .returnRequest
+        case .RETURN_REJECTED: self = .returnRejected
+        }
+    }
+    
+    init(from generated: Components.Schemas.SpaceSearchResponse.statusPayload) {
         switch generated {
         case .AVAILABLE: self = .available
         case .OCCUPIED: self = .occupied
