@@ -178,14 +178,16 @@ struct DashboardSpaceListView: View {
                     userId: appSettings.selectedTestUserID
                 ))
                 
-                withAnimation {
-                    spacesToShow.removeAll { selectedSpaceIDs.contains($0.id) }
-                    selectedSpaceIDs.removeAll()
-                    isEditMode = false
-                }
-                
             } catch {
                 errorMessage = "삭제를 할 수 없습니다.\n\(error.localizedDescription)"
+                isEditMode = false
+                return
+            }
+            
+            withAnimation {
+                spacesToShow.removeAll { selectedSpaceIDs.contains($0.id) }
+                selectedSpaceIDs.removeAll()
+                isEditMode = false
             }
         }
     }
