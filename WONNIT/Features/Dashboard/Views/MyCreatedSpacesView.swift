@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MyCreatedSpacesView: View {
     @Environment(AppSettings.self) private var appSettings
+    @Environment(RefetchTrigger.self) private var refetchTrigger
     
     let selectedDashboardTab: DashboardTab = .myCreatedSpaces
     
@@ -20,6 +21,9 @@ struct MyCreatedSpacesView: View {
                 fetchSpaces()
             }
             .onChange(of: appSettings.selectedTestUserID) {
+                fetchSpaces()
+            }
+            .onChange(of: refetchTrigger.refetchID) {
                 fetchSpaces()
             }
     }

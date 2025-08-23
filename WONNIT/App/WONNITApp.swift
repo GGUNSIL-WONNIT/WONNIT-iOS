@@ -13,6 +13,7 @@ struct WONNITApp: App {
     @State private var tabShouldResetManager = TabShouldResetManager()
     @State private var showCreateSpaceSheet: Bool = false
     @State private var appSettings = AppSettings()
+    @State private var refetchTrigger = RefetchTrigger()
     
     @State private var isShowingLaunchScreen: Bool = true
     
@@ -59,7 +60,10 @@ struct WONNITApp: App {
                     .environment(tabManager)
                     .environment(tabShouldResetManager)
                     .environment(appSettings)
-                    .fullScreenCover(isPresented: $showCreateSpaceSheet) {
+                    .environment(refetchTrigger)
+                    .fullScreenCover(isPresented: $showCreateSpaceSheet, onDismiss: {
+                        refetchTrigger.refetchID = UUID()
+                    }) {
                         CreateSpaceView()
                             .environment(appSettings)
                     }
