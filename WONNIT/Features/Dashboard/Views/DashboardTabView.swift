@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DashboardTabView<Selection>: View where Selection: Identifiable & Hashable & Comparable & TabLabelConvertible {
+    @Environment(AppSettings.self) private var appSettings
+    
     var views: [Selection: AnyView]
     
     @Binding var selection: Selection
@@ -31,10 +33,20 @@ struct DashboardTabView<Selection>: View where Selection: Identifiable & Hashabl
     
     var body: some View {
         VStack(spacing: 0) {
-            Text("마이페이지")
-                .body_03(.grey900)
-                .padding(.top, 12)
-                .padding(.bottom, 20)
+            Menu {
+                ForEach(Array(TestUser.allCases.enumerated()), id: \.offset) { index, user in
+                    Button {
+                        appSettings.selectedTestUserID = user.rawValue
+                    } label: {
+                        Label("User \(index + 1)", systemImage: "person.fill")
+                    }
+                }
+            } label : {
+                Text("마이페이지")
+                    .body_03(.grey900)
+                    .padding(.top, 12)
+                    .padding(.bottom, 20)
+            }
             
             tabBar
             

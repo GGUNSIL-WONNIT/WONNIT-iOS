@@ -41,36 +41,4 @@ struct DashboardView: View {
             }
         }
     }
-    
-    //    private func toggleEditMode() {
-    //        withAnimation(.easeInOut) {
-    //            isEditMode.toggle()
-    //            if !isEditMode {
-    //                selectedSpaceIDs.removeAll()
-    //            }
-    //        }
-    //    }
-    
-    //    private func deleteSelectedSpaces() {
-    //        withAnimation(.easeInOut) {
-    //            myCreatedSpaces.removeAll { selectedSpaceIDs.contains($0.id) }
-    //            selectedSpaceIDs.removeAll()
-    //            if myCreatedSpaces.isEmpty {
-    //                isEditMode = false
-    //            }
-    //        }
-    //    }
-    
-    //    private var deleteButton: some View {
-    //        Button(action: deleteSelectedSpaces) {
-    //            Image(systemName: "trash")
-    //                .font(.system(size: 24))
-    //                .foregroundColor(.white)
-    //                .padding()
-    //                .background(Color.red)
-    //                .clipShape(Circle())
-    //        }
-    //        .padding()
-    //        .transition(.move(edge: .leading).combined(with: .opacity))
-    //    }
 }

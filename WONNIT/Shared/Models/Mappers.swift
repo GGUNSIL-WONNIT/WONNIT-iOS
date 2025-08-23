@@ -8,8 +8,6 @@
 import Foundation
 import OpenAPIURLSession
 
-// MARK: - Space Mappers
-
 extension Space {
     init(from generated: Components.Schemas.SpaceDetailResponse) {
         self.id = generated.id
@@ -45,6 +43,42 @@ extension Space {
         self.phoneNumber = nil
         self.precautions = nil
         self.status = nil
+    }
+    
+    init(from generated: Components.Schemas.MySpaceResponse) {
+        self.id = generated.spaceId
+        self.name = generated.name
+        self.address = .init(from: generated.addressInfo)
+        self.mainImageURL = generated.mainImgUrl
+        self.subImageURLs = nil
+        self.category = .init(from: generated.category)
+        self.spaceTags = nil
+        self.size = nil
+        self.operationInfo = nil
+        self.amountInfo = .init(from: generated.amountInfo)
+        self.spaceModelURL = nil
+        self.modelThumbnailUrl = nil
+        self.phoneNumber = nil
+        self.precautions = nil
+        self.status = .init(from: generated.status)
+    }
+    
+    init(from generated: Components.Schemas.MyRentalSpaceResponse) {
+        self.id = generated.spaceId
+        self.name = generated.name
+        self.address = .init(from: generated.addressInfo)
+        self.mainImageURL = generated.mainImgUrl
+        self.subImageURLs = nil
+        self.category = .init(from: generated.category)
+        self.spaceTags = nil
+        self.size = nil
+        self.operationInfo = nil
+        self.amountInfo = .init(from: generated.amountInfo)
+        self.spaceModelURL = nil
+        self.modelThumbnailUrl = nil
+        self.phoneNumber = nil
+        self.precautions = nil
+        self.status = .init(from: generated.status)
     }
 }
 
@@ -145,10 +179,48 @@ extension SpaceCategory {
         case .STUDY_ROOM: self = .studyRoom
         }
     }
+    
+    init(from generated: Components.Schemas.MySpaceResponse.categoryPayload) {
+        switch generated {
+        case .SMALL_THEATER: self = .smallTheater
+        case .MAKER_SPACE: self = .makerSpace
+        case .MUSIC_PRACTICE_ROOM: self = .musicPracticeRoom
+        case .DANCE_STUDIO: self = .danceStudio
+        case .STUDY_ROOM: self = .studyRoom
+        }
+    }
+    
+    init(from generated: Components.Schemas.MyRentalSpaceResponse.categoryPayload) {
+        switch generated {
+        case .SMALL_THEATER: self = .smallTheater
+        case .MAKER_SPACE: self = .makerSpace
+        case .MUSIC_PRACTICE_ROOM: self = .musicPracticeRoom
+        case .DANCE_STUDIO: self = .danceStudio
+        case .STUDY_ROOM: self = .studyRoom
+        }
+    }
 }
 
 extension SpaceStatus {
     init(from generated: Components.Schemas.SpaceDetailResponse.statusPayload) {
+        switch generated {
+        case .AVAILABLE: self = .available
+        case .OCCUPIED: self = .occupied
+        case .RETURN_REQUEST: self = .returnRequest
+        case .RETURN_REJECTED: self = .returnRejected
+        }
+    }
+    
+    init(from generated: Components.Schemas.MySpaceResponse.statusPayload) {
+        switch generated {
+        case .AVAILABLE: self = .available
+        case .OCCUPIED: self = .occupied
+        case .RETURN_REQUEST: self = .returnRequest
+        case .RETURN_REJECTED: self = .returnRejected
+        }
+    }
+    
+    init(from generated: Components.Schemas.MyRentalSpaceResponse.statusPayload) {
         switch generated {
         case .AVAILABLE: self = .available
         case .OCCUPIED: self = .occupied

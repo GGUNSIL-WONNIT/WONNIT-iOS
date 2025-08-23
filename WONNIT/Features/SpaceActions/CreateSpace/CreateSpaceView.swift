@@ -9,6 +9,8 @@ import SwiftUI
 import CoreLocation
 
 struct CreateSpaceView: View {
+    @Environment(AppSettings.self) private var appSettings
+    
     @State private var isSubmitting = false
     @State private var errorMessage: String?
     
@@ -101,7 +103,7 @@ struct CreateSpaceView: View {
         let client = try await WONNITClientAPIService.shared.client()
         let requestBody = try Components.Schemas.SpaceSaveRequest(from: space)
         
-        let response = try await client.createSpace(query: .init(userId: "028195e0-6999-137d-a747-0a02b343a12e"), body: .json(requestBody))
+        let response = try await client.createSpace(query: .init(userId: appSettings.selectedTestUserID), body: .json(requestBody))
         
         switch response {
         case .badRequest:

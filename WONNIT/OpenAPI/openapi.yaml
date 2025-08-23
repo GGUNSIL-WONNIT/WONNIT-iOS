@@ -154,26 +154,26 @@ paths:
       responses:
         "204":
           description: No Content
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/ApiResponse'
         "403":
           description: Access Denied
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         "404":
           description: Space Not Found
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         "500":
           description: Internal Server Error
           content:
-            application/problem+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
   /api/v1/space/{spaceId}/rentals:
