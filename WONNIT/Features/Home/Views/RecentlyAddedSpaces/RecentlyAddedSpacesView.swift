@@ -9,6 +9,8 @@ import SwiftUI
 import OpenAPIURLSession
 
 struct RecentlyAddedSpacesView: View {
+    @Environment(RefetchTrigger.self) private var refetchTrigger
+    
     @State private var spacesToShow: [Space] = []
     
     var body: some View {
@@ -33,6 +35,15 @@ struct RecentlyAddedSpacesView: View {
                 self.spacesToShow = try await fetchSpaces()
             } catch {
                 print(error.localizedDescription)
+            }
+        }
+        .onChange(of: refetchTrigger.refetchID) {
+            Task {
+                do {
+                    self.spacesToShow = try await fetchSpaces()
+                } catch {
+                    print(error.localizedDescription)
+                }
             }
         }
     }
