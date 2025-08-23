@@ -19,6 +19,7 @@ protocol FormStep: CaseIterable, Identifiable, Equatable where AllCases: RandomA
     
     var buttons: [FormStepButton]? { get }
     var submitButtonTitle: String { get }
+    var hideDefaultButton: Bool { get }
 }
 
 extension FormStep {
@@ -50,6 +51,8 @@ extension FormStep {
                 guard let value = store.textValues[config.id], !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                     return false
                 }
+            case .optionalTextField:
+                continue
                 
             case let .phoneNumberField(config):
                 if config.isReadOnly { continue }
@@ -114,8 +117,10 @@ extension FormStep {
                     return false
                 }
                 
-            case .imageComparison(_):
-                continue
+            case let .imageComparison(config):
+                if let score = store.doubleValues[config.id], let score, score < 80 {
+                    return false
+                }
             }
         }
         return true

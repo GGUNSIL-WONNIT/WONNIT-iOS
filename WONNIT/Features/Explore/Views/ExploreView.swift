@@ -17,8 +17,13 @@ struct ExploreView: View {
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             MapView(mapViewModel: mapViewModel)
+            
+            if let error = mapViewModel.errorMessage {
+                ErrorMessageView(title: "오류 발생", message: error)
+                    .padding()
+            }
         }
         .draggableContentSheet(
             isPresented: .constant(true),

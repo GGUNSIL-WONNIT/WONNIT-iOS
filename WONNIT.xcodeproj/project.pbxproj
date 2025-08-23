@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9CE511412E3F91E70003FDB2 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 9CE511402E3F91E70003FDB2 /* Podfile */; };
+		9CED85822E596D3A00AD70BF /* OpenAPIRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 9CED85812E596D3A00AD70BF /* OpenAPIRuntime */; };
+		9CED85852E596D5200AD70BF /* OpenAPIURLSession in Frameworks */ = {isa = PBXBuildFile; productRef = 9CED85842E596D5200AD70BF /* OpenAPIURLSession */; };
 		A08858DB1029285F71939CF4 /* Pods_WONNIT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B92BFD822A89131EA5CF33F /* Pods_WONNIT.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +49,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CED85822E596D3A00AD70BF /* OpenAPIRuntime in Frameworks */,
+				9CED85852E596D5200AD70BF /* OpenAPIURLSession in Frameworks */,
 				A08858DB1029285F71939CF4 /* Pods_WONNIT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -116,6 +120,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				9CED85872E596D5D00AD70BF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9CE59C792E3CBBB60095C833 /* WONNIT */,
@@ -149,6 +154,11 @@
 			);
 			mainGroup = 9CE59C6E2E3CBBB60095C833;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9CED857B2E596D1900AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-generator" */,
+				9CED85802E596D3A00AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */,
+				9CED85832E596D5200AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9CE59C782E3CBBB60095C833 /* Products */;
 			projectDirPath = "";
@@ -201,9 +211,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WONNIT/Pods-WONNIT-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -221,6 +235,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9CED85872E596D5D00AD70BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 9CED85862E596D5D00AD70BF /* OpenAPIGenerator */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9CE59C802E3CBBB70095C833 /* Debug */ = {
@@ -458,6 +479,51 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9CED857B2E596D1900AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-generator" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-openapi-generator";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.10.2;
+			};
+		};
+		9CED85802E596D3A00AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-openapi-runtime";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.8.2;
+			};
+		};
+		9CED85832E596D5200AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-openapi-urlsession";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9CED85812E596D3A00AD70BF /* OpenAPIRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9CED85802E596D3A00AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */;
+			productName = OpenAPIRuntime;
+		};
+		9CED85842E596D5200AD70BF /* OpenAPIURLSession */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9CED85832E596D5200AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */;
+			productName = OpenAPIURLSession;
+		};
+		9CED85862E596D5D00AD70BF /* OpenAPIGenerator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9CED857B2E596D1900AD70BF /* XCRemoteSwiftPackageReference "swift-openapi-generator" */;
+			productName = "plugin:OpenAPIGenerator";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9CE59C6F2E3CBBB60095C833 /* Project object */;
 }

@@ -10,7 +10,9 @@ import SwiftUI
 struct MultiStepFormView<Step: FormStep>: View {
     @Environment(\.dismiss) private var dismiss
     @State private var currentStep: Step
-    @State private var formStore = FormStateStore()
+    
+    @State private var formStore: FormStateStore
+    
     @State private var transitionDirection: Edge = .trailing
     @State private var showDonePage = false
     
@@ -27,12 +29,14 @@ struct MultiStepFormView<Step: FormStep>: View {
     init(
         initialStep: Step,
         donePageView: some View,
+        store: FormStateStore,
         onSubmit: @escaping (FormStateStore) -> Void,
         onCustomButtonTap: ((String, FormStateStore, FormActions) -> Void)? = nil
     ) {
         self._currentStep = State(initialValue: initialStep)
         self.initialStep = initialStep
         self.donePageView = AnyView(donePageView)
+        self.formStore = store
         self.onSubmit = onSubmit
         self.onCustomButtonTap = onCustomButtonTap
     }
@@ -60,6 +64,7 @@ struct MultiStepFormView<Step: FormStep>: View {
                 donePageView
             }
         }
+        .environment(formStore)
     }
     
     @ViewBuilder
@@ -67,6 +72,7 @@ struct MultiStepFormView<Step: FormStep>: View {
         HStack {
             backButton
             Spacer()
+            debugPlaceholderButton()
         }
         .background(
             Color.clear
@@ -94,11 +100,21 @@ struct MultiStepFormView<Step: FormStep>: View {
         .font(.system(size: 18))
     }
     
+    @ViewBuilder
+    private func debugPlaceholderButton() -> some View {
+        Button {
+            formStore.fillWithDebugPlaceholderData()
+        } label: {
+            Image(systemName: "ladybug")
+                .contentShape(Rectangle())
+        }
+    }
+    
     private var bottomButtons: some View {
         let isValid = currentStep.isStepValid(store: formStore)
         let isOptional = currentStep.isOptional
         
-        return Group {
+        return VStack(spacing: 12) {
             if let customButtons = currentStep.buttons, onCustomButtonTap != nil {
                 VStack(spacing: 12) {
                     ForEach(customButtons, id: \.label) { buttonConfig in
@@ -125,28 +141,28 @@ struct MultiStepFormView<Step: FormStep>: View {
                     }
                 }
                 .padding(.horizontal, 16)
-            } else {
-                Button {
-                    if isValid || isOptional {
-                        if let next = currentStep.next {
-                            goToStep(next)
-                        } else {
-                            submitForm()
-                        }
-                    }
-                } label: {
-                    Text(currentStep.next == nil ? currentStep.submitButtonTitle : (isOptional ? "건너뛰기" : "다음으로"))
-                        .body_01((isValid || isOptional) ? .white : .grey300)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill((isValid || isOptional) ? Color.primaryPurple : .grey100)
-                        )
-                        .padding(.horizontal, 16)
-                }
-                .disabled(!isValid && !isOptional)
             }
+            
+            Button {
+                if isValid || isOptional {
+                    if let next = currentStep.next {
+                        goToStep(next)
+                    } else {
+                        submitForm()
+                    }
+                }
+            } label: {
+                Text(currentStep.next == nil ? currentStep.submitButtonTitle : (isOptional ? "건너뛰기" : "다음으로"))
+                    .body_01((isValid || isOptional) ? .white : .grey300)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill((isValid || isOptional) ? Color.primaryPurple : .grey100)
+                    )
+                    .padding(.horizontal, 16)
+            }
+            .disabled(!isValid && !isOptional)
         }
     }
     
@@ -260,10 +276,6 @@ struct MultiStepFormView<Step: FormStep>: View {
         onSubmit(formStore)
         withAnimation {
             showDonePage = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            dismiss()
         }
     }
 }

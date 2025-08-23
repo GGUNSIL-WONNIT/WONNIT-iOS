@@ -41,18 +41,15 @@ private enum DoneMessage {
 }
 
 struct ReviewReturnSpaceView: View {
+    @Environment(AppSettings.self) private var appSettings
     @Environment(\.dismiss) private var dismiss
 
-    let spaceId: UUID
-    
-    private let urls = [
-        URL(string: "https://images.unsplash.com/photo-1628630468252-a086c2bc7255?q=80&w=3269&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")!,
-        URL(string: "https://images.unsplash.com/photo-1711640225798-f2348fa3f236?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")!
-    ]
+    let space: Space
     
     @State private var selectedImageIndex = 0
     @State private var doneMessage: DoneMessage?
     @State private var showDoneView: Bool = false
+    @State private var errorMessage: String?
     
     var body: some View {
         if showDoneView {
@@ -60,17 +57,24 @@ struct ReviewReturnSpaceView: View {
                 DonePageView(message: doneMessage.message, imageName: doneMessage.imageName, showConfettiOnAppear: doneMessage.showConfettiOnAppear)
             }
         } else {
-            ZStack(alignment: .bottom) {
-                VStack(alignment: .leading, spacing: 0) {
-                    VStack(spacing: 6) {
-                        topBar
+            ZStack(alignment: .top) {
+                ZStack(alignment: .bottom) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        VStack(spacing: 6) {
+                            topBar
+                        }
+                        content
                     }
-                    content
+                    
+                    bottomButtons
+                        .padding(.vertical, 8)
+                        .background(Color.white)
                 }
                 
-                bottomButtons
-                    .padding(.vertical, 8)
-                    .background(Color.white)
+                if let errorMessage {
+                    ErrorMessageView(title: "오류 발생", message: errorMessage)
+                        .padding()
+                }
             }
         }
     }
@@ -99,7 +103,13 @@ struct ReviewReturnSpaceView: View {
     private var bottomButtons: some View {
         return VStack(spacing: 12) {
             Button {
-                rejectReturnRequest()
+                Task {
+                    do {
+                        try await rejectReturnRequest()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
             } label: {
                 Text("반납 반려")
                     .body_01(.primaryPurple)
@@ -113,7 +123,13 @@ struct ReviewReturnSpaceView: View {
             }
             
             Button {
-                approveReturnRequest()
+                Task {
+                    do {
+                        try await approveReturnRequest()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
             } label: {
                 Text("반납 확인")
                     .body_01(.white)
@@ -132,29 +148,46 @@ struct ReviewReturnSpaceView: View {
     private var content: some View {
         VStack(spacing: 24) {
             HStack {
-                Text("AI 이미지 분석 결과\n대여 이전 상태와 00% 일치해요")
-                    .title_01(.grey900)
+                if let similarity = space.similarity {
+                    Text("AI 이미지 분석 결과\n대여 이전 상태와 \(String(format: "%.0f", similarity))% 일치해요")
+                        .title_01(.grey900)
+                } else {
+                    Text("AI 이미지 분석 결과")
+                        .title_01(.grey900)
+                }
                 Spacer()
             }
             
-            TabView(selection: $selectedImageIndex) {
-                ForEach(Array(urls.enumerated()), id: \.offset) { index, url in
-                    GeometryReader { geometry in
-                        KFImage(url)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: geometry.size.width, height: geometry.size.width * 0.75)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
-                    .tag(index)
+//            TabView(selection: $selectedImageIndex) {
+//                ForEach(Array([space.beforeImgUrl, space.afterImgUrl].enumerated()), id: \.offset) { index, url in
+//                    GeometryReader { geometry in
+//                        KFImage(url)
+//                            .resizable()
+//                            .scaledToFill()
+//                            .frame(width: geometry.size.width, height: geometry.size.width * 0.75)
+//                            .clipShape(RoundedRectangle(cornerRadius: 8))
+//                    }
+//                    .tag(index)
+//                    .overlay(alignment: .topLeading) {
+//                        ColoredTagView(label: index == 0 ? "사용 전" : "사용 후")
+//                            .padding(10)
+//                    }
+//                }
+//            }
+//            .frame(height: UIScreen.main.bounds.width * 0.75 - 16)
+//            .tabViewStyle(.page)
+            
+            if let after = space.afterImgUrl, let url = URL(string: after) {
+                KFImage(url)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                     .overlay(alignment: .topLeading) {
-                        ColoredTagView(label: index == 0 ? "사용 전" : "사용 후")
+                        ColoredTagView(label: "사용 후")
                             .padding(10)
                     }
-                }
             }
-            .frame(height: UIScreen.main.bounds.width * 0.75 - 16)
-            .tabViewStyle(.page)
             
             Spacer()
         }
@@ -163,33 +196,45 @@ struct ReviewReturnSpaceView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    private func rejectReturnRequest() {
-        doneMessage = .reject
+    @MainActor
+    private func rejectReturnRequest() async throws {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.returnReject(path: .init(spaceId: space.id), query: .init(userId: appSettings.selectedTestUserID))
         
-        withAnimation {
-            showDoneView = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            dismiss()
+        switch response {
+        case .noContent:
+            doneMessage = .reject
+            
+            withAnimation {
+                showDoneView = true
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                dismiss()
+            }
+        default:
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "\(response)"])
         }
     }
     
-    private func approveReturnRequest() {
-        doneMessage = .approve
+    @MainActor
+    private func approveReturnRequest() async throws {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.returnApprove(path: .init(spaceId: space.id), query: .init(userId: appSettings.selectedTestUserID))
         
-        withAnimation {
-            showDoneView = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            dismiss()
+        switch response {
+        case .noContent:
+            doneMessage = .approve
+            
+            withAnimation {
+                showDoneView = true
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                dismiss()
+            }
+        default:
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "\(response)"])
         }
     }
-}
-
-#Preview {
-    let sampleSpace = Space.placeholder
-    
-    ReviewReturnSpaceView(spaceId: sampleSpace.id)
 }

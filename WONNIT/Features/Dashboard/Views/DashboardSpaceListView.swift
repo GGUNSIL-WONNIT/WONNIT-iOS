@@ -9,13 +9,16 @@ import SwiftUI
 
 struct DashboardSpaceListView: View {
     @Environment(\.navigationManager) private var nav
+    @Environment(AppSettings.self) private var appSettings
     
     let selectedDashboardTab: DashboardTab
+    let refetch: () -> Void
     
     @Binding var spacesToShow: [Space]
-    @State var selectedSpaceIDs: Set<UUID> = []
-    @State var isEditMode: Bool = false
+    @State private var selectedSpaceIDs: Set<String> = []
+    @State private var isEditMode: Bool = false
     @State private var showDeleteConfirmation = false
+    @State private var errorMessage: String?
     
     @Namespace private var namespace
     
@@ -45,6 +48,11 @@ struct DashboardSpaceListView: View {
         .overlay(alignment: .bottomLeading) {
             deleteButton
                 .padding(.bottom, 6)
+        }
+        .alert("오류", isPresented: .constant(errorMessage != nil)) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "오류가 발생했습니다.")
         }
     }
     
@@ -118,17 +126,17 @@ struct DashboardSpaceListView: View {
                         if isEditMode {
                             toggleSelection(for: space.id)
                         } else {
-                            nav.push(Route.spaceDetailByModel(space: space))
+                            nav.push(Route.spaceDetailById(space.id))
                         }
                     }
                     switch selectedDashboardTab {
                     case .myCreatedSpaces:
                         if let status = space.status, status == .returnRequest {
-                            ReviewReturnSpaceActionButtonView(spaceId: space.id)
+                            ReviewReturnSpaceActionButtonView(space: space, refetch: refetch)
                         }
                     case .myRentedSpaces:
                         if let status = space.status, status == .occupied {
-                            ReturnSpaceActionButtonView(spaceId: space.id)
+                            ReturnSpaceActionButtonView(spaceId: space.id, refetch: refetch)
                         }
                     }
                 }
@@ -140,7 +148,7 @@ struct DashboardSpaceListView: View {
         }
     }
     
-    private func toggleSelection(for id: UUID) {
+    private func toggleSelection(for id: String) {
         withAnimation {
             if selectedSpaceIDs.contains(id) {
                 selectedSpaceIDs.remove(id)
@@ -163,12 +171,25 @@ struct DashboardSpaceListView: View {
     }
     
     private func deleteSelectedSpaces() {
-        withAnimation {
-            spacesToShow.removeAll { selectedSpaceIDs.contains($0.id) }
+        Task {
+            do {
+                let client = try await WONNITClientAPIService.shared.client()
+                _ = try await client.deleteSpaces(query: .init(
+                    spaceIds: Array(selectedSpaceIDs),
+                    userId: appSettings.selectedTestUserID
+                ))
+                
+            } catch {
+                errorMessage = "삭제를 할 수 없습니다.\n\(error.localizedDescription)"
+                isEditMode = false
+                return
+            }
             
-            selectedSpaceIDs.removeAll()
-            
-            isEditMode = false
+            refetch()
+            withAnimation {
+                selectedSpaceIDs.removeAll()
+                isEditMode = false
+            }
         }
     }
     

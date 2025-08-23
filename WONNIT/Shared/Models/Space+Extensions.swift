@@ -21,7 +21,7 @@ extension Space {
         let sampleSpaceStatus = allStatuses[index % allStatuses.count]
         
         return .init(
-            id: UUID(),
+            id: UUID().uuidString,
             name: "공간 \(index)",
             address: .init(
                 address1: "서울 노원구 공릉로 232",
@@ -41,7 +41,8 @@ extension Space {
             operationInfo: .init(dayOfWeeks: [.MONDAY, .TUESDAY, .WEDNESDAY, .THURSDAY, .FRIDAY], startAt: DateComponents(hour: 5, minute: 0), endAt: DateComponents(hour: 23, minute: 0)),
             amountInfo: .init(timeUnit: .perDay, amount: 1000),
             spaceModelURL: nil,
-            phoneNumber: .init(value: "02-970-6114"),
+            modelThumbnailUrl: nil,
+            phoneNumber: .init(value: "021-970-6114"),
             precautions: "주의사항",
             status: sampleSpaceStatus
         )
@@ -50,7 +51,7 @@ extension Space {
 
 extension Space {
     static let empty: Space = .init(
-        id: UUID(),
+        id: UUID().uuidString,
         name: nil,
         address: nil,
         mainImageURL: nil,
@@ -61,6 +62,7 @@ extension Space {
         operationInfo: nil,
         amountInfo: nil,
         spaceModelURL: nil,
+        modelThumbnailUrl: nil,
         phoneNumber: nil,
         precautions: nil,
         status: nil

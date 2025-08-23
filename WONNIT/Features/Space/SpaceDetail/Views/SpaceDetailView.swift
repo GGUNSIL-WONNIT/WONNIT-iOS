@@ -11,105 +11,151 @@ import Kingfisher
 struct SpaceDetailView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     
-    let space: Space
-    let namespace: Namespace.ID?
+    private let namespace: Namespace.ID?
+    @State private var vm: SpaceDetailViewModel
     
-    let isEditable = false
-    @State private var showEditSpaceForm = false
-    
-    @State private var isShowingUSDZPreview: Bool = false
-    
-    init(space: Space, namespace: Namespace.ID? = nil) {
-        self.space = space
+    init(
+        spaceId: String? = nil,
+        namespace: Namespace.ID? = nil
+    ) {
+        self._vm = State(initialValue: SpaceDetailViewModel(spaceId: spaceId))
         self.namespace = namespace
     }
     
     var body: some View {
         ZStack(alignment: .top) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 26) {
-                    spaceImagesCarousel
-                        .padding(.horizontal)
-                    
-                    spaceInfoFromPreview
-                        .padding(.horizontal)
-                    
-                    RentSpaceActionButtonView(spaceId: space.id, isAvailable: space.status == .available)
-                        .padding(.horizontal)
-                    
-                    Rectangle()
-                        .fill(Color.grey100)
-                        .frame(height: 8)
-                    
-                    spaceInfoSection
-                        .padding(.horizontal)
-                    
-                    Rectangle()
-                        .fill(Color.grey100)
-                        .frame(height: 8)
-                    
-                    spaceScannerSection
-                        .padding(.horizontal)
-                }
-                .padding(.top, 20)
-                .padding(.bottom, 120)
-            }
-            .padding(.top, safeAreaInsets.top + 44)
+            content
+                .padding(.top, safeAreaInsets.top + 44)
             
             Color.white
                 .frame(height: safeAreaInsets.top + 44)
         }
         .ignoresSafeArea(.all, edges: .top)
         .toolbarBackground(.hidden, for: .navigationBar)
-        .toolbar {
-            if isEditable {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showEditSpaceForm = true
-                    } label: {
-                        Text("수정하기")
-                            .body_04(.grey900)
-                            .contentShape(Rectangle())
-                    }
-                    .foregroundStyle(Color.grey900)
-                    .font(.system(size: 18))
-                }
+        .toolbar { editToolbar }
+        .task { await vm.fetchIfNeeded() }
+        .fullScreenCover(isPresented: $vm.showEditSpaceForm, onDismiss: {
+            Task {
+                await vm.forceRevalidate()
+            }
+        }) {
+            if let space = vm.space {
+                EditSpaceView(spaceId: space.id)
             }
         }
-        .fullScreenCover(isPresented: $showEditSpaceForm) {
-            EditSpaceView(spaceData: space)
+        .sheet(isPresented: $vm.showUSDZPreview) {
+            USDZPreviewSheet(isPresented: $vm.showUSDZPreview)
         }
-        .sheet(isPresented: $isShowingUSDZPreview) {
-            VStack(spacing: 0) {
-                HStack {
-                    Spacer()
-                    Button {
-                        isShowingUSDZPreview = false
-                    } label: {
-                        Text("완료")
-                            .body_03(.grey900)
-                    }
-                }
-                .padding(16)
-                
-                USDZPreviewView(url: URL(string: "https://github.com/GGUNGSIL-WONNIT/testing-USDZ-file-downloads/raw/refs/heads/main/Room.usdz")!)
-                
-                Spacer()
-            }
-            .ignoresSafeArea()
+    }
+}
+
+private extension SpaceDetailView {
+    @ViewBuilder
+    var content: some View {
+        switch (vm.space, vm.errorMessage) {
+        case let (.some(space), _):
+            DetailBody(
+                space: space,
+                namespace: namespace,
+                refetch: vm.forceRevalidate,
+                showUSDZPreview: $vm.showUSDZPreview
+            )
+        case (nil, .some(let message)):
+            ErrorBody(message: message)
+        default:
+            ProgressView()
         }
     }
     
-    @ViewBuilder
-    private var spaceImagesCarousel: some View {
+    @ToolbarContentBuilder
+    var editToolbar: some ToolbarContent {
+        if vm.isEditable {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { vm.showEditSpaceForm = true } label: {
+                    Text("수정하기")
+                        .body_04(.grey900)
+                        .contentShape(Rectangle())
+                }
+                .foregroundStyle(Color.grey900)
+                .font(.system(size: 18))
+            }
+        }
+    }
+}
+
+private struct DetailBody: View {
+    let space: Space
+    let namespace: Namespace.ID?
+    let refetch: () async -> Void
+    
+    @Binding var showUSDZPreview: Bool
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 26) {
+                    SpaceImagesCarousel(space: space, namespace: namespace)
+                        .padding(.horizontal)
+                    
+                    SpaceInfoPreview(space: space)
+                        .padding(.horizontal)
+                    
+                    RentSpaceActionButtonView(spaceId: space.id, isAvailable: space.status == .available, refetch: {
+                        Task {
+                            await refetch()
+                        }
+                    })
+                        .padding(.horizontal)
+                    
+                    SectionDivider()
+                    
+                    SpaceInfoSection(space: space)
+                        .padding(.horizontal)
+                    
+                    SectionDivider()
+                    
+                    SpaceScannerSection(showUSDZPreview: $showUSDZPreview)
+                        .padding(.horizontal)
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 120)
+            }
+        }
+    }
+}
+
+private struct ErrorBody: View {
+    let message: String
+    
+    var body: some View {
+        VStack {
+            ErrorMessageView(
+                title: "오류 메시지",
+                message: message
+            )
+            .padding()
+            
+            NotFoundView(label: "공간 정보를 불러올 수 없습니다.")
+            
+            Spacer()
+        }
+    }
+}
+
+private struct SpaceImagesCarousel: View {
+    let space: Space
+    let namespace: Namespace.ID?
+    
+    var body: some View {
         if let urls = space.allImageURLs {
             TabView {
                 ForEach(urls, id: \.self) { url in
-                    GeometryReader { geometry in
+                    GeometryReader { geo in
                         KFImage(url)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: geometry.size.width, height: geometry.size.width * 0.75) // 4:3
+                            .frame(width: geo.size.width, height: geo.size.width * 0.75) // 4:3
                             .clipped()
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
@@ -122,20 +168,21 @@ struct SpaceDetailView: View {
             ImagePlaceholder(width: .infinity, height: 257)
         }
     }
+}
+
+private struct SpaceInfoPreview: View {
+    let space: Space
     
-    private var spaceInfoFromPreview: some View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 4) {
                 if let category = space.category?.label {
                     Text(category)
                         .body_04(.grey700)
-//                        .matchedGeometry(id: "spaceCategory-\(space.id)", in: namespace)
                 }
-                
                 if let name = space.name {
                     Text(name)
                         .head_01(.grey900)
-//                        .matchedGeometry(id: "spaceName-\(space.id)", in: namespace)
                 }
             }
             
@@ -149,14 +196,16 @@ struct SpaceDetailView: View {
                             .padding(.bottom, 2)
                     }
                 }
-//                .matchedGeometry(id: "spacePrice-\(space.id)", in: namespace)
             }
         }
     }
+}
+
+private struct SpaceInfoSection: View {
+    let space: Space
     
-    private var spaceInfoSection: some View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // MARK: - 상세 정보
             Text("상세 정보")
                 .head_01(.grey900)
             
@@ -170,7 +219,7 @@ struct SpaceDetailView: View {
                     if info.id == .tags {
                         HStack(spacing: 12) {
                             Image(info.iconName)
-                            tagView(from: info.content)
+                            TagRow(raw: info.content)
                         }
                     } else {
                         HStack(spacing: 12) {
@@ -183,8 +232,12 @@ struct SpaceDetailView: View {
             }
         }
     }
+}
+
+private struct SpaceScannerSection: View {
+    @Binding var showUSDZPreview: Bool
     
-    private var spaceScannerSection: some View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("3D 스캔 정보")
                 .head_01(.grey900)
@@ -195,19 +248,14 @@ struct SpaceDetailView: View {
                     .scaledToFill()
                     .frame(height: 280)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .onTapGesture {
-                        isShowingUSDZPreview = true
-                    }
+                    .onTapGesture { showUSDZPreview = true }
                 
                 HStack(spacing: 2) {
                     TooltipView(pointerPlacement: .trailing) {
                         Text("버튼을 눌러 확대해보세요")
                             .body_05(.grey100)
                     }
-                    
-                    Button {
-                        isShowingUSDZPreview = true
-                    } label: {
+                    Button { showUSDZPreview = true } label: {
                         Image(systemName: "viewfinder")
                             .foregroundStyle(Color.grey700)
                             .bold()
@@ -220,11 +268,20 @@ struct SpaceDetailView: View {
             }
         }
     }
-    
-    @ViewBuilder
-    private func tagView(from raw: String) -> some View {
+}
+
+private struct SectionDivider: View {
+    var body: some View {
+        Rectangle()
+            .fill(Color.grey100)
+            .frame(height: 8)
+    }
+}
+
+private struct TagRow: View {
+    let raw: String
+    var body: some View {
         let tags = raw.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-        
         if !tags.isEmpty {
             HStack(spacing: 4) {
                 ForEach(tags, id: \.self) { tag in
@@ -235,9 +292,33 @@ struct SpaceDetailView: View {
     }
 }
 
+private struct USDZPreviewSheet: View {
+    @Binding var isPresented: Bool
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                Button {
+                    isPresented = false
+                } label: {
+                    Text("완료")
+                        .body_03(.grey900)
+                }
+            }
+            .padding(16)
+            
+            USDZPreviewView(url: URL(string: "https://github.com/GGUNGSIL-WONNIT/testing-USDZ-file-downloads/raw/refs/heads/main/Room.usdz")!)
+            
+            Spacer()
+        }
+        .ignoresSafeArea()
+    }
+}
+
 #Preview {
     NavigationView {
-        SpaceDetailView(space: .placeholder)
+        SpaceDetailView(spaceId: "0198d312-f855-3efc-3f89-fc285f50fa81")
             .withBackButtonToolbar()
     }
 }

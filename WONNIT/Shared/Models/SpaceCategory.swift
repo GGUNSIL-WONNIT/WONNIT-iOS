@@ -47,4 +47,11 @@ enum SpaceCategory: String, Codable, CaseIterable {
             return "spaceCategory/meetingRoom"
         }
     }
+    
+    init?(label: String) {
+        guard let foundCase = Self.allCases.first(where: { $0.label == label }) else {
+            return nil
+        }
+        self = foundCase
+    }
 }

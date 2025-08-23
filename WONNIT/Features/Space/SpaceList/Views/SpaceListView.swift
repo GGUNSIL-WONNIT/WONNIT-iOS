@@ -11,7 +11,7 @@ struct SpaceListView: View {
     @Environment(\.dismiss) private var dismiss
     
     let category: SpaceCategory?
-    let spacesToShow: [Space] = Space.mockList
+    @State private var spacesToShow: [Space] = []
     
     var body: some View {
         ScrollView {
@@ -25,7 +25,7 @@ struct SpaceListView: View {
                         .frame(maxWidth: .infinity)
                 } else {
                     ForEach(spacesToShow) { space in
-                        NavigationLink(value: Route.spaceDetailByModel(space: space)) {
+                        NavigationLink(value: Route.spaceDetailById(space.id)) {
                             SpacePreviewCardView(
                                 space: space,
                                 layout: .horizontal(height: 123),
@@ -41,18 +41,30 @@ struct SpaceListView: View {
             .navigationTitle(category?.label ?? "최근 추가된 공간")
             .navigationBarTitleDisplayMode(.large)
             .withBackButtonToolbar()
-//            .navigationDestination(for: UUID.self) { id in
-//                if let space = spacesToShow.first(where: { $0.id == id }) {
-//                    SpaceDetailView(space: space)
-//                        .padding(.bottom, -24)
-//                        .withBackButtonToolbar()
-//                } else {
-//                    ZStack {
-//                        NotFoundView(label: "해당 공간을 찾을 수 없습니다.")
-//                    }
-//                }
-//            }
         }
+        .task {
+            do {
+                self.spacesToShow = try await fetchSpaces()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func fetchSpaces() async throws -> [Space] {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.getRecentSpaces()
+        let recentSpaces = try response.ok.body.json
+        let mapped = recentSpaces.map { Space(from: $0) }
+        
+        if let category {
+            return mapped.filter { space in
+                space.category == category
+            }
+        } else {
+            return mapped
+        }
+
     }
 }
 

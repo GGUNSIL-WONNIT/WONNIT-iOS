@@ -10,6 +10,5 @@ import Foundation
 enum Route: Hashable {
     case spaceListByCategory(_ category: SpaceCategory)
     case spaceListByRecent
-    case spaceDetailById(_ id: UUID)
-    case spaceDetailByModel(space: Space)
+    case spaceDetailById(_ id: String)
 }

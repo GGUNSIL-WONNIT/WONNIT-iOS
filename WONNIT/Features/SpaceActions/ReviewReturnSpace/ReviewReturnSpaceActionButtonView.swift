@@ -12,7 +12,8 @@ struct ReviewReturnSpaceActionButtonView: View {
     
     @State private var isShowingReviewReturnSpaceView: Bool = false
     
-    let spaceId: UUID
+    let space: Space
+    var refetch: (() -> Void)?
     
     var body: some View {
         Button {
@@ -27,14 +28,10 @@ struct ReviewReturnSpaceActionButtonView: View {
                         .stroke(style: .init(lineWidth: 1))
                 )
         }
-        .fullScreenCover(isPresented: $isShowingReviewReturnSpaceView) {
-            ReviewReturnSpaceView(spaceId: spaceId)
+        .fullScreenCover(isPresented: $isShowingReviewReturnSpaceView, onDismiss: {
+            refetch?()
+        }) {
+            ReviewReturnSpaceView(space: space)
         }
     }
-}
-
-#Preview {
-    let sampleSpace = Space.placeholder
-    
-    ReviewReturnSpaceActionButtonView(spaceId: sampleSpace.id)
 }

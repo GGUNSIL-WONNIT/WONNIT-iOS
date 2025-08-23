@@ -13,11 +13,11 @@ struct EditSpaceView: View {
     @State private var formStore = FormStateStore()
     
     @State private var showDonePage = false
+    @State private var spaceData: Space?
+    private let spaceId: String
     
-    init(spaceData: Space) {
-        let initialState = FormStateStore()
-//        initialState.inject(from: spaceData)
-        _formStore = State(initialValue: initialState)
+    init(spaceId: String) {
+        self.spaceId = spaceId
     }
     
     var body: some View {
@@ -62,6 +62,23 @@ struct EditSpaceView: View {
             }
         }
         .ignoresSafeArea(.all, edges: .top)
+        .task {
+            await fetchSpaceDetails()
+        }
+    }
+    
+    private func fetchSpaceDetails() async {
+        do {
+            let client = try await WONNITClientAPIService.shared.client()
+            let response = try await client.getSpaceDetail(path: .init(spaceId: spaceId))
+            let spaceDTO = try response.ok.body.json
+            let space = Space(from: spaceDTO)
+            self.spaceData = space
+            formStore.inject(from: space)
+        } catch {
+            // Handle error
+            print("Failed to fetch space details: \(error)")
+        }
     }
     
     @ViewBuilder
@@ -118,5 +135,5 @@ struct EditSpaceView: View {
 }
 
 #Preview {
-    EditSpaceView(spaceData: .placeholder)
+    EditSpaceView(spaceId: "0198d312-f855-3efc-3f89-fc285f50fa81")
 }

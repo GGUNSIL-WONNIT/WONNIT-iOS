@@ -29,10 +29,9 @@ extension EditSpaceFormStep {
             ]
         case .details:
             return [
-                .textField(config: .init(
+                .addressPicker(config: .init(
                     id: "address1",
-                    title: "주소",
-                    placeholder: "주소를 입력해주세요"
+                    title: "주소"
                 )),
                 .textField(config: .init(
                     id: "address2",
@@ -48,7 +47,7 @@ extension EditSpaceFormStep {
                     config: .init(
                         id: "category",
                         title: "공간 카테고리",
-                        placeholder: "카테고리를 선택하세요"
+                        placeholder: "카테고리를 선택하세요",
                     ),
                     options: SpaceCategory.allCases.map(\.label)
                 ),
@@ -60,9 +59,9 @@ extension EditSpaceFormStep {
                     keyboardType: .decimalPad
                 )),
                 .tagSelector(config: .init(
-                    id: "spaceTags",
-                    title: "태그",
-                    placeholder: "공간 태그를 입력해주세요"
+                    id: "tags",
+                    title: "구비물품",
+                    spaceCategoryFormComponentKey: "category"
                 ))
             ]
             
@@ -84,13 +83,12 @@ extension EditSpaceFormStep {
             
         case .miscellaneous:
             return [
-                .textField(config: .init(
+                .phoneNumberField(config: .init(
                     id: "contact",
                     title: "담당자 연락처",
                     placeholder: "연락처를 입력해주세요",
-                    keyboardType: .phonePad
                 )),
-                .textField(config: .init(
+                .optionalTextField(config: .init(
                     id: "cautions",
                     title: "기타 주의사항(선택)",
                     placeholder: "주의사항이 있다면 입력해주세요"

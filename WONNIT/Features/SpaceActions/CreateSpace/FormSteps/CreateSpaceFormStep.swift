@@ -46,11 +46,6 @@ enum CreateSpaceFormStep: FormStep {
         switch self {
         case .addressAndName:
             return [
-//                .textField(config: .init(
-//                    id: "address1",
-//                    title: "주소",
-//                    placeholder: "주소를 입력해주세요"
-//                )),
                 .addressPicker(config: .init(
                     id: "address1",
                     title: "주소"
@@ -111,7 +106,6 @@ enum CreateSpaceFormStep: FormStep {
                 .tagSelector(config: .init(
                     id: "tags",
                     title: "구비물품",
-//                    placeholder: "구비 물품을 작성하세요",
                     isAIFeatured: true,
                     spaceCategoryFormComponentKey: "category"
                 ))
@@ -147,12 +141,19 @@ enum CreateSpaceFormStep: FormStep {
                     title: "담당자 연락처",
                     placeholder: "연락처를 입력해주세요",
                 )),
-                .textField(config: .init(
+                .optionalTextField(config: .init(
                     id: "cautions",
                     title: "기타 주의사항(선택)",
                     placeholder: "주의사항이 있다면 입력해주세요"
                 ))
             ]
+        }
+    }
+    
+    var hideDefaultButton: Bool {
+        switch self {
+        default:
+            return false
         }
     }
 }

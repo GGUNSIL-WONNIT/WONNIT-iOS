@@ -10,7 +10,7 @@ import SwiftUI
 struct RentSpaceView: View {
     @Environment(\.dismiss) private var dismiss
     
-    let spaceId: UUID
+    let spaceId: String
     
     var body: some View {
         DonePageWithImageView {
