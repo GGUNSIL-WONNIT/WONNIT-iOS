@@ -41,6 +41,7 @@ private enum DoneMessage {
 }
 
 struct ReviewReturnSpaceView: View {
+    @Environment(AppSettings.self) private var appSettings
     @Environment(\.dismiss) private var dismiss
 
     let spaceId: String
@@ -53,6 +54,7 @@ struct ReviewReturnSpaceView: View {
     @State private var selectedImageIndex = 0
     @State private var doneMessage: DoneMessage?
     @State private var showDoneView: Bool = false
+    @State private var errorMessage: String?
     
     var body: some View {
         if showDoneView {
@@ -60,17 +62,24 @@ struct ReviewReturnSpaceView: View {
                 DonePageView(message: doneMessage.message, imageName: doneMessage.imageName, showConfettiOnAppear: doneMessage.showConfettiOnAppear)
             }
         } else {
-            ZStack(alignment: .bottom) {
-                VStack(alignment: .leading, spacing: 0) {
-                    VStack(spacing: 6) {
-                        topBar
+            ZStack(alignment: .top) {
+                ZStack(alignment: .bottom) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        VStack(spacing: 6) {
+                            topBar
+                        }
+                        content
                     }
-                    content
+                    
+                    bottomButtons
+                        .padding(.vertical, 8)
+                        .background(Color.white)
                 }
                 
-                bottomButtons
-                    .padding(.vertical, 8)
-                    .background(Color.white)
+                if let errorMessage {
+                    ErrorMessageView(title: "오류 발생", message: errorMessage)
+                        .padding()
+                }
             }
         }
     }
@@ -99,7 +108,13 @@ struct ReviewReturnSpaceView: View {
     private var bottomButtons: some View {
         return VStack(spacing: 12) {
             Button {
-                rejectReturnRequest()
+                Task {
+                    do {
+                        try await rejectReturnRequest()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
             } label: {
                 Text("반납 반려")
                     .body_01(.primaryPurple)
@@ -113,7 +128,13 @@ struct ReviewReturnSpaceView: View {
             }
             
             Button {
-                approveReturnRequest()
+                Task {
+                    do {
+                        try await approveReturnRequest()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
             } label: {
                 Text("반납 확인")
                     .body_01(.white)
@@ -163,27 +184,45 @@ struct ReviewReturnSpaceView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    private func rejectReturnRequest() {
-        doneMessage = .reject
+    @MainActor
+    private func rejectReturnRequest() async throws {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.returnReject(path: .init(spaceId: spaceId), query: .init(userId: appSettings.selectedTestUserID))
         
-        withAnimation {
-            showDoneView = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            dismiss()
+        switch response {
+        case .noContent:
+            doneMessage = .reject
+            
+            withAnimation {
+                showDoneView = true
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                dismiss()
+            }
+        default:
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "\(response)"])
         }
     }
     
-    private func approveReturnRequest() {
-        doneMessage = .approve
+    @MainActor
+    private func approveReturnRequest() async throws {
+        let client = try await WONNITClientAPIService.shared.client()
+        let response = try await client.returnApprove(path: .init(spaceId: spaceId), query: .init(userId: appSettings.selectedTestUserID))
         
-        withAnimation {
-            showDoneView = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            dismiss()
+        switch response {
+        case .noContent:
+            doneMessage = .approve
+            
+            withAnimation {
+                showDoneView = true
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                dismiss()
+            }
+        default:
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "\(response)"])
         }
     }
 }
