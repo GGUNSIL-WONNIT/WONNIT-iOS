@@ -39,6 +39,15 @@ struct DashboardView: View {
                     Text("⚠️")
                 }
             }
+            .onChange(of: tabShouldResetManager.resetTriggers[.dashboard]) {
+                handleTabReselect()
+            }
+        }
+    }
+    
+    private func handleTabReselect() {
+        if !dashboardNavigationManager.path.isEmpty {
+            dashboardNavigationManager.path = NavigationPath()
         }
     }
 }
