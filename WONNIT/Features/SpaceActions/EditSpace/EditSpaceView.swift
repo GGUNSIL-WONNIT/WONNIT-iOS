@@ -14,11 +14,7 @@ struct EditSpaceView: View {
     
     @State private var showDonePage = false
     @State private var spaceData: Space?
-    private let spaceId: String
-    
-    init(spaceId: String) {
-        self.spaceId = spaceId
-    }
+    @Binding var spaceId: String?
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -69,14 +65,14 @@ struct EditSpaceView: View {
     
     private func fetchSpaceDetails() async {
         do {
+            guard let id = spaceId else { return }
             let client = try await WONNITClientAPIService.shared.client()
-            let response = try await client.getSpaceDetail(path: .init(spaceId: spaceId))
+            let response = try await client.getSpaceDetail(path: .init(spaceId: id))
             let spaceDTO = try response.ok.body.json
             let space = Space(from: spaceDTO)
             self.spaceData = space
-            formStore.inject(from: space)
+            await formStore.inject(from: space)
         } catch {
-            // Handle error
             print("Failed to fetch space details: \(error)")
         }
     }
@@ -132,8 +128,4 @@ struct EditSpaceView: View {
         .foregroundStyle(Color.grey900)
         .font(.system(size: 18))
     }
-}
-
-#Preview {
-    EditSpaceView(spaceId: "0198d312-f855-3efc-3f89-fc285f50fa81")
 }

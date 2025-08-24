@@ -7,9 +7,16 @@
 
 import Foundation
 import CoreLocation
+import Kingfisher
 
 extension FormStateStore {
-    func inject(from space: Space) {
+    func inject(from space: Space) async {
+        imageValues["mainImage"] = []
+        imageValues["subImages"] = []
+
+        async let main: UIImage? = loadMainImage(from: space.mainImageURL)
+        async let subs: [UIImage] = loadSubImages(from: space.subImageURLs)
+        
         if let address = space.address {
             addressValues["address1"] = KakaoAddress(roadAddress: address.address1, jibunAddress: "", zonecode: "")
             if let coordinate = space.coordinate {
@@ -40,5 +47,51 @@ extension FormStateStore {
         
         textValues["contact"] = space.phoneNumber?.value ?? ""
         textValues["cautions"] = space.precautions
+        
+        if let m = await main {
+            imageValues["mainImage"] = [m]
+        }
+        imageValues["subImages"] = await subs
     }
+    
+    private func loadMainImage(from urlString: String?) async -> UIImage? {
+        guard
+            let s = urlString,
+            let url = URL(string: s)
+        else { return nil }
+        
+        do {
+            let result = try await KingfisherManager.shared.retrieveImage(with: url)
+            return result.image
+        } catch {
+            return nil
+        }
+    }
+    
+    private func loadSubImages(from urlStrings: [String?]?) async -> [UIImage] {
+        let urls: [URL] = (urlStrings ?? [])
+            .compactMap { $0 }
+            .compactMap(URL.init(string:))
+        
+        if urls.isEmpty { return [] }
+        
+        return await withTaskGroup(of: (Int, UIImage?).self, returning: [UIImage].self) { group in
+            for (idx, url) in urls.enumerated() {
+                group.addTask {
+                    do {
+                        let result = try await KingfisherManager.shared.retrieveImage(with: url)
+                        return (idx, result.image)
+                    } catch {
+                        return (idx, nil)
+                    }
+                }
+            }
+            var ordered: [UIImage?] = Array(repeating: nil, count: urls.count)
+            for await (idx, image) in group {
+                ordered[idx] = image
+            }
+            return ordered.compactMap { $0 }
+        }
+    }
+
 }

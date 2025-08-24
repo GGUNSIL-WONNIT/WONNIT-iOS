@@ -34,15 +34,15 @@ struct SpaceDetailView: View {
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar { editToolbar }
         .task { await vm.fetchIfNeeded() }
-        .fullScreenCover(isPresented: $vm.showEditSpaceForm, onDismiss: {
-            Task {
-                await vm.forceRevalidate()
-            }
-        }) {
-            if let space = vm.space {
-                EditSpaceView(spaceId: space.id)
-            }
-        }
+//        .fullScreenCover(isPresented: $vm.showEditSpaceForm, onDismiss: {
+//            Task {
+//                await vm.forceRevalidate()
+//            }
+//        }) {
+//            if let space = vm.space {
+//                EditSpaceView(spaceId: space.id)
+//            }
+//        }
         .sheet(isPresented: $vm.showUSDZPreview) {
             USDZPreviewSheet(isPresented: $vm.showUSDZPreview)
         }

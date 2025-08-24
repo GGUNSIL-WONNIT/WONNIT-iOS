@@ -20,6 +20,9 @@ struct DashboardSpaceListView: View {
     @State private var showDeleteConfirmation = false
     @State private var errorMessage: String?
     
+    @State private var showSpaceEditView: Bool = false
+    @State private var selectedSpaceIdForSpaceEditView: String? = nil
+    
     @Namespace private var namespace
     
     var body: some View {
@@ -57,6 +60,13 @@ struct DashboardSpaceListView: View {
         .refreshable {
             refetch()
         }
+        .fullScreenCover(isPresented: $showSpaceEditView) {
+            showSpaceEditView = false
+            selectedSpaceIdForSpaceEditView = nil
+        } content: {
+            EditSpaceView(spaceId: $selectedSpaceIdForSpaceEditView)
+        }
+
     }
     
     private var dashboardTabHeaderView: some View {
@@ -120,8 +130,23 @@ struct DashboardSpaceListView: View {
                         .opacity(isEditMode ? (isSelected ? 1 : 0.6) : 1)
                         
                         if isEditMode {
-                            SelectionIndicatorView(isSelected: isSelected)
-                                .padding(10)
+                            HStack(alignment: .top) {
+                                SelectionIndicatorView(isSelected: isSelected)
+                                    .padding(10)
+                                
+                                Spacer()
+                                
+                                Button {
+                                    selectedSpaceIdForSpaceEditView = space.id
+                                    if selectedSpaceIdForSpaceEditView != nil {
+                                        showSpaceEditView = true
+                                    }
+                                } label :{
+                                    Text("수정하기")
+                                        .body_05(.grey700)
+                                        .padding(.horizontal, 10)
+                                }
+                            }
                         }
                     }
                     .contentShape(Rectangle())

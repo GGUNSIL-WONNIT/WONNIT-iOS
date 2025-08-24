@@ -41,7 +41,3 @@ struct MyCreatedSpacesView: View {
         }
     }
 }
-
-#Preview {
-    MyCreatedSpacesView()
-}
