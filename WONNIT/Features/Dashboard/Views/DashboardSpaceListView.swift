@@ -162,6 +162,9 @@ struct DashboardSpaceListView: View {
                         if let status = space.status, status == .returnRequest {
                             ReviewReturnSpaceActionButtonView(space: space, refetch: refetch)
                         }
+                        if let status = space.status, status == .returnRejected {
+                            RestoreSpaceActionButton(spaceId: space.id, refetch: refetch, errorMessage: $errorMessage)
+                        }
                     case .myRentedSpaces:
                         if let status = space.status, status == .occupied {
                             ReturnSpaceActionButtonView(spaceId: space.id, refetch: refetch)
