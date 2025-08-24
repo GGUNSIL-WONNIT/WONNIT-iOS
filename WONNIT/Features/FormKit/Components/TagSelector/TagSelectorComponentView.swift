@@ -87,15 +87,15 @@ struct TagSelectorComponentView: View {
         
         switch category {
         case "소극장·전시":
-            return "소극장·전시에 있는거"
+            return "무대, 조명, 관객석, 스피커"
         case "스터디룸":
-            return "스터디룸에 있는거"
+            return "책상, 의자, 화이트보드, 모니터, 콘센트"
         case "창작공방":
-            return "창작공방에 있는거"
+            return "이젤, 책상, 물레, 공구벽"
         case "음악연습실":
-            return "음악연습실에 있는거"
+            return "피아노, 스피커, 마이크, 의자"
         case "댄스연습실":
-            return "댄스연습실에 있는거"
+            return "거울, 에어컨, 스피커, 조명"
         default:
             return nil
         }
