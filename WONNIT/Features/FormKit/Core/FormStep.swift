@@ -117,10 +117,11 @@ extension FormStep {
                     return false
                 }
                 
-            case let .imageComparison(config):
-                if let score = store.doubleValues[config.id], let score, score < 80 {
-                    return false
-                }
+            case .imageComparison(_):
+//                if let score = store.doubleValues[config.id], let score, score < 80 {
+//                    return false
+//                }
+                continue
             }
         }
         return true

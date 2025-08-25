@@ -25,8 +25,11 @@ struct WONNITApp: App {
                         ZStack(alignment: .bottom) {
                             TabView(selection: $tabManager.selectedTab) {
                                 HomeView().tag(TabManager.TabBarItems.home)
+                                    .toolbar(.hidden, for: .tabBar)
                                 ExploreView().tag(TabManager.TabBarItems.explore)
+                                    .toolbar(.hidden, for: .tabBar)
                                 DashboardView().tag(TabManager.TabBarItems.dashboard)
+                                    .toolbar(.hidden, for: .tabBar)
                             }
                             
                             TabBarView(

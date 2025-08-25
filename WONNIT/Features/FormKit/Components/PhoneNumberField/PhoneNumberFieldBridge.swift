@@ -31,7 +31,6 @@ struct PhoneNumberFieldBridge: UIViewRepresentable {
             textField.text = formattedText
             parent.text.wrappedValue = formattedText
             
-            // Manually set the cursor position
             let offset = calculateCursorOffset(range: range, replacementString: string, formattedText: formattedText)
             if let newPosition = textField.position(from: textField.beginningOfDocument, offset: offset) {
                 textField.selectedTextRange = textField.textRange(from: newPosition, to: newPosition)
@@ -65,8 +64,6 @@ struct PhoneNumberFieldBridge: UIViewRepresentable {
         }
         
         private func calculateCursorOffset(range: NSRange, replacementString string: String, formattedText: String) -> Int {
-            // This is a simplified cursor positioning logic. For a more robust solution,
-            // you might need to track the cursor position more carefully.
             return formattedText.count
         }
         
